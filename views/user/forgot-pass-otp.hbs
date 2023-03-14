@@ -1,0 +1,19 @@
+<div class="d-flex main-otp-page justify-content-center align-items-center level container-fluid mx-o px-0">
+    <div class="card-otp py-3 px-3">
+        <h5 class="m-0 text-primary" style="letter-spacing: 0.2rem;font-weight: bold;">Forgot Password</h5>
+        <span class="mobile-text text-dark" style="letter-spacing: 0.05rem;">Enter your registered Mobile Number</span>
+        <form action="/forgotPasswordPost" method="post">
+            <div class="d-flex flex-row mt-5">
+                <input type="tel" name="mobile" placeholder="without country code" maxlength="10" class="form-control" autofocus="">
+            </div>
+            <div class="text-center mt-4">
+                <input type="submit" class="btn btn-primary" style="letter-spacing: 0.1rem;" value="verify">
+            </div>
+        </form>
+        {{#if loginErr}}
+        <div class="text-center mt-4">
+            <span class="font-weight-bold text-danger cursor">{{loginErr}}</span>
+        </div>
+        {{/if}}
+    </div>
+</div>

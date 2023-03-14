@@ -1,0 +1,71 @@
+<div class="d-flex main-otp-page justify-content-center align-items-center level container-fluid mx-o px-0">
+    <div class="card-otp py-3 px-3">
+        <h5 class="m-0 text-primary" style="letter-spacing: 0.05rem;font-weight: bold;">Set your new password</h5>
+        {{!-- <span class="mobile-text text-dark" style="letter-spacing: 0.05rem;">Enter your registered Mobile Number</span> --}}
+        <form action="/settingNewPass" method="post">
+            <div class="mt-3">
+                <label for="password">Enter your password</label>
+                <input type="password" id="password" name="password" onkeyup="validatePassword()" placeholder="enter new password" class="form-control" autofocus="">
+                <span id="password-error" class="validation-label pl-3 ms-auto"></span>
+            </div>
+
+            <input value="{{userMobile}}" class="d-none" name="mobile">
+
+            <div class="mt-4">
+                <label for="password2">Re-enter the password</label>
+                <input type="password" id="password2" onkeyup="validateRePassword()" placeholder="renter the password" class="form-control" autofocus="">
+                <span id="password2-error" class="validation-label pl-3 ms-auto"></span>
+            </div>
+            <div class="text-center mt-3 mb-3">
+                <input type="submit" class="btn btn-primary" onclick="return validateForm()" style="letter-spacing: 0.2rem;font-weight: bold;" value="submit">
+                <span id="submit-error" class="validation-label pt-2"></span>
+            </div>
+        </form>
+        {{!-- {{#if loginErr}}
+        <div class="text-center mt-4">
+            <span class="font-weight-bold text-danger cursor">{{loginErr}}</span>
+        </div>
+        {{/if}} --}}
+    </div>
+</div>
+
+<script>
+    var passwordError = document.getElementById('password-error');
+    var password2Error = document.getElementById('password2-error');
+    var submitError = document.getElementById('submit-error');
+
+    function validatePassword(){
+      var password = document.getElementById('password').value;
+      var passChecker = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+      if(password.match(passChecker)){
+        passwordError.innerHTML = '';
+        return true;
+      }else{
+        passwordError.innerHTML = 'required 6-20 character,1 numeric digit, 1 uppercase and 1 lowercase';
+        return false;
+      }
+    }
+    function validateRePassword(){
+      var password = document.getElementById('password').value;
+      var password2 = document.getElementById('password2').value;
+      if(password!==password2){
+        password2Error.innerHTML = "password does'nt match !!";
+        return false;
+      }else{
+        password2Error.innerHTML = " ";
+        return true;
+      }
+    }
+
+    function validateForm(){
+      if(!validatePassword() || !validateRePassword()){
+        submitError.style.display='flex';
+        submitError.style.justifyContent='center';
+        submitError.innerHTML = 'Please Enter the password correct to submit';
+        setTimeout(()=>{
+          submitError.style.display='none';
+        },3000);
+        return false;
+      }
+    }
+</script>

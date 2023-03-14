@@ -1,0 +1,348 @@
+<div class="container emp-profile">
+    <form action="/profilePost" method="post" id="postForm">
+        <div class="row">
+            <div class="col-md-4">
+                
+                {{#if userProf.profilePic}}
+                    <div class="profile-img">
+                        <img id="profileImg" src="{{userProf.profilePic}}" alt="profilePic"/>
+                        <div class="file btn btn-lg btn-primary">
+                            Change Photo
+                            <input type="file" id="file-input" >
+                        </div>
+                    </div>
+                {{else}}
+                    <div class="profile-img">
+                        <img id="profileImg" src="/images/logo.png" alt="profilePic"/>
+                        <div class="file btn btn-lg btn-primary">
+                            Change Photo
+                            <input type="file" id="file-input" >
+                        </div>
+                    </div>
+                {{/if}}
+
+
+                {{!-- <input id="hidden-input" hidden> --}}
+                
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3" id="hideDiv">
+                    <img class="img-fluid" style="max-width: 50%;" id="cropImage" src=""/>
+                    <div class="btn btn-dark mt-3 d-none" id="saveBtn">crop image</div>
+                </div>
+                
+                <div class="profile-head">
+                            <h5>
+                                <input type="text" id="userNameMain" value="{{userProf.name}}" style="border: none; background-color: white;font-weight: bolder;font-size: larger;" disabled> 
+                            </h5>
+                            <h6>
+                                Our Most Valuable Customer
+                            </h6>
+                            <p class="proile-rating">RANKINGS : <span>8/10</span></p>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Addresses</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {{!-- submit and edit btn's --}}
+            <div class="col-md-2">
+                <span id="editBtn" class="btn btn-primary text-center text-dark" onclick="editProfile()" style="font-weight: bold;">Edit profile</span>
+            </div>
+            <div class="col-md-2">
+                <span onclick="return validateForm()" class="btn btn-primary text-center text-dark" style="font-weight: bold;">save changes</span>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-work">
+                    <hr>
+                    <a href="/orders"><h5 class="text-dark" style="font-weight: bold;">MY ORDERS</h5></a>
+                    <p>ACCOUNT &nbsp;SETTINGS</p>
+                    <a href="">Profile Information</a><br>
+                    <a href="/manageAddress">Manage Addresses</a><br>
+                    <a href="">Pan Card Information</a>
+
+                    <p>MY&nbsp;STUFF</p>
+                    <a href="/wishList">My Wishlist</a><br/>
+                    <a href="/cart">My Cart</a><br/>
+                    {{!-- <a href="">My Coupens</a><br/>
+                    <a href="">WooCommerce</a><br/>
+                    <a href="">PHP, .Net</a><br/> --}}
+
+                </div>
+            </div>
+
+            {{!-- center section --}}
+            <div class="col-md-8">
+                <div class="tab-content profile-tab" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>User Id</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="user-id" name="user-id" value="{{userProf._id}}" disabled style="border: none; background-color: white;">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="edit-field" name="userName" id="userName" value="{{userProf.name}}" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="edit-field" name="email" value="{{userProf.email}}" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Phone</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="tel" class="edit-field" name="mobile" value="{{userProf.mobile}}" disabled>
+                            </div>
+                        </div>
+
+                        {{!-- CHANGE PASSWORD --}}
+                        <a class="nav-link mt-3" style="color: black;font-weight: bold;">Change Password</a><hr>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Old Password</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="edit-field" name="oldPassword" placeholder="old password" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>New Password</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="edit-field" id="newPassword" name="newPassword" onkeyup="validatePassword()" placeholder="new password" disabled><br>
+                                <label class="text-danger" id="newPassErr"></label>
+                            </div>
+                            
+                        </div>
+                        <div class="d-flex justify-content-center col-md-10">
+                            <label class="text-danger mt-3">{{passErr}}</label>
+                            <label class="text-danger mt-3" id="submitError"></label>
+                            {{!-- <span class="btn btn-primary mx-auto mt-3">change password</span> --}}
+                        </div>
+
+                        {{!-- <div class="row">
+                            <div class="col-md-6">
+                                <label>Profession</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>Web Developer and Designer</p>
+                            </div>
+                        </div> --}}
+                    </div>
+
+                    {{!-- 2nd page on the section --}}
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Active Address</label>
+                                    </div>
+                                    {{#if address}}
+                                    <div class="col-md-6">
+                                        {{!-- selected address   --}}
+                                        <b>{{address.name}}</b>, <br> 
+                                            {{address.address}}, <br>
+                                            {{address.city}}, {{address.state}}, <br> 
+                                            Zipcode: {{address.zipcode}}, Mobile: {{address.mobile}}
+                                    </div>
+                                    {{else}}
+                                    <div class="col-md-6">
+                                        {{!-- selected address   --}}
+                                        No address added
+                                    </div>
+                                    {{/if}}
+                                </div>
+                                {{!-- <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Hourly Rate</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>10$/hr</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Total Projects</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>230</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>English Level</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>Expert</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Availability</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>6 months</p>
+                                    </div>
+                                </div> --}}
+                        <div class="row pt-4">
+                            <div class="col-md-12">
+                                {{!-- <label>Your Bio</label><br/> --}}
+                                <a href="/manageAddress"><p>Manage Addresses</p></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{!-- <input type="submit" class="btn btn-primary"> --}}
+    </form>           
+</div>
+
+{{!-- <script src="/user-js/cropperProPic.js"></script> --}}
+
+<script>
+    //validation for change password
+    var newPassErr = document.getElementById('newPassErr');
+    var submitError = document.getElementById('submitError');
+
+    function validatePassword(){
+        var newPassword = document.getElementById('newPassword').value;
+        var passChecker = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+        console.log(newPassword);
+        if(newPassword.length<1){
+            return true;
+        }
+        if(newPassword.match(passChecker)){
+            newPassErr.innerHTML = '';
+            return true;
+        }else{
+            newPassErr.innerHTML = 'required 6-20 character,1 numeric digit, 1 uppercase and 1 lowercase';
+            return false;
+        }
+    }
+    
+    function validateForm(){
+        if(!validatePassword()){
+            //submitError.style.display='flex';
+            //submitError.style.justifyContent='center';
+            submitError.innerHTML = 'Please fix all errors to submit';
+            setTimeout(()=>{
+                submitError.style.display='none';
+            },3000);
+            return false;
+        }else{
+            submit();
+        }
+    }     
+
+</script>
+
+<script>
+    function editProfile(){
+        const editClass = document.querySelectorAll('.edit-field');
+        editClass.forEach(element => {
+          element.removeAttribute('disabled');
+        });
+        
+    }
+    function submit(){
+        const editClass = document.querySelectorAll('.edit-field');
+        editClass.forEach(element => {
+          element.removeAttribute('disabled');
+        });
+        const field = document.getElementById('user-id');
+        
+        document.getElementById('postForm').submit();
+    }
+
+</script>
+
+
+{{!-- profile picture update --}}
+<script>
+    let image = document.getElementById('cropImage');
+    let fileInput = document.getElementById('file-input');
+
+    fileInput.addEventListener('change', (event) => {
+      document.getElementById('saveBtn').classList.replace('d-none', 'd-block');
+      let file = event.target.files[0];
+      let fileUrl = URL.createObjectURL(file);
+      image.src = fileUrl;
+
+      let cropper = new Cropper(image, {
+        aspectRatio: 0,
+        viewMode: 0,
+      });
+
+      document.getElementById('saveBtn').addEventListener('click', () => {
+        let croppedCanvas = cropper.getCroppedCanvas();
+        let croppedImage = croppedCanvas.toDataURL();
+
+        document.getElementById('saveBtn').classList.replace('d-block', 'd-none');
+        document.querySelector('.cropper-container').classList.add('d-none');
+        
+        croppedCanvas.toBlob((blob) => {
+          let formData = new FormData();
+          formData.append('file', blob, 'image.jpg');
+
+          axios.post('/upload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((response)=>{
+            document.getElementById('profileImg').setAttribute('src', croppedImage);
+            Toastify({
+				text: "profile picture updated",
+				duration: 3000,
+				gravity: "top",
+				position: "center",
+				style: {
+					background: "linear-gradient(to right, #fe6d00, #ffb900)",
+				},
+			}).showToast();
+			setTimeout(()=>{
+				location.reload();
+			}, 850);
+          })
+          .catch((err)=>{
+            Toastify({
+				text: "profile picture not updated",
+				duration: 3000,
+				gravity: "top",
+				position: "center",
+				style: {
+					background: "linear-gradient(to right, #fe6d00, #ffb900)",
+				},
+			}).showToast();
+			setTimeout(()=>{
+				location.reload();
+			}, 850);
+            //console.log(err);
+          })
+        }, 'image/jpeg', 0.5);
+      });
+    });
+
+</script>

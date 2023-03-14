@@ -1,0 +1,170 @@
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_6.jpg');">
+  <div class="container">
+    <div class="row no-gutters slider-text align-items-center justify-content-center">
+      <div class="col-md-9 ftco-animate text-center">
+      	<p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span><a href="/shop">&nbsp;Products </a>&nbsp; Cart</span></p>
+        <h1 class="mb-0 bread">Collection Cart</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<section class="ftco-section ftco-cart">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 ftco-animate">
+				<div class="cart-list">
+					<table class="table">
+					    <thead class="thead-primary">
+					      <tr class="text-center">
+					        <th>&nbsp;</th>
+					        <th>&nbsp;</th>
+					        <th>Product</th>
+					        <th>Price</th>
+					        <th>Quantity</th>
+					        <th>Total</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+						{{#each products}}
+					    	<tr class="text-center">
+					    	    <td class="product-remove"><a class="deleteProduct" style="cursor: pointer;" data-product="{{this.product._id}}"><span class="ion-ios-close"></span></a></td>
+
+					    	    <td class="image-prod"><a href="/product-single-view/{{this.product._id}}"><div class="img" style="background-image:url({{this.product.images.[0]}});"></div></a></td>
+
+					    	    <td class="product-name">
+									<a href="/product-single-view/{{this.product._id}}">
+					    	    	<h3>{{this.product.name}}</h3>
+					    	    	<p style="color: rgb(137, 137, 137);">{{this.product.description}}</p>
+									</a>
+					    	    </td>
+
+					    	    <td class="price" id="discountPrice">Rs.{{this.product.discountPrice}}</td>
+
+					    	    <td class="quantity">
+					    	    	<div class="input-group mb-3">
+										<div class="mb-0">
+											<span class="btn bg-transparent mr-2 text-center mt-2" id="minus" onclick="changeQuantity('{{this.product._id}}', -1)" style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span>
+										</div>
+				        	     		<input type="text" name="quantity" disabled id="{{this.product._id}}" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
+										<div class="mb-0">
+											<span class="btn btn-dark bg-transparent ml-2 text-center mt-2" onclick="changeQuantity('{{this.product._id}}', 1)" style="color: black;border-color: rgb(192, 192, 192);">&nbsp;+&nbsp;</span>
+										</div>
+				        	  		</div>
+				        	  </td>
+
+					    	    <td class="total" id="{{this.product._id}}total">{{mathMulti this.product.discountPrice this.quantity}}</td>
+					    	</tr>
+						{{/each}}
+					    </tbody>
+					  </table>
+				  </div>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
+				<div class="cart-total mb-3">
+					<h3>Cart Totals</h3>
+					<p class="d-flex">
+						<span>Subtotal</span>
+						<span id="subTotal">Rs.{{total}}</span>
+					</p>
+					<p class="d-flex">
+						<span>Delivery</span>
+						<span id="delivery" >Rs.0.00</span>
+					</p>
+					<p class="d-flex">
+						<span>Discount</span>
+						<span id="discount">Rs.100.00</span>
+					</p>
+					<hr>
+					<p class="d-flex total-price">
+						<span>Total</span>
+						<span id="cartTotal">Rs.&nbsp;{{subDiscount total}}</span>
+					</p>
+				</div>
+				<p class="text-center"><a href="/checkout" id="forToast" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	window.onload = function() {
+	  //const subTotal = parseFloat(document.getElementById('subTotal').innerText);
+	  const subTotal1 = document.getElementById('subTotal');
+	  const subTotal = subTotal1.innerHTML;
+	  console.log(subTotal1.innerHTML);
+	  console.log(subTotal);
+	  //console.log(subTotal);
+	  if (subTotal == 0) {
+	    document.getElementById('forToast').setAttribute("hidden", true);
+	  }
+	}
+
+</script>
+
+<script>
+
+	const changeQuantity = (proId, count)=>{
+		const quantity = Number(document.getElementById(proId).value);
+		const res = axios({
+			method : 'POST',
+			url: '/cart/changeCartQuantity',
+			data : {
+				productId: proId,
+				count : count,
+				quantity : quantity,
+			}
+		}).then((response)=>{
+			if(response.data.status){
+				document.getElementById(proId).value = quantity+count;
+				document.getElementById(`${proId}total`).innerHTML = response.data.total.toFixed(2);
+				document.getElementById('subTotal').innerHTML = response.data.subTotal;
+				document.getElementById('cartTotal').innerHTML = response.data.cartTotal;
+			}
+		});
+	}
+
+	const deleteProduct = async(productId)=>{
+		const res = await axios({
+			method: 'GET', url: `/deleteFromCart/${productId}`
+		});
+		try{
+			if(res.data.status === "success"){
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+				setTimeout(()=>{
+					location.reload();
+				}, 850);
+			}else{
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+				location.assign('/login')
+			}
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	document.querySelectorAll('.deleteProduct').forEach(item => {
+	  item.addEventListener('click', function(e) {
+	    e.preventDefault();
+	    deleteProduct(this.dataset.product);
+	  });
+	});
+
+</script>

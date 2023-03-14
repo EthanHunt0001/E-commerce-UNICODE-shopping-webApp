@@ -1,0 +1,100 @@
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_6.jpg');">
+  <div class="container">
+    <div class="row no-gutters slider-text align-items-center justify-content-center">
+      <div class="col-md-9 ftco-animate text-center">
+      	<p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span><a href="/shop">&nbsp;Products </a>&nbsp; WishList</span></p>
+        <h1 class="mb-0 bread">Collection WishList</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<section class="ftco-section ftco-cart">
+	<div class="container">
+	    <div class="row">
+	    	<div class="col-md-12 ftco-animate">
+	    		<div class="cart-list">
+	    			<table class="table">
+	    			    <thead class="thead-primary">
+	    			      <tr class="text-center">
+	    			        <th>&nbsp;</th>
+	    			        <th>&nbsp;</th>
+	    			        <th>Product</th>
+	    			        <th>Price</th>
+	    			        {{!-- <th>Quantity</th> --}}
+	    			        {{!-- <th>Total</th> --}}
+	    			      </tr>
+	    			    </thead>
+	    			    <tbody>
+	    				    {{#each products}}
+	    			        	<tr class="text-center">
+	    			        	    <td class="product-remove"><a class="deleteProduct" data-product="{{this._id}}" style="cursor: pointer;"><span class="ion-ios-close"></span></a></td>
+	    			        	    <td class="image-prod"><a href="/product-single-view/{{this._id}}"><div class="img" style="background-image:url({{this.images.[0]}});"></div></a></td>
+	    			        	    <td class="product-name">
+	                                    <a href="/product-single-view/{{this._id}}">
+	    			        	    	<h3>{{this.name}}</h3>
+	    			        	    	<p style="color: rgb(137, 137, 137);">{{this.description}}</p>
+	                                    </a>
+	    			        	    </td>
+	    			        	    <td class="price" id="discountPrice">Rs.{{this.discountPrice}}</td>
+	    			        	    {{!-- <td class="quantity">
+	    			        	    	<div class="input-group mb-3">
+	    		            	     	    <input type="text" name="quantity" id="quantity" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
+	    		            	  	    </div>
+	    		            	    </td> --}}
+	    			        	    {{!-- <td class="total" id="result">{{mathMulti this.product.discountPrice this.quantity}}</td> --}}
+	    			        	</tr>
+	    				    {{/each}}
+	    			    </tbody>
+	    			</table>
+	    		</div>
+	    	</div>
+	    </div>
+	</div>
+</section>
+
+<script>
+
+	const deleteProduct = async(productId)=>{
+		try{
+			const res = await axios({
+				method: 'GET', url: `/deleteFromWishList/${productId}`
+			});
+
+			if(res.data.status === "success"){
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+				setTimeout(()=>{
+					location.reload();
+				}, 850);
+			}else{
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+				location.assign('/login')
+			}
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	document.querySelectorAll('.deleteProduct').forEach(item=>{
+		item.addEventListener('click', function(e){
+			e.preventDefault();
+			deleteProduct(this.dataset.product);
+		});
+	});
+
+</script>

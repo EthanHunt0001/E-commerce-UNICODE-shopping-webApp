@@ -1,0 +1,29 @@
+<div class="container bg-white mt-3">
+    <div class="row">
+        <div class="col-lg-6 mt-3">
+            <h2 class="fw-bold">EDIT USERS</h2>
+            <form action="/admin/users/edit-user/{{userDetails._id}}" style="margin-top: 2em;" method="post">
+                <div class="mb-3">
+                  <label for="name" class="form-label">Name</label>
+                  <input type="text" class="form-control" name="name" aria-describedby="emailHelp" value="{{userDetails.name}}">
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="text" class="form-control" name="email" value="{{userDetails.email}}">
+                </div>
+                <div class="mb-3">
+                  <label for="mobile" class="form-label">Mobile Number</label>
+                  <input type="number" class="form-control" name="mobile" value="{{userDetails.mobile}}">
+                </div>
+                {{!-- <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="text" class="form-control" name="password" value="{{user.password}}">
+                </div> --}}
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

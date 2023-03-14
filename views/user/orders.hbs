@@ -1,0 +1,98 @@
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_6.jpg');">
+  <div class="container">
+    <div class="row no-gutters slider-text align-items-center justify-content-center">
+      <div class="col-md-9 ftco-animate text-center">
+      	<p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span><a href="/shop">&nbsp;Products </a>&nbsp; Orders</span></p>
+        <h1 class="mb-0 bread">Collection Orders</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .disabled {
+    pointer-events: none;
+    opacity: 1.9; /* optional - to indicate the element is disabled */
+  }
+  .cancelOrder:hover {
+    background-color: white;
+    color: red;
+  }
+</style>
+
+<section class="container bg-white mt-3" style="overflow-x: hidden;">
+    
+    <div class="text-center py-5">
+      <div class="row table-responsive col-lg-12">
+        <table class="table table-bordered" style="width:100%" id="productsTable">
+          <thead class="text-dark">
+            <tr>
+              <th style="font-weight: bold;" scope="col">Date</th>
+              <th style="font-weight: bold;" scope="col">Address</th>
+              <th style="font-weight: bold;" scope="col">Pincode</th>
+              <th style="font-weight: bold;" scope="col">Mobile</th>
+              <th style="font-weight: bold;" scope="col">Payment</th>
+              <th style="font-weight: bold;" scope="col">Status</th>
+              <th style="font-weight: bold;" scope="col">View</th>
+              <th style="font-weight: bold;" scope="col">Cancel</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each orders}}
+                <tr>
+                    <th class="text-dark">{{this.date}}</th>
+                    <th class="text-dark">{{this.deliveryDetails.address}}</th>
+                    <th class="text-dark">{{this.deliveryDetails.pincode}}</th>
+                    <th class="text-dark">{{this.deliveryDetails.mobile}}</th>
+                    <th class="text-dark">{{this.paymentMethod}}</th>
+                    <th class="text-dark">{{this.status}}</th>
+                    {{!-- <td><img style="width: 40px;height:40px" src="{{this.images.[0]}}"></td> --}}
+                    <th><a href="/view/products/{{this._id}}" class="btn btn-primary">view products</a> &nbsp;</th>
+                    {{#if this.isCancelled}}
+                      <th><a href="" class="btn btn-danger disabled">cancel order</a> &nbsp;</th>
+                    {{else}}
+                      <th><a href="" class="btn btn-danger cancelOrder" style="color: black;" data-toggle="modal" data-target="#cancel{{this._id}}">cancel order</a> &nbsp;</th>
+                    {{/if}}
+                    {{!-- <td><a class="btn btn-danger" data-toggle="modal" data-target="#unlist{{this._id}}">Unlist product</a></td> --}}
+
+                </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+</section>
+
+
+{{!-- modals for cancel-order confirmation --}}
+
+{{#each orders}}
+  <div class="modal fade" id="cancel{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Do you want to cancel this order?
+        </div>
+        <div class="modal-footer">
+          <a href=""><button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button></a>
+          <a href="/cancelOrder/{{this._id}}"><button type="button" class="btn btn-primary">confirm</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/each}}
+
+
+{{!-- <script>
+
+  //$(function () {
+  //  $('#productsTable').DataTable();
+  });
+
+</script> --}}

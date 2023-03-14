@@ -1,0 +1,49 @@
+<div class="container bg-white mt-3">
+    <div class="row">
+        <div class="col-lg-6 mt-3">
+            <h2 class="fw-bold">ADD BANNER</h2>
+            <form action="/admin/add-banner" style="margin-top: 2em;" method="post" enctype="multipart/form-data">
+                {{!-- <div class="mb-3">
+                  <label for="name" class="form-label">Banner Name</label>
+                  <input type="text" class="form-control" name="name" required>
+                </div> --}}
+                <div class="mb-3">
+                  <label for="name" class="form-label">Banner Heading</label>
+                  <input type="text" class="form-control" name="heading" required>
+                </div>
+                <div class="mb-3">
+                  <label for="name" class="form-label">Banner Bold-Heading</label>
+                  <input type="text" class="form-control" name="boldHeading" required>
+                </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label">Description</label>
+                  <input type="text" class="form-control" name="description" required>
+                </div>
+                <div class="mb-3">
+                  <label for="image" class="form-label">Image</label>
+                  <input type="file" id="fileInput" class="form-control" name="image" required>
+                  <img src="" hidden id="bannerImg" class="mt-2" style="width: 80px;height: 80px;margin-left: 2rem;" alt="">
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const bannerImg = document.getElementById('bannerImg');
+
+    fileInput.addEventListener('change', ()=>{
+      let file = fileInput.files[0];
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = ()=>{
+        bannerImg.removeAttribute('hidden');
+        bannerImg.setAttribute('src', reader.result);
+      }
+    });
+
+</script>

@@ -1,0 +1,140 @@
+<div class="container emp-profile pb-2">
+    <div class="d-flex justify-content-between">
+        <h4 style="font-size: larger;font-weight: bolder;">Manage Address</h4>
+        <a href="/userProfile"><span class="ml-auto btn btn-primary"> back to profile </span></a>
+    </div>
+    
+    <div class="row py-3">
+        <div class="col-md-12">
+            {{#each addresses}}
+            <div class="d-flex mb-3">
+                <input type="radio" id="{{this._id}}" class="activeAddress mr-3" name="address" data-address="{{this._id}}">
+                <div class="border p-2" style="color: rgb(80, 80, 80);">
+                    <b>{{this.name}}</b>, <br> 
+                    {{this.address}}, <br>
+                    {{this.city}}, {{this.state}}, <br> 
+                    Zipcode: {{this.zipcode}}, Mobile: {{this.mobile}}
+                </div>
+            </div>
+            {{/each}}
+            {{!-- <div class="d-flex">
+                <input type="radio" name="address" value="" class="mr-3">
+                <div class="border p-2">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus quas excepturi tenetur exercitationem voluptatem consectetur nam soluta laudantium officia consequatur! Aut excepturi rerum inventore voluptatibus eligendi? Suscipit illo vel rerum.
+                </div>
+            </div> --}}
+
+        </div>
+    </div>
+    <div class="row py-3 pt-5">
+        <a class="text-primary" data-toggle="modal" data-target=".bd-example-modal-lg" style="font-weight: bold;cursor: pointer;">Add a new Address</a>
+    </div>
+</div>
+
+{{!-- add-new-address MODAL --}}
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="p-4">
+          <form action="/addressPost" method="post">
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="inputEmail4">Name</label>
+                <input type="name" class="form-control" name="name" id="inputEmail4" placeholder="Name">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="inputPassword4">Mobile Number</label>
+                <input type="text" maxlength="10" class="form-control" name="mobile" id="inputPassword4" placeholder="Mobile Number">
+              </div>
+            </div>
+            <label for="">Address</label>
+            <div class="form-group">
+                <textarea name="address" class="form-control" id="address" cols="50" placeholder="Address (Area and Street)" rows="5"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="inputCity">City</label>
+                <input type="text" name="city" class="form-control" placeholder="city" id="inputCity">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputState">State</label>
+                <input type="text" class="form-control" placeholder="State" name="state">
+                <!-- <select id="inputState" class="form-control">
+                  <option selected>Choose...</option>
+                  <option>...</option>
+                </select> -->
+              </div>
+              <div class="form-group col-md-2">
+                <label for="inputZip">Zip Code</label>
+                <input type="text" class="form-control" name="zipcode" placeholder="Zip Code" id="inputZip">
+              </div>
+            </div>
+            <label for="type">Address Type</label>
+            <div class="form-row text-dark">
+                <input type="radio" class="mr-1" name="type" value="home">Home &nbsp;&nbsp;&nbsp;
+                <input type="radio" class="mr-1" name="type" value="work">Work
+            </div>
+            <!-- <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="gridCheck">
+                <label class="form-check-label" for="gridCheck">
+                  Check me out
+                </label>
+              </div>
+            </div> -->
+            <div class="text-center mt-2">
+                <button type="submit" class="btn btn-primary">SUBMIT</button>
+            </div>
+            
+          </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    const changeActive = async(addressId)=>{
+        const res = await axios({
+            method: "GET",
+            url: `/changeActiveAddress/${addressId}`
+        });
+        try{
+			    if(res.data.status === "success"){
+            const radio = document.getElementById(addressId);
+            radio.checked = true;
+
+			    	Toastify({
+			    		text: res.data.message,
+			    		duration: 3000,
+			    		gravity: "top",
+			    		position: "center",
+			    		style: {
+			    			background: "linear-gradient(to right, #fe6d00, #ffb900)",
+			    		},
+			    	}).showToast();
+			    }else{
+			    	Toastify({
+			    		text: res.data.message,
+			    		duration: 3000,
+			    		gravity: "top",
+			    		position: "center",
+			    		style: {
+			    			background: "linear-gradient(to right, #fe6d00, #ffb900)",
+			    		},
+			    	}).showToast();
+			    }
+		    }catch(err){
+		    	console.log(err);
+		    }
+    }
+
+    document.querySelectorAll('.activeAddress').forEach(item => {
+	  item.addEventListener('click', function(e) {
+	    e.preventDefault();
+	    changeActive(this.dataset.address);
+	  });
+	});
+
+</script>

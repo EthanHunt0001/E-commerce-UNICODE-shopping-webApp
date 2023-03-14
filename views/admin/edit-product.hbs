@@ -1,0 +1,108 @@
+<div class="container bg-white mt-3">
+    <div class="row">
+        <div class="col-lg-6 mt-3">
+            <h2 class="fw-bold">EDIT PRODUCTS</h2>
+            <form action="/admin/editProduct/{{product._id}}" style="margin-top: 2em;" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="brand" class="form-label">Brand</label>
+                  <input type="text" class="form-control" value="{{product.brand}}" name="brand" aria-describedby="emailHelp" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="category" class="form-label">category</label>
+                  <select class="form-control" id="selectOption" name="category">
+                    <option value="{{category._id}}" hidden> {{category.name}} </option>
+                    {{#each categories}}
+                      <option value="{{this._id}}"> {{this.name}} </option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="name" class="form-label">Model Name</label>
+                  <input type="text" class="form-control" name="name" aria-describedby="emailHelp" value="{{product.name}}">
+                </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label">Description</label>
+                  <input type="text" class="form-control" name="description" value="{{product.description}}">
+                </div>
+                <div class="mb-3">
+                  <label for="lgdescription" class="form-label">Detail Description</label>
+                  <input type="text" class="form-control" name="lgdescription" value="{{product.lgdescription}}">
+                </div>
+                <div class="mb-3">
+                  <label for="my-select">size :</label>
+                  <select class="mul-select form-control" id="my-select" multiple="true" name="size">
+                    <option id="prev" value="{{product.size}}">{{product.size}}</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="price" class="form-label">Price</label>
+                  <input type="text" class="form-control" value="{{product.price}}" id="price" name="price" required>
+                </div>
+                <div class="mb-3">
+                  <label for="discountPerc" class="form-label">Discount in percentage</label>
+                  <input type="text" id="discountPerc" value="{{product.discountPerc}}" class="form-control" name="discountPerc">
+                </div>
+                <div class="mb-3">
+                  <label for="discountPrice" class="form-label">Discount price</label>
+                  <input id="discountPrice" style="color: black;border: none;" value="{{product.discountPrice}}" name="discountPrice" disabled>
+                </div>
+
+                <label for="image" class="form-label">Image : </label>
+                {{#each product.images}}
+                <div class="mb-3" style="display: inline-block;">
+                    <img src="{{this}}" style="width: 80px;height: 80px;margin-left: 2rem;"><br><br>
+                </div>
+                {{/each}}
+                <input type="file" class="form-control" name="image" multiple>
+
+                {{!-- <input type="text" class="form-control d-none" name="listingStatus" value="true"> --}}
+
+                <div class="text-center mt-4">
+                    <button type="submit" onclick="enableInput()" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+
+
+{{!-- calculating price appropiate for discount percentage --}}
+<script>
+  const num1 = document.getElementById("price");
+  const num2 = document.getElementById("discountPerc");
+  const result = document.getElementById("discountPrice");
+
+  function performCalculation() {
+    const value1 = parseFloat(num1.value);
+    const value2 = parseFloat(num2.value);
+    const sum = value1 - (value1 * value2)/100;
+    result.value = sum;
+  }
+
+  num1.addEventListener("input", performCalculation);
+  num2.addEventListener("input", performCalculation);
+
+  function enableInput() {
+      result.disabled = false;
+  }
+</script>
+
+{{!-- size multiselect --}}
+<script>
+    var prev = document.getElementById('prev').value;
+    $(document).ready(function(){
+      $(".mul-select").select2({
+          placeholder: prev, //placeholder
+          tags: true,
+          tokenSeparators: ['/',',',';'," "] 
+      });
+    })
+</script>
