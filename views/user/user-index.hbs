@@ -1,5 +1,14 @@
-    <section id="home-section" class="hero">
-		  <div class="home-slider js-fullheight owl-carousel">
+<style>
+	.disabled {
+		pointer-events: none;
+	}
+	.shopBtn {
+		pointer-events: visible;
+	}
+</style>
+
+	<section id="home-section" class="hero">
+		<div class="home-slider js-fullheight owl-carousel disabled">
 	      <div class="slider-item js-fullheight">
 	      	<div class="overlay"></div>
 	        <div class="container-fluid p-0">
@@ -14,7 +23,7 @@
 				            <h1 class="mb-4 mt-3">{{banner.heading}} <br><span>{{banner.boldHeading}}</span></h1>
 				            <p>{{banner.description}}</p>
 				            
-				            <p><a href="/shop" class="btn btn-primary px-5 py-3 mt-3">Discover Now</a></p>
+				            <p class="shopBtn"><a href="/shop" class="btn btn-primary px-5 py-3 mt-3">Discover Now</a></p>
 				          </div>
 		            </div>
 		          </div>
@@ -627,4 +636,3 @@
 	
 
 </script>
-

@@ -10,7 +10,8 @@ module.exports = {
     },
     userVerifyLogin : async(req, res, next)=>{
         if(req.session.loggedIn){
-            req.session.userDetails = await userHelpers.getUser(req.session.userDetails._id);
+            const userId = req.session.userDetails._id;
+            req.session.userDetails = await userHelpers.getUser(userId);
             next();
         }else{
             res.redirect('/login'); 

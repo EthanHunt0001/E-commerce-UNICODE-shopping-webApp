@@ -70,6 +70,8 @@ router.get('/checkout', verifyLogin.userVerifyLogin, userControllers.renderCheck
 
 router.post('/placeOrder', verifyLogin.userVerifyLogin, userControllers.placeOrder);
 
+router.post('/verifyPayment', verifyLogin.userVerifyLogin, userControllers.verifyPayment);
+
 router.get('/orders', verifyLogin.userVerifyLogin, userControllers.renderOrders);
 
 router.get('/view/products/:id', verifyLogin.userVerifyLogin, userControllers.renderOrderedProducts);

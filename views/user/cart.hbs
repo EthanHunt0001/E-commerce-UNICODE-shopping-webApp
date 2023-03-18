@@ -66,11 +66,11 @@
 					<h3>Cart Totals</h3>
 					<p class="d-flex">
 						<span>Subtotal</span>
-						<span id="subTotal">Rs.{{total}}</span>
+						<span id="subTotal" data-price="{{total}}">Rs.{{total}}</span>
 					</p>
 					<p class="d-flex">
 						<span>Delivery</span>
-						<span id="delivery" >Rs.0.00</span>
+						<span id="delivery">Rs.0.00</span>
 					</p>
 					<p class="d-flex">
 						<span>Discount</span>
@@ -92,10 +92,9 @@
 	window.onload = function() {
 	  //const subTotal = parseFloat(document.getElementById('subTotal').innerText);
 	  const subTotal1 = document.getElementById('subTotal');
-	  const subTotal = subTotal1.innerHTML;
+	  const subTotal = subTotal1.dataset.price;
 	  console.log(subTotal1.innerHTML);
 	  console.log(subTotal);
-	  //console.log(subTotal);
 	  if (subTotal == 0) {
 	    document.getElementById('forToast').setAttribute("hidden", true);
 	  }

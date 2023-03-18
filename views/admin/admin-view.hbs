@@ -5,7 +5,7 @@
     </div>
     
     <div class="text-center">
-      <div class="row table-responsive col-lg-12">
+      <div class="row table-responsive col-lg-12" >
         <table class="table" style="width:100%" id="productsTable">
           <thead>
             <tr>
@@ -31,7 +31,7 @@
                   {{#if this.listingStatus}}
                     <td><a class="btn btn-danger" data-toggle="modal" data-target="#unlist{{this._id}}">Unlist product</a></td>
                   {{else}}
-                    <td><a class="btn btn-success" data-toggle="modal" data-target="#list{{this._id}}">List product</a></td>
+                    <td><a  class="btn btn-success" data-toggle="modal" data-target="#list{{this._id}}">List product</a></td>
                   {{/if}}
                 </tr>
             {{/each}}
@@ -59,7 +59,7 @@
         </div>
         <div class="modal-footer">
           <a href=""><button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button></a>
-          <a href="/admin/unlist/{{this._id}}"><button type="button" class="btn btn-primary">confirm</button></a>
+          <a onclick="unList('{{this._id}}')"><button type="button" data-dismiss="modal" class="btn btn-primary">confirm</button></a>
         </div>
       </div>
     </div>
@@ -82,7 +82,7 @@
         </div>
         <div class="modal-footer">
           <a href=""><button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button></a>
-          <a href="/admin/list/{{this._id}}"><button type="button" class="btn btn-primary">confirm</button></a>
+          <a onclick="list('{{this._id}}')"><button type="button" data-dismiss="modal" class="btn btn-primary">confirm</button></a>
         </div>
       </div>
     </div>
@@ -96,4 +96,78 @@
     $('#productsTable').DataTable();
   });
 
+</script>
+
+<script>
+  const unList = async(proId)=>{
+    const res = await axios({
+			method: 'GET', url: `/admin/unlist/${proId}`
+		});
+    try{
+      if(res.data.status==="success"){
+        //$( "#productsTable" ).load(window.location.href + " #productsTable" );
+        Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+        setTimeout(()=>{
+					location.reload();
+				}, 850);
+      }else{
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+				location.assign('/login')
+			}
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const list = async(proId)=>{
+    const res = await axios({
+			method: 'GET', url: `/admin/list/${proId}`
+		});
+    try{
+      if(res.data.status==="success"){
+        //$( "#productsTable" ).load(window.location.href + " #productsTable" );
+        Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+        setTimeout(()=>{
+					location.reload();
+				}, 850);
+      }else{
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+				location.assign('/login')
+			}
+    }catch(err){
+      console.log(err);
+    }
+  }
 </script>

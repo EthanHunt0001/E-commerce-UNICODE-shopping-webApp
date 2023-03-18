@@ -48,13 +48,19 @@ module.exports = {
     },
     addProductsPost : (req,res)=>{
       try{
+        if(req.body.size){
+          let temp = new Array();
+          temp = req.body.size.split(',');
+          req.body.size = temp;
+        }
         productHelpers.addProduct(req.body,async (id)=>{
           let imgUrls = [];
+          console.log(req.files.length);
           for(let i=0;i<req.files.length;i++){
             const result = await cloudinary.uploader.upload(req.files[i].path);
             imgUrls.push(result.url);
           }
-          // console.log(imgUrls);
+          console.log(imgUrls);
           if(imgUrls.length!==0){
             productHelpers.addProductImages(id, imgUrls);
           }
@@ -62,19 +68,28 @@ module.exports = {
       }catch(err){
         console.log(err);
       }finally{
-        res.redirect('/admin/add-product');
+        res.json({
+          status:"success",
+          message: "product added to cart"
+        })
       }
     },
     renderListProduct : (req,res)=>{
         let proId = req.params.id;
-        productHelpers.listProduct(proId).then((response)=>{
-          res.redirect('/admin/admin-view');
+        productHelpers.listProduct(proId).then(()=>{
+          res.json({
+            status : "success",
+            message : "product listed"
+          })
         })
     },
     rednerUnListProduct : (req,res)=>{
         let proId = req.params.id;
-        productHelpers.unListProduct(proId).then((response)=>{
-          res.redirect('/admin/admin-view');
+        productHelpers.unListProduct(proId).then(()=>{
+          res.json({
+            status : "success",
+            message : "product unlisted"
+          })
         })
     },
     renderEditProduct : async(req,res)=>{
@@ -94,7 +109,15 @@ module.exports = {
     },
     editProductPost : (req,res)=>{
       let proId = req.params.id;
-      productHelpers.updateProduct(proId,req.body).then(async(response)=>{
+      console.log(req);
+      console.log(`paramaeter Id:  ${proId}`);
+      console.log(req.body);
+      if(req.body.size && typeof(String)){
+        let temp = new Array();
+        temp = req.body.size.split(',');
+        req.body.size = temp;
+      }
+      productHelpers.updateProduct(proId,req.body).then(async()=>{
         try{
           let imgUrls = [];
           for(let i=0;i<req.files.length;i++){
@@ -108,7 +131,10 @@ module.exports = {
         }catch (err){
           console.log(err);
         }finally{
-          res.redirect('/admin/admin-view');
+          res.json({
+            status: "success",
+            message: "product edited successfully"
+          })
         } 
       })
     },
@@ -146,7 +172,8 @@ module.exports = {
         });
     },
     adminLogout : (req,res)=>{
-        req.session.destroy();
+        // req.session.destroy();
+        req.session.adminLoggedIn = false;
         res.redirect('/admin/login');
     },
     renderDashboard : (req,res)=>{
@@ -198,7 +225,7 @@ module.exports = {
         order.isCancelled = order.status === "cancelled"||order.status==="delivered"? true : false;
         order.isShipped = order.status==="shipped"?true:false;
         order.isDelivered = order.status==="delivered"?true:false;
-        order.isPlaced = order.status==="placed"?true:false;
+        order.isPlaced = order.status==="placed"||order.status==="pending"?true:false;
       });
       // console.log(orders);
       res.render('admin/admin-orders', {admin:true, orders, adminName:req.session.adminName});

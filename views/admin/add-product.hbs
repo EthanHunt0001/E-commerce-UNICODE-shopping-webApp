@@ -1,11 +1,34 @@
+<style>
+  .image-container img {
+      width: 10vw;
+      height: 35vh;
+      max-width: 10vw;
+      min-width: 10vw;
+      min-height: 35vh;
+      max-height: 35vh;
+      /* height: 200px;  */
+    }
+    .image-container{
+      max-height: 10vw;
+      min-width: 10vw;
+      max-width: 15vw;
+    }
+    img{
+      max-height: 20vh;
+      min-height: 20vh;
+      max-width: 10vw;
+      min-width: 10vw;
+    }
+</style>
+
 <div class="container bg-white mt-3">
     <div class="row">
         <div class="col-lg-6 mt-3">
             <h2 class="fw-bold">ADD PRODUCTS</h2>
-            <form action="/admin/add-product" style="margin-top: 2em;" method="post" enctype="multipart/form-data">
+            <form style="margin-top: 2em;" id="form">
                 <div class="mb-3">
                   <label for="brand" class="form-label">Brand</label>
-                  <input type="text" class="form-control" name="brand" aria-describedby="emailHelp" required>
+                  <input type="text" class="form-control" id="brand" name="brand" aria-describedby="emailHelp" required>
                 </div>
                 <div class="mb-3">
                   <label for="category" class="form-label">category</label>
@@ -20,19 +43,19 @@
                 </div>
                 <div class="mb-3">
                   <label for="name" class="form-label">Model Name</label>
-                  <input type="text" class="form-control" name="name" aria-describedby="emailHelp" required>
+                  <input type="text" class="form-control" id="name" aria-describedby="emailHelp" required>
                 </div>
                 <div class="mb-3">
                   <label for="description" class="form-label">Description</label>
-                  <input type="text" class="form-control" name="description" required>
+                  <input type="text" class="form-control" id="description" required>
                 </div>
                 <div class="mb-3">
                   <label for="lgdescription" class="form-label">Detail Description</label>
-                  <input type="text" class="form-control" name="lgdescription" required>
+                  <input type="text" class="form-control" id="lgdescription" required>
                 </div>
                 <div class="mb-3">
                   <label for="my-select">size :</label>
-                  <select class="mul-select form-control" id="my-select" multiple="true" name="size">
+                  <select class="mul-select form-control" id="my-select" multiple="true">
                       <option value="small">Small</option>
                       <option value="medium">Medium</option>
                       <option value="large">Large</option>
@@ -40,26 +63,38 @@
                 </div>
                 <div class="mb-3">
                   <label for="price" class="form-label">Price</label>
-                  <input type="text" class="form-control" id="price" name="price" required>
+                  <input type="text" class="form-control" id="price" required>
                 </div>
                 <div class="mb-3">
                   <label for="discountPerc" class="form-label">Discount in percentage</label>
-                  <input type="text" id="discountPerc" class="form-control" name="discountPerc">
+                  <input type="text" id="discountPerc" class="form-control">
                 </div>
                 <div class="mb-3">
                   <label for="discountPrice" class="form-label">Discount price</label>
-                  <input id="discountPrice" style="color: black;border: none;" name="discountPrice" disabled>
+                  <input id="discountPrice" style="color: black;border: none;" disabled required>
                 </div>
+
+                
                 <div class="mb-3">
                     <label for="image" class="form-label">Image</label>
-                    <input type="file" class="form-control" name="image" multiple required>
+                    <input type="file" id="file-input" class="form-control" multiple required>
+                    <div class="image-container pb-2"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="croppedImg-container" style="display: flex;"></div>
                 </div>
 
-                <input type="text" class="form-control d-none" name="listingStatus" value="true">
-
-                <div class="text-center mt-4">
-                    <button type="submit" onclick="enableInput()" class="btn btn-primary">Submit</button>
+                <div class="mb-3 text-center">
+                  <button id="saveBtn" class="btn btn-primary py-3 d-none ml-auto">submit</button>
                 </div>
+                
+
+                <input type="text" class="form-control d-none" id="listingStatus" value="true">
+
+                <input type="text" id="block" hidden>
+                {{!-- <div class="text-center mt-4">
+                    <button onclick="enableInput()" class="btn btn-primary">Submit</button>
+                </div> --}}
             </form>
         </div>
     </div>
@@ -97,3 +132,148 @@
             });
         })
 </script>
+
+<script>
+  $(document).ready(function() {
+      const fileInput = document.getElementById('file-input');
+      const imageContainer = document.querySelector('.image-container');
+      const croppedContainer = document.querySelector('.croppedImg-container');
+      const croppers = [];
+
+      fileInput.addEventListener('change', (event) => {
+        let files = event.target.files;
+
+        document.getElementById('saveBtn').classList.replace('d-none', 'd-block');
+
+        for(let i=0;i<files.length;i++){
+          let file = files[i];
+          const fileUrl = URL.createObjectURL(file);
+          let image = document.createElement('img');
+          image.src = fileUrl;
+
+          image.onload = ()=>{
+            const cropper = new Cropper(image, {
+              aspectRatio: 0,
+              viewMode: 0,
+            });
+            croppers.push(cropper);
+          };
+          imageContainer.appendChild(image);
+        }
+        //console.log(croppers);
+      });
+
+      const saveBtn = document.getElementById('saveBtn');
+      saveBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        imageContainer.classList.add('d-none');
+        document.getElementById('saveBtn').classList.replace('d-block', 'd-none');
+
+        async function sendForm() {
+          let formData = new FormData();
+          let index = 0;
+
+          for (let i = 0; i < croppers.length; i++) {
+            const croppedImage = croppers[i].getCroppedCanvas().toDataURL();
+            //console.log(croppedImage);
+
+            const output = document.createElement('img');
+            output.src = croppedImage;
+            croppedContainer.appendChild(output);
+
+            const blob = await new Promise(resolve => 
+              croppers[i].getCroppedCanvas().toBlob(resolve, 'image/jpeg', 0.3)
+            );
+            console.log(blob);
+
+            formData.append('images', blob, `image-${index}.jpg`);
+            index++;
+          }
+
+          //form-data
+          formData.append('brand', `${document.getElementById('brand').value}`);
+          formData.append('name', `${document.getElementById('name').value}`);
+          formData.append('category', `${document.getElementById('selectOption').value}`);
+          formData.append('description', `${document.getElementById('description').value}`);
+          formData.append('lgdescription', `${document.getElementById('lgdescription').value}`);
+          const selectedSizes = Array.from(document.getElementById('my-select').selectedOptions).map(option => option.value);
+          formData.append('size', selectedSizes);
+          formData.append('price', document.getElementById('price').value);
+          formData.append('discountPerc', document.getElementById('discountPerc').value);
+          formData.append('discountPrice', document.getElementById('discountPrice').value);
+          formData.append('listingStatus', document.getElementById('listingStatus').value);
+
+          axios.post('/admin/add-product', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then(response => {
+            console.log(response);
+            Toastify({
+			      	text: "product added successfully",
+			      	duration: 3000,
+			      	gravity: "top",
+			      	position: "center",
+			      	style: {
+			      		background: "linear-gradient(to right, #fe6d00, #ffb900)",
+			      	},
+			      }).showToast();
+			      setTimeout(()=>{
+			      	location.reload();
+			      }, 950);
+          })
+          .catch(error => {
+            console.log(error);
+            Toastify({
+			      	text: "product adding failed",
+			      	duration: 3000,
+			      	gravity: "top",
+			      	position: "center",
+			      	style: {
+			      		background: "linear-gradient(to right, #fe6d00, #ffb900)",
+			      	},
+			      }).showToast();
+			      setTimeout(()=>{
+			      	location.reload();
+			      }, 950);
+          });
+        }
+
+        function validateForm() {
+          let form = document.getElementById("form");
+          let inputs = form.getElementsByTagName("input");
+          let isFormValid = true;
+
+          for(let i = 0; i < inputs.length; i++) {
+            if(inputs[i].hasAttribute("required") && inputs[i].value === "") {
+              isFormValid = false;
+              inputs[i].style.borderColor = "red";
+            }else {
+              inputs[i].style.borderColor = "";
+            }
+          }
+
+          return isFormValid;
+        }
+        if(validateForm()){
+          sendForm();
+        }else{
+          Toastify({
+			      	text: "fill all the field",
+			      	duration: 3000,
+			      	gravity: "top",
+			      	position: "center",
+			      	style: {
+			      		background: "linear-gradient(to right, #fe6d00, #ffb900)",
+			      	},
+			      }).showToast();
+            setTimeout(()=>{
+			      	location.reload();
+			      }, 650);
+        }
+      });
+  });
+</script>
+
+

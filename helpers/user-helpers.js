@@ -2,17 +2,34 @@ const db = require('../config/connection');
 const collection = require('../config/collections');
 const bcrypt = require('bcrypt');
 const ObjectId = require('mongodb-legacy').ObjectId;
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
+
+// razorpay_creds
+const razorpay_key_id = process.env.RAZORPAY_KEY_ID;
+const razorpay_key_secret = process.env.RAZORPAY_KEY_SECRET;
+
+var instance = new Razorpay({
+  key_id: razorpay_key_id,
+  key_secret: razorpay_key_secret
+});
 
 module.exports={
     doSignUp:(userData)=>{
         return new Promise(async(resolve,reject)=>{
             userData.mobile = Number(userData.mobile);
-            userData.password = await bcrypt.hash(userData.password,10);
-            db.get().collection(collection.USER_COLLECTION).insertOne(userData).then(async(data)=>{
-                // resolve(data);
-                dataDoc = await db.get().collection(collection.USER_COLLECTION).findOne({_id:data.insertedId});
-                resolve(dataDoc);
-            })
+            const mobileExist = await db.get().collection(collection.USER_COLLECTION).findOne({mobile: userData.mobile});
+            const emailExist = await db.get().collection(collection.USER_COLLECTION).findOne({email: userData.email});
+            if(mobileExist||emailExist){
+                const response = false;
+                resolve(response);
+            }else{
+                userData.password = await bcrypt.hash(userData.password,10);
+                db.get().collection(collection.USER_COLLECTION).insertOne(userData).then(async(data)=>{
+                    dataDoc = await db.get().collection(collection.USER_COLLECTION).findOne({_id:data.insertedId});
+                    resolve(dataDoc);
+                })
+            }
         })
     },
     doLogin:(userData)=>{
@@ -586,6 +603,7 @@ module.exports={
     },
     addOrder:(order, address, cartList)=>{
         return new Promise((resolve, reject)=>{
+            console.log(order);
             let newDate = new Date();
             const date = newDate.toDateString();
             let status = order.paymentMethod === 'COD' ? 'placed' : 'pending';
@@ -604,10 +622,11 @@ module.exports={
                 status : status
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj)
-            .then(()=>{
+            .then((response)=>{
                 db.get().collection(collection.CART_COLLECTION).deleteOne({user: ObjectId(order.userId)})
-                .then((response)=>{
-                    resolve(response);
+                .then(()=>{
+                    console.log(response);
+                    resolve(response.insertedId);
                 });
             });
         });
@@ -696,5 +715,56 @@ module.exports={
                 resolve(response);
             });
         });
+    },
+    generateRazorpay:(orderId, total)=>{
+        return new Promise((resolve, reject)=>{
+            total = Number(total).toFixed(0);
+            orderId = String(orderId);
+            instance.orders.create({
+                amount: total*100,
+                currency: "INR",
+                receipt: orderId,
+            }, (err, order)=>{
+                if(err) {
+                    console.log(err)
+                    reject(err)
+                }else{
+                    resolve(order);
+                }
+            })
+        })
+    },
+    verifyPayment:(details)=>{
+        return new Promise((resolve, reject)=>{            
+            let hmac = crypto.createHmac('sha256', razorpay_key_secret);
+            hmac.update(details.response.razorpay_order_id + '|' + details.response.razorpay_payment_id);
+            hmac = hmac.digest('hex');
+            if(hmac===details.response.razorpay_signature){
+                resolve();
+            }else{
+                reject();
+            }
+        });
+    },
+    changeOrderStatus:(orderId)=>{
+        return new Promise((resolve, reject)=>{
+            orderId = ObjectId(orderId);
+            db.get().collection(collection.ORDER_COLLECTION)
+            .updateOne(
+                {
+                    _id: orderId
+                },
+                {
+                    $set:{
+                        status: "placed"
+                    }
+                }
+            )
+            .then((response)=>{
+                resolve(response)
+            }).catch((err)=>{
+                console.log(err);
+            })
+        })  
     }
 }

@@ -143,14 +143,21 @@ module.exports = {
         if(req.session.loggedIn==true){
           res.redirect('/');
         }else{
-          res.render('user/user-signup', {user:true});
+          res.render('user/user-signup', {user:true, signupErr: req.session.signupErr});
+          req.session.signupErr = false;
         }
     },
     signUpPost : (req,res)=>{
         userHelpers.doSignUp(req.body).then((response)=>{
-          req.session.loggedIn=true;
-          req.session.user=response.name;
-          res.redirect('/');
+          if(response){
+            req.session.loggedIn=true;
+            req.session.user=response.name;
+            req.session.userDetails=response;
+            res.redirect('/');
+          }else{
+            req.session.signupErr = "User Already Exists !!";
+            res.redirect('/signup');
+          }
         })
     },
     loginPost : (req,res)=>{
@@ -189,15 +196,15 @@ module.exports = {
     },
     addToCart : (req,res)=>{
       let quantity = 1;
-      console.log(req.body);
+      // console.log(req.body);
       req.body.quantity = Number(req.body.quantity);
-      console.log(req.body.quantity);
+      // console.log(req.body.quantity);
       if(req.body.quantity>1){
         quantity = req.body.quantity;
       }
       let proId = req.params.id;
       let userId = req.session.userDetails._id;
-      userHelpers.addToCartD(proId, userId, quantity).then((response)=>{
+      userHelpers.addToCartD(proId, userId, quantity).then(()=>{
         res.json({
           status:"success",
           message: "product added to cart"
@@ -221,7 +228,7 @@ module.exports = {
       
       userHelpers.getCart(userId).then(async(products)=>{
         const subTotal = await userHelpers.cartTotal(userId);
-        let total = 0
+        let total = 0;
         if(subTotal>0){
           total = (subTotal).toFixed(2);
         }
@@ -335,7 +342,8 @@ module.exports = {
     addAddress : (req, res)=>{
       const userId = req.session.userDetails._id;
       userHelpers.addAddress(userId, req.body).then(()=>{
-        res.redirect('/manageAddress');
+        // res.redirect('/manageAddress');
+        res.redirect('back');
       });  
     },
     changeActive : (req, res)=>{
@@ -366,11 +374,30 @@ module.exports = {
       const address = await userHelpers.getActiveAddress(userId);
       const cartProducts = await userHelpers.getCartList(userId);
       const cartList = cartProducts.products;
-      userHelpers.addOrder(req.body, address, cartList).then(()=>{
-        setTimeout(()=>{
-          res.redirect('/orders');
-        },9000);
+      userHelpers.addOrder(req.body, address, cartList).then((orderId)=>{
+        if(req.body.paymentMethod==="COD"){
+          res.json({
+            status: true,
+            paymentMethod: req.body.paymentMethod
+          });
+        }else{
+          userHelpers.generateRazorpay(orderId, req.body.totalCost).then((response)=>{
+            res.json(response);
+          })
+          .catch((err)=>{
+            console.log(err);
+          })
+        }
       });
+    },
+    verifyPayment : (req, res)=>{
+      userHelpers.verifyPayment(req.body).then(()=>{
+        userHelpers.changeOrderStatus(req.body.order.receipt).then(()=>{
+          res.json({
+            status: true
+          });
+        })
+      })
     },
     renderOrders : async(req, res)=>{
       const userName = req.session.user;
@@ -398,7 +425,10 @@ module.exports = {
       });
     },
     userLogout : (req ,res)=>{
-      req.session.destroy();
+      // req.session.destroy();
+      req.session.loggedIn = false;
+      req.session.userDetails=false;
+      req.session.user=false;
       res.redirect('/login');
     }
 }

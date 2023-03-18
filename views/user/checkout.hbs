@@ -7,7 +7,7 @@
                 <p class="lead">Below is an example form built entirely with Bootstrap's form controls. Each required form group has
                     a validation state that can be triggered by attempting to submit the form without completing it.</p>
             </div> --}}
-            <form class="needs-validation" action="/placeOrder" method="post">
+            <form class="needs-validation" id="myForm" method="post">
 
             <div class="row py-5">
                 <div class="col-md-4 order-md-2 mb-4">
@@ -47,7 +47,7 @@
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Amount Payable (INR)</span>
                             <strong id="strong">Rs.{{amountPayable}}</strong>
-                            <input type="text" name="totalCost" value="{{amountPayable}}" hidden>
+                            <input type="text" id="totalCost" name="totalCost" value="{{amountPayable}}" hidden>
                         </li>
                     </ul>
                     {{!-- <form class="card p-2"> --}}
@@ -108,17 +108,17 @@
                                 <label class="custom-control-label" for="COD">Cash on Delivery</label>
                             </div>
                             <div class="custom-control custom-radio">
-                                <input id="credit" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" checked required>
-                                <label class="custom-control-label" for="credit">Credit card</label>
+                                <input id="credit" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="onlinePayment" checked required>
+                                <label class="custom-control-label" for="credit">Online Payment</label>
                             </div>
-                            <div class="custom-control custom-radio">
+                            {{!-- <div class="custom-control custom-radio">
                                 <input id="debit" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" required>
                                 <label class="custom-control-label" for="debit">Debit card</label>
                             </div>
                             <div class="custom-control custom-radio">
                                 <input id="paypal" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" required>
                                 <label class="custom-control-label" for="paypal">Paypal</label>
-                            </div>
+                            </div> --}}
                         </div>
                         {{!-- <div class="row">
                             <div class="col-md-6 mb-3">
@@ -154,7 +154,7 @@
                             </div>
                         </div> --}}
                         <hr class="mb-4">
-                        <button id="checkoutBtn" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#demoModal" disabled type="submit">Continue to checkout</button>
+                        <button id="checkoutBtn" class="btn btn-primary btn-lg btn-block" disabled type="submit">Continue to checkout</button>
                     </form>
                 </div>
             </div>
@@ -229,7 +229,9 @@
 </div>
 
 
-{{!-- modal for success --}}
+{{!-- modal for success  --}}
+
+{{!-- data-toggle="modal" data-target="#demoModal" --}}
 
 <div class="modal fade auto-off" id="demoModal" tabindex="-1" role="dialog" aria-labelledby="demoModal" aria-hidden="true">
     <div class="modal-dialog animated zoomInDown modal-dialog-centered" role="document">
@@ -262,26 +264,58 @@
     </div>
 </div>
 
+{{!-- modal for success (online payment)  --}}
+
+{{!-- data-toggle="modal" data-target="#demoModal" --}}
+
+<div class="modal fade auto-off" id="demoModal2" tabindex="-1" role="dialog" aria-labelledby="demoModal" aria-hidden="true">
+    <div class="modal-dialog animated zoomInDown modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="container-fluid">
+                {{!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> --}}
+                
+                <div class="row py-5">
+                    <div class="col-md-12 m-h-20 bg-img rounded-left text-center">
+                        <img style="max-width: 40%;" src="https://lirp.cdn-website.com/bbca9e7c/dms3rep/multi/opt/green-tick-icon-0-1000x1000-640w.png" alt="">
+                    </div>
+                    <div class="col-md-12 text-center pt-4 px-sm-5 ">
+                        
+                        <h2>Order Placed Successfuly</h2>
+                        <p class="text-muted"></p>
+                        <a href="/orders"><button class="btn btn-primary w-50">Go to Orders</button></a>
+
+                        {{!-- timer --}}
+                        {{!-- <div class="text-center mt-4 text-dark">
+                            <p id="timer">redirected to order in 10 seconds</p>
+                        </div> --}}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {{!-- timer script --}}
 <script>
   // Set the timer to expire after 10 seconds
-  const expirationTime = 17; // seconds
+  const expirationTime = 16; // seconds
   let timer = expirationTime;
   const timerElement = document.getElementById("timer");
-  const verifyOtp = document.getElementById("verifyOtp");
   const intervalId = setInterval(() => {
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
-    timerElement.textContent = `redirected to orders in ${minutes}:${seconds.toString().padStart(2, '0')} minutes`;
+    timerElement.textContent = `redirected to orders within ${minutes}:${seconds.toString().padStart(2, '0')} seconds`;
     timer--;
     if (timer < 0) {
       clearInterval(intervalId);
     }
   }, 1000);
 </script>
-
-
 
 {{!-- script for change active address --}}
 
@@ -375,12 +409,105 @@
             for (var i = 0; i < isCOD.length; i++) {
               if (isCOD[i].checked) {
                 const value = isCOD[i].value;
-                if(value==="COD"){
+                if(value==="COD"||value==="onlinePayment"){
                     document.getElementById('checkoutBtn').removeAttribute('disabled');
                 }
               }
             }
         }
     }
+
+</script>
+
+{{!-- send Form Axios --}}
+
+<script>
+    const myForm = document.getElementById('myForm');   
+    const totalCost = document.getElementsByName('totalCost')[0].value;
+
+    myForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const payii = document.getElementsByName('paymentMethod');
+
+      let paymentMethod;
+      for(let i=0;i<payii.length;i++){
+          if(payii[i].checked){
+              paymentMethod=payii[i].value;
+              break;
+          }
+      }
+      
+      const res = axios({
+        method: 'POST',
+        url: '/placeOrder',
+        data : {
+            totalCost : totalCost,
+            paymentMethod : paymentMethod
+        }
+      })
+      .then((response) => {
+        if(response.data.paymentMethod==="COD"){
+            const demoModal = new bootstrap.Modal(document.getElementById('demoModal'));
+            demoModal.show();
+            setTimeout(()=>{
+                location.href = '/orders'
+            },9000)
+        }else{
+            razorpayPayment(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    });
+
+    function razorpayPayment(order){
+        var options = {
+            "key": "rzp_test_b5CLuktGWD5Zjb",       // Enter the Key ID generated from the Dashboard
+            "amount": order.amount,                 // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "UNICLUB Online Shop", //your business name
+            "description": "Test Transaction",
+            "image": "https://res.cloudinary.com/dcc8meh8i/image/upload/v1679116198/logo3_gtrtz9.jpg",
+            "order_id": order.id,       //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            //"callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+            "handler": function (response){
+                console.log(response);
+                verifyPayment(response, order);
+            },
+            "prefill": {
+                "name": "Gaurav Kumar", //your customer's name
+                "email": "gaurav.kumar@example.com",
+                "contact": "9000090000"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        }
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    };
+
+    function verifyPayment(response, order){
+        const res = axios({
+            method: "POST",
+            url: "/verifyPayment",
+            data: {
+                response: response,
+                order: order
+            }
+        })
+        .then((response)=>{
+            if(response.data.status){
+                const demoModal2 = new bootstrap.Modal(document.getElementById('demoModal2'));
+                demoModal2.show();
+            }
+        }).catch((err)=>{
+            console.log(err);
+        })
+    };
 
 </script>

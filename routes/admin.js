@@ -18,7 +18,7 @@ router.get('/admin-view', verifyLogin.adminAuthVerify, adminControllers.renderAl
 
 router.get('/add-product', verifyLogin.adminAuthVerify, adminControllers.renderAddProducts);
 
-router.post('/add-product', verifyLogin.adminAuthVerify, upload.array("image", 4), adminControllers.addProductsPost);
+router.post('/add-product', verifyLogin.adminAuthVerify, upload.array("images"), adminControllers.addProductsPost);
 
 router.get('/list/:id', verifyLogin.adminAuthVerify, adminControllers.renderListProduct);
 
@@ -26,7 +26,7 @@ router.get('/unlist/:id', verifyLogin.adminAuthVerify, adminControllers.rednerUn
 
 router.get('/editProduct/:id', verifyLogin.adminAuthVerify, adminControllers.renderEditProduct);
 
-router.post('/editProduct/:id', verifyLogin.adminAuthVerify, upload.array("image", 4), adminControllers.editProductPost);
+router.post('/editProduct/:id', verifyLogin.adminAuthVerify, upload.array("images"), adminControllers.editProductPost);
 
 // USERS-MANAGE
 
