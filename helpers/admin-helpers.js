@@ -28,6 +28,15 @@ module.exports={
             resolve(orders);
         })
     },
+    getAllDeliveredOrders:()=>{
+        return new Promise(async(resolve, reject)=>{
+            const deliveredOrders = await db.get().collection(collections.ORDER_COLLECTION)
+            .find({
+                status: "delivered"
+            }).toArray();
+            resolve(deliveredOrders);
+        })
+    },
     shipOrder:(orderId)=>{
         return new Promise((resolve, reject)=>{
             orderId = ObjectId(orderId);
@@ -154,5 +163,95 @@ module.exports={
                 resolve(response);
             });
         });
+    },
+    getUsersCount:()=>{
+        return new Promise(async(resolve, reject)=>{
+            const users = await db.get().collection(collections.USER_COLLECTION).find().toArray();
+            const userCount = users.length>0 ? users.length : 0;
+            resolve(userCount)
+        }).catch(()=>{
+            reject(null);
+        });
+    },
+    getLastMonthTotal:()=>{
+        return new Promise(async(resolve, reject)=>{
+            const newDate = new Date();
+            const year = newDate.getFullYear();
+            const month = newDate.getMonth();
+            const day = newDate.getDate();
+            const total = await db.get().collection(collections.ORDER_COLLECTION).aggregate([
+                {
+                  '$match': {
+                    'date': {
+                      '$gte': new Date(`${year-month-day}`)
+                    }
+                  }
+                }, {
+                  '$group': {
+                    '_id': 'null', 
+                    'totalCost': {
+                      '$sum': '$totalCost'
+                    }
+                  }
+                }
+              ]).toArray();
+            resolve(total[0].totalCost);
+        })
+    },
+    filterDate:(dates)=>{
+        return new Promise(async(resolve, reject)=>{
+            let newDate=[];
+            dates.forEach(eachDate => {
+                const date = new Date(eachDate);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1; // add 1 because months are zero-indexed
+                const day = date.getDate();
+                const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+                newDate.push(formattedDate);
+            });
+            const report = await db.get().collection(collections.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        status: "delivered",
+                        date: {
+                          $gte: new Date(newDate[0]),
+                          $lt: new Date(newDate[1])
+                        }
+                    }
+                }
+            ]).toArray();
+            resolve(report);
+        })
+    },
+    getOrderTotalPrice:()=>{
+        return new Promise(async(resolve, reject)=>{
+            const totalOrderPrice = await db.get().collection(collections.ORDER_COLLECTION).aggregate([
+                {
+                    '$match':{
+                        status: "delivered"
+                    }
+                },
+                {
+                  '$group': {
+                    '_id': 'null', 
+                    'totalCost': {
+                      '$sum': '$totalCost'
+                    }
+                  }
+                }
+            ]).toArray();
+            resolve(totalOrderPrice[0].totalCost);
+        })
+    },
+    getOrderDetails:(orderId)=>{
+        return new Promise(async(resolve, reject)=>{
+            orderId = ObjectId(orderId);
+            try{
+                const order = await db.get().collection(collections.ORDER_COLLECTION).findOne({_id: orderId});
+                resolve(order);
+            }catch(err){
+                resolve(null);
+            }
+        })
     }
 }

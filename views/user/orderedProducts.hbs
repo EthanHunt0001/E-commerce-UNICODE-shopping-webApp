@@ -1,3 +1,101 @@
+<style>
+	.body {
+        min-height: 100vh;
+        background-size: cover;
+        font-family: 'Lato', sans-serif;
+        color: rgba(189, 189, 189, 0.667);
+        background: linear-gradient(140deg , #fff , 50% , #c89068);    
+    }
+    .container-fluid {
+        margin-top: 200px ;
+    }
+    p {
+        font-size: 14px;
+        margin-bottom: 7px;
+    }
+    .small {
+        letter-spacing: 0.5px !important;
+    }
+    .card-1 {
+        box-shadow: 2px 2px 10px 0px rgb(255, 171, 53);
+    }
+    hr {
+        background-color: rgba(248, 248, 248, 0.667);
+    }
+    .bold {
+        font-weight: 500;
+    }
+    .change-color {
+        color: #ffa319 !important;
+    }
+    .card-2 {
+        box-shadow: 1px 1px 3px 0px rgb(112, 115, 139);
+    }
+    .fa-circle.active {
+        font-size: 8px;
+        color: #ff992c;
+    }
+    .fa-circle {
+        font-size: 8px;
+        color: #aaa;
+    }
+    .rounded {
+        border-radius: 2.25rem !important;
+    }
+    .progress-bar {
+        background-color: hsl(26, 100%, 64%) !important;
+    }
+    .progress {
+        height: 5px !important;
+        margin-bottom: 0;
+    }
+    .invoice {
+        position: relative;
+        top: -70px;
+    }
+    .Glasses {
+        position: relative;
+        top: -12px !important;
+    }
+    .card-footer {
+        background-color: #fda86c;
+        color: #fff;
+    }
+    h2 {
+        color: rgb(126, 74, 0);
+        letter-spacing: 2px !important;
+    }
+    .display-3 {
+        font-weight: 500 !important;
+    }
+    @media (max-width: 479px) {
+        .invoice {
+            position: relative;
+            top: 7px;
+        }
+        .border-line {
+            border-right: 0px solid rgb(226, 206, 226) !important;
+        }
+    }
+    @media (max-width: 700px) {
+        h2 {
+            color: rgb(125, 86, 2);
+            font-size: 17px;
+        }
+        .display-3 {
+            font-size: 28px;
+            font-weight: 500 !important;
+        }
+    }
+    .card-footer small {
+        letter-spacing: 7px !important;
+        font-size: 12px;
+    }
+    .border-line {
+        border-right: 1px solid rgb(226, 206, 226)
+    }
+</style>
+
 <div class="hero-wrap hero-bread" style="background-image: url('/images/bg_6.jpg');">
   <div class="container">
     <div class="row no-gutters slider-text align-items-center justify-content-center">
@@ -9,108 +107,95 @@
   </div>
 </div>
 
-<section class="ftco-section bg-light">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-8 col-lg-10 order-md-last">
-				<div class="row">
-					{{#each orders}}
-	    			<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate card-deck">
-	    				<div class="product card mt-3">
-	    					<a href="/product-single-view/{{this.productDetails.[0]._id}}" class="img-prod"><img class="img-fluid" src="{{this.productDetails.[0].images.[0]}}" alt="image of the dress">
-	    						<span class="status">{{this.productDetails.[0].discountPerc}}%</span>
-	    						<div class="overlay"></div>
-	    					</a>
-	    					<div class="text py-3 px-3">
-	    						<h3><a href="product-single-view/{{this._id}}">{{this.productDetails.[0].name}}</a></h3>
-	    						<div class="d-flex">
-	    							<div class="pricing">
-			    						<p class="price"><span class="mr-2 price-dc">Rs.{{this.[0].price}}</span>
-										<span class="price-sale">Rs.{{this.productDetails.[0].discountPrice}}</span></p>
-										<span class="price-sale">Quantity : {{this.products.quantity}}</span></p>
-			    					</div>
-			    					{{!-- <div class="rating">
-		    							<p class="text-right">
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    							</p>
-		    						</div> --}}
-		    					</div>
-		    					{{!-- <p class="bottom-area d-flex px-3">
-	    							<a href="#" class="add-to-cart text-center py-2 mr-1" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-	    							<a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
-	    						</p> --}}
-	    					</div>
-	    				</div>
-	    			</div>
-					{{/each}}
-	    		</div>
-	    		{{!-- <div class="row mt-5">
-	                <div class="col text-center">
-	                    <div class="block-27">
-	                      <ul>
-	                        <li><a href="#">&lt;</a></li>
-	                        <li class="active"><span>1</span></li>
-	                        <li><a href="#">2</a></li>
-	                        <li><a href="#">3</a></li>
-	                        <li><a href="#">4</a></li>
-	                        <li><a href="#">5</a></li>
-	                        <li><a href="#">&gt;</a></li>
-	                      </ul>
-	                    </div>
+<div class="container-fluid my-5  d-flex  justify-content-center">
+    <div class="card card-1">
+        <div class="card-header bg-white">
+            <div class="media flex-sm-row flex-column-reverse justify-content-between  ">
+                <div class="col my-auto"> <h4 class="mb-0">Thanks for your Order,<span class="change-color"> {{userName}}</span> !</h4> </div>
+                <div class="col-auto text-center  my-auto pl-0 pt-sm-4"> <img class="img-fluid my-auto align-items-center mb-0 pt-3"  src="/images/logo3.jpg" width="115" height="115"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row justify-content-between mb-3">
+                <div class="col-auto"> <h6 class="color-1 mb-0 change-color">Receipt</h6> </div>
+                {{!-- <div class="col-auto  "> <small>Receipt Voucher : 1KAU9-84UIL</small> </div> --}}
+            </div>
+			{{#each orders}}
+            <div class="row">
+                <div class="col">
+					<a style="color: inherit;">
+                    <div class="card card-2">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="sq align-self-center "> <img class="img-fluid  my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="{{this.productDetails.[0].images.[0]}}" width="135" height="135" /> </div>
+                                <div class="media-body my-auto text-right">
+                                    <div class="row  my-auto flex-column flex-md-row">
+                                        <div class="col my-auto"> <h6 class="mb-0">{{this.productDetails.[0].name}}</h6>  </div>
+                                        {{!-- <div class="col-auto my-auto"> <small>Golden Rim </small></div> --}}
+                                        {{!-- <div class="col my-auto"> <small>Size : M</small></div> --}}
+                                        <div class="col my-auto"> <small>Qty : {{this.products.quantity}}</small></div>
+                                        <div class="col my-auto"><h6 class="mb-0">&#8377;{{this.productDetails.[0].discountPrice}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="my-3 ">
+                            <div class="row">
+                                {{!-- <div class="col-md-3 mb-3"> <small> Order Status <span><i class=" ml-2 fa fa-refresh"  aria-hidden="true"></i></span></small> </div>
+                                <div class="col mt-auto">
+                                    <div class="progress my-auto"> <div class="progress-bar progress-bar  rounded" style="width: 62%" role="progressbar" aria-valuenow="25" aria-valuemin="0"  aria-valuemax="100"></div> </div>
+                                    <div class="media row justify-content-between ">
+                                        <div class="col-auto text-right"><span> <small  class="text-right mr-sm-2"></small> <i class="fa fa-circle active"></i> </span></div>
+                                        <div class="flex-col"> <span> <small class="text-right mr-sm-2">Out for delivary</small><i class="fa fa-circle active"></i></span></div>
+                                        <div class="col-auto flex-col-auto"><small  class="text-right mr-sm-2"></small><span> <i  class="fa fa-circle"></i></span></div>
+                                    </div>
+                                </div> --}}
+                            </div>
+                        </div>
                     </div>
-	            </div>     --}}
-	        </div>
-            <div class="col-md-4 col-lg-2 sidebar">
-	    		<div class="sidebar-box-2">
-	    			{{!-- <h2 class="heading mb-4"><a href="#">Clothing</a></h2>
-	    			<ul>
-	    				<li><a href="/shirts/shirt">Shirts</a></li>
-						<li><a href="/tshirts/t-shirt">T-shirts</a></li>
-						<li><a href="/tops/tops">Tops</a></li>
-						<li><a href="/jeans/jeans">Jeans</a></li>
-						<li><a href="/shorts/shorts">Shorts</a></li>
-						<li><a href="/skirts/skirts">Skirts</a></li>
-						<li><a href="/jacket/jacket">Jackets</a></li>
-						<li><a href="/winterCoats/wintercoats">Winter Coats</a></li>
-						<li><a href="#">Jumpsuits</a></li>
-	    			</ul>
-	    		</div> 
-	    		<div class="sidebar-box-2">
-	    			<h2 class="heading mb-4"><a href="#">Jeans</a></h2>
-	    			<ul>
-	    				<li><a href="#">Shirts &amp; Tops</a></li>
-							<li><a href="#">Dresses</a></li>
-							<li><a href="#">Shorts &amp; Skirts</a></li>
-							<li><a href="#">Jackets</a></li>
-							<li><a href="#">Coats</a></li>
-							<li><a href="#">Jeans</a></li>
-							<li><a href="#">Sleeveless</a></li>
-							<li><a href="#">Trousers</a></li>
-							<li><a href="#">Winter Coats</a></li>
-							<li><a href="#">Jumpsuits</a></li>
-	    			</ul>
-	    		</div> 
-	    		 <div class="sidebar-box-2">
-	    			<h2 class="heading mb-2"><a href="#">Bags</a></h2>
-	    			<h2 class="heading mb-2"><a href="#">Accessories</a></h2>
-	    		</div> 
-				<div class="sidebar-box-2">
-	    			<h2 class="heading mb-4"><a href="#">Shoes</a></h2>
-	    			<ul>
-	    				<li><a href="#">Nike</a></li>
-							<li><a href="#">Addidas</a></li>
-							<li><a href="#">Skechers</a></li>
-							<li><a href="#">Jackets</a></li>
-							<li><a href="#">Coats</a></li>
-							<li><a href="#">Jeans</a></li>
-	    			</ul>
-	    		</div> --}}
-			</div>
-		</div>
-        
-	</div>
-</section>
+					</a>
+                </div>
+            </div>
+			{{/each}}
+            
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="row justify-content-between">
+                        <div class="col-auto"><p class="mb-3 text-dark"><b>Order Details</b></p></div>
+                        <div class="flex-sm-col text-right col"> <p class="mb-1"><b>Total</b></p> </div>
+                        <div class="flex-sm-col col-auto"> <p class="mb-1">&#8377;{{orderDet.totalCost}}</p> </div>
+                    </div>
+                    <div class="row justify-content-between">
+                        <div class="flex-sm-col text-right col"><p class="mb-1"> <b>Discount</b></p> </div>
+                        <div class="flex-sm-col col-auto"><p class="mb-1">&#8377;100</p></div>
+                    </div>
+                    {{!-- <div class="row justify-content-between">
+                        <div class="flex-sm-col text-right col"><p class="mb-1"><b>GST 18%</b></p></div>
+                        <div class="flex-sm-col col-auto"><p class="mb-1">843</p></div>
+                    </div> --}}
+                    <div class="row justify-content-between">
+                        <div class="flex-sm-col text-right col"><p class="mb-1"><b>Delivery Charges</b></p></div>
+                        <div class="flex-sm-col col-auto"><p class="mb-1">Free</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row invoice ">
+                <div class="col"><p class="mb-1"> OrderId : {{orderDet._id}}</p><p class="mb-1">Invoice Date : {{orderDet.date}}</p></div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="jumbotron-fluid">
+                <div class="row justify-content-between ">
+                    <div class="col-sm-auto col-auto my-auto"><img class="img-fluid my-auto align-self-center " src="/images/logo3.jpg" width="115" height="115"></div>
+                    <div class="col-auto my-auto "><h2 class="mb-0 font-weight-bold">TOTAL COST</h2></div>
+                    <div class="col-auto my-auto ml-auto"><h1 class="display-3 ">&#8377; {{orderDet.totalCost}}</h1></div>
+                </div>
+                <div class="row mb-3 mt-3 mt-md-0">
+                    {{!-- <div class="col-auto border-line"> <small class="text-white">PAN:AA02hDW7E</small></div> --}}
+                    <div class="col-auto border-line"> <small class="text-white">OrderID:{{orderDet._id}} </small></div>
+                    <div class="col-auto "><small class="text-white">GSTN:268FD07EXX </small> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -17,6 +17,9 @@ module.exports = {
             return 0;
         }
         return num1 - 100;
+    },
+    inc : (value)=>{
+        return parseInt(value) + 1;
     }
 }
   

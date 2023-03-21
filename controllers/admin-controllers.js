@@ -55,12 +55,10 @@ module.exports = {
         }
         productHelpers.addProduct(req.body,async (id)=>{
           let imgUrls = [];
-          console.log(req.files.length);
           for(let i=0;i<req.files.length;i++){
             const result = await cloudinary.uploader.upload(req.files[i].path);
             imgUrls.push(result.url);
           }
-          console.log(imgUrls);
           if(imgUrls.length!==0){
             productHelpers.addProductImages(id, imgUrls);
           }
@@ -140,7 +138,6 @@ module.exports = {
     },
     renderUsers : (req,res)=>{
         userHelpers.getAllUsers().then((users)=>{
-          // console.log(users);
           res.render('admin/user-view',{admin:true,users,adminName:req.session.adminName});
         })
     },
@@ -167,27 +164,69 @@ module.exports = {
     editUsersPost : (req,res)=>{
         let userId = req.params.id;
         let userDetails = req.body;
-        userHelpers.editUser(userId,userDetails).then((response)=>{
+        userHelpers.editUser(userId,userDetails).then(()=>{
           res.redirect('/admin/users');
         });
     },
-    adminLogout : (req,res)=>{
-        // req.session.destroy();
-        req.session.adminLoggedIn = false;
-        res.redirect('/admin/login');
-    },
     renderDashboard : (req,res)=>{
-        res.render('admin/admin-dashboard',{admin:true,adminName:req.session.adminName});
+      adminHelpers.getUsersCount().then(async(usersCount)=>{
+        const total = await adminHelpers.getLastMonthTotal();
+        let totalEarnings = 0;
+        totalEarnings = await adminHelpers.getOrderTotalPrice();
+        res.render('admin/admin-dashboard',{admin:true, total, totalEarnings, usersCount, adminName:req.session.adminName});
+      }).catch(()=>{
+        res.render('admin/admin-dashboard',{admin:true, adminName:req.session.adminName});
+      })
+    },
+    renderSalesReport : async(req, res)=>{
+      const deliveredOrders = await adminHelpers.getAllDeliveredOrders();
+      let totalEarnings = 0;
+      totalEarnings = await adminHelpers.getOrderTotalPrice();
+      deliveredOrders.forEach(eachOrder => {
+        eachOrder.productCount = eachOrder.products.length;
+        // date formatting
+        const newDate = new Date(eachOrder.date);
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth() + 1;
+        const day = newDate.getDate();
+        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+        eachOrder.date = formattedDate;
+      });
+      res.render('admin/admin-sales-report', {admin:true, deliveredOrders, totalEarnings, adminName:req.session.adminName});
+    },
+    salesReportFilter : (req, res)=>{
+      adminHelpers.filterDate(req.body.date).then((filteredOrders)=>{
+        let totalEarnings=0;
+        if(filteredOrders.length>=1){
+          filteredOrders.forEach(eachOrder => {
+            eachOrder.productCount = eachOrder.products.length;
+            totalEarnings += eachOrder.totalCost;
+            // date formatting
+            const newDate = new Date(eachOrder.date);
+            const year = newDate.getFullYear();
+            const month = newDate.getMonth() + 1;
+            const day = newDate.getDate();
+            const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+            eachOrder.date = formattedDate;
+          });
+        }else{
+          filteredOrders=false;
+        }
+        res.render('admin/filteredSalesReport', {admin:true, filteredOrders, totalEarnings, adminName:req.session.adminName});
+      })
+    },
+    salesReportFilterGet : (req, res)=>{
+      res.redirect('/admin/sales-report');
     },
     blockUserReq : (req, res)=>{
       let userId = req.params.id;
-      userHelpers.blockUser(userId).then((response)=>{
+      userHelpers.blockUser(userId).then(()=>{
         res.redirect('/admin/users');
       });
     },
     unBlockUserReq : (req, res)=>{
       let userId = req.params.id;
-      userHelpers.unBlockUser(userId).then((response)=>{
+      userHelpers.unBlockUser(userId).then(()=>{
         res.redirect('/admin/users');
       });
     },
@@ -220,14 +259,19 @@ module.exports = {
     },
     getOrders : async(req, res)=>{
       const orders = await adminHelpers.getAllOrders();
-      console.log(orders);
       orders.forEach(order => {
         order.isCancelled = order.status === "cancelled"||order.status==="delivered"? true : false;
         order.isShipped = order.status==="shipped"?true:false;
         order.isDelivered = order.status==="delivered"?true:false;
         order.isPlaced = order.status==="placed"||order.status==="pending"?true:false;
+        // date formatting
+        const newDate = new Date(order.date);
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth() + 1;
+        const day = newDate.getDate();
+        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+        order.date = formattedDate;
       });
-      // console.log(orders);
       res.render('admin/admin-orders', {admin:true, orders, adminName:req.session.adminName});
     },
     cancelOrder : (req, res)=>{
@@ -248,11 +292,24 @@ module.exports = {
         res.redirect('/admin/orders');
       });
     },
-    orderedProducts : async(req, res)=>{
+    viewOrderDetails : async(req, res)=>{
       const orderId = req.params.id;
-      const orders = await userHelpers.getOrderedProducts(orderId);
-      res.render('admin/ordered-products', {admin:true, orders, adminName:req.session.adminName});
+      const orderedProducts = await userHelpers.getOrderedProducts(orderId);
+      adminHelpers.getOrderDetails(orderId).then((order)=>{
+          const newDate = new Date(order.date);
+          const year = newDate.getFullYear();
+          const month = newDate.getMonth() + 1;
+          const day = newDate.getDate();
+          const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+          order.date = formattedDate;
+        res.render('admin/order-viewdetails-admin', {admin:true, orderedProducts, order, adminName:req.session.adminName})
+      })
     },
+    // orderedProducts : async(req, res)=>{
+    //   const orderId = req.params.id;
+    //   const orders = await userHelpers.getOrderedProducts(orderId);
+    //   res.render('admin/ordered-products', {admin:true, orders, adminName:req.session.adminName});
+    // },
     bannerView : (req, res)=>{     
       adminHelpers.getBanners().then((banners)=>{
         res.render('admin/banner-view', {admin:true, banners, adminName:req.session.adminName});
@@ -263,7 +320,6 @@ module.exports = {
     },
     addBanner : async(req, res)=>{     
       try{
-        // console.log(req.file);
         const result = await cloudinary.uploader.upload(req.file.path);
         req.body.image = result.url;
       }catch(err){
@@ -297,5 +353,10 @@ module.exports = {
       adminHelpers.selectBanner(bannerId).then(()=>{
         res.redirect('/admin/banner-view');
       });
+    },
+    adminLogout : (req,res)=>{
+      // req.session.destroy();
+      req.session.adminLoggedIn = false;
+      res.redirect('/admin/login');
     }
 }

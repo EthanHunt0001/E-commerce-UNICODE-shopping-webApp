@@ -12,6 +12,12 @@ router.post('/login', adminControllers.loginPost);
 
 router.get('/', verifyLogin.adminAuthVerify, adminControllers.renderDashboard);
 
+router.get('/sales-report', verifyLogin.adminAuthVerify, adminControllers.renderSalesReport);
+
+router.get('/salesReportFilter', verifyLogin.adminAuthVerify, adminControllers.salesReportFilterGet);
+
+router.post('/salesReportFilter', verifyLogin.adminAuthVerify, adminControllers.salesReportFilter);
+
 // PRODUCTS-MANAGE
 
 router.get('/admin-view', verifyLogin.adminAuthVerify, adminControllers.renderAllProductsAdminSide);
@@ -68,7 +74,7 @@ router.get('/shipOrder/:id', verifyLogin.adminAuthVerify, adminControllers.shipO
 
 router.get('/orderDelivered/:id', verifyLogin.adminAuthVerify, adminControllers.orderDelivered);
 
-router.get('/orderedProducts/:id', verifyLogin.adminAuthVerify, adminControllers.orderedProducts);
+router.get('/viewOrderDetails/:id', verifyLogin.adminAuthVerify, adminControllers.viewOrderDetails);
 
 // BANNER-MANAGEMENT
 

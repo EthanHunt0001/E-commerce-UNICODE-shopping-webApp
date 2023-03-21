@@ -17,8 +17,8 @@
   }
 </style>
 
-<section class="container bg-white mt-3" style="overflow-x: hidden;">
-  <h1 class="mt-3 fw-bold">Orders</h1>
+<section class="container-fluid bg-white mt-3" style="overflow-x: hidden;">
+  <h1 class="mt-3 ml-3 fw-bold">Orders</h1>
     
     <div class="text-center py-5">
       <div class="row table-responsive col-lg-12">
@@ -27,10 +27,10 @@
             <tr>
               <th style="font-weight: bold;" scope="col">Date</th>
               <th style="font-weight: bold;" scope="col">Order Id</th>
-              <th style="font-weight: bold;" scope="col">User Id</th>
+              {{!-- <th style="font-weight: bold;" scope="col">User Id</th> --}}
               <th style="font-weight: bold;" scope="col">Name</th>
-              <th style="font-weight: bold;" scope="col">Mobile</th>
-              <th style="font-weight: bold;" scope="col">Address</th>
+              {{!-- <th style="font-weight: bold;" scope="col">Mobile</th> --}}
+              <th style="font-weight: bold;" scope="col">Total Cost</th>
               <th style="font-weight: bold;" scope="col">Payment</th>
               <th style="font-weight: bold;" scope="col">Status</th>
               <th style="font-weight: bold;" scope="col">View Order</th>
@@ -43,13 +43,13 @@
                 <tr>
                     <th class="text-dark">{{this.date}}</th>
                     <th class="text-dark">{{this._id}}</th>
-                    <th class="text-dark">{{this.userId}}</th>
+                    {{!-- <th class="text-dark">{{this.userId}}</th> --}}
                     <th class="text-dark">{{this.userName}}</th>
-                    <th class="text-dark">{{this.deliveryDetails.mobile}}</th>
-                    <th class="text-dark">{{this.deliveryDetails.address}}, <br> Pincode : {{this.deliveryDetails.pincode}}</th>
+                    {{!-- <th class="text-dark">{{this.deliveryDetails.address}}, <br> Pincode : {{this.deliveryDetails.pincode}}</th> --}}
+                    <th class="text-dark">{{this.totalCost}}</th>
                     <th class="text-dark">{{this.paymentMethod}}</th>
                     <th class="text-dark">{{this.status}}</th>
-                    <th><a href="/admin/orderedProducts/{{this._id}}" class="btn btn-primary">view products</a> &nbsp;</th>
+                    <th><a href="/admin/viewOrderDetails/{{this._id}}" class="btn btn-primary">view Details</a> &nbsp;</th>
                     {{!-- <td><img style="width: 40px;height:40px" src="{{this.images.[0]}}"></td> --}}
                     {{#if this.isCancelled}}
                       <th><a href="" class="btn btn-danger disabled">cancel order</a> &nbsp;</th>

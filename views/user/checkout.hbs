@@ -66,26 +66,30 @@
                             <div class="col-md-12 mb-3">
                                 <div class="col-md-12">
                                     {{#each addresses}}
-                                    <div class="d-flex mb-3">
-                                        <input type="radio" id="{{this._id}}" onclick="validateSubmit()" class="activeAddress mr-3" style="cursor: pointer;" required name="address" 
-                                        data-address="{{this._id}}">
-                                        <label for="{{this._id}}" class="border p-2" style="color: rgb(80, 80, 80);">
-                                            <b>{{this.name}}</b>, <br> 
-                                            {{this.address}}, <br>
-                                            {{this.city}}, {{this.state}}, <br> 
-                                            Zipcode: {{this.zipcode}}, Mobile: {{this.mobile}}
-                                        </label>
-                                    </div>
+                                        <div class="d-flex mb-3">
+                                            <input type="radio" id="{{this._id}}" class="activeAddress mr-3" name="address" data-address="{{this._id}}">
+                                            <div class="border p-2" style="color: rgb(80, 80, 80);">
+                                                <b>{{this.name}}</b>, <br> 
+                                                {{this.address}}, <br>
+                                                {{this.city}}, {{this.state}}, <br> 
+                                                Zipcode: {{this.zipcode}}, Mobile: {{this.mobile}}
+                                            </div>
+                                            <div class="ml-auto pr-3 d-flex">
+                                              <div>
+                                                <a class="btn btn-primary pl-3 pr-3 text-light" style="letter-spacing: 0.1rem;cursor: pointer;" data-toggle="modal" data-target="#edit{{this._id}}">Edit</a>
+                                              </div>
+                                              <div class="ml-3 mt-1" style="cursor: pointer;">
+                                                <a data-toggle="modal" data-target="#deleteAddr{{this._id}}">
+                                                  <div class="border border-warning text-center" style="width: fit-content;">
+                                                  <span class="ion-ios-close p-3"></span>
+                                                </a>
+                                              </div>
+                                              </div>
+                                            </div>
+                                        </div>
                                     {{/each}}
-                                </div>                             
+                                </div>                   
                             </div>
-                            {{!-- <div class="col-md-6 mb-3">
-                                <label for="lastName">Last name</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
-                                <div class="invalid-feedback">
-                                    Valid last name is required.
-                                </div>
-                            </div> --}}
                         </div>
                         
                         <hr class="mb-4">
@@ -108,7 +112,7 @@
                                 <label class="custom-control-label" for="COD">Cash on Delivery</label>
                             </div>
                             <div class="custom-control custom-radio">
-                                <input id="credit" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="onlinePayment" checked required>
+                                <input id="credit" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="onlinePayment" required>
                                 <label class="custom-control-label" for="credit">Online Payment</label>
                             </div>
                             {{!-- <div class="custom-control custom-radio">
@@ -228,6 +232,94 @@
   </div>
 </div>
 
+{{!-- modal deleteAddress --}}
+{{#each addresses}}
+  <div class="modal fade" id="deleteAddr{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Do you want to delete this address ?
+        </div>
+        <div class="modal-footer">
+          <a href=""><button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button></a>
+          <a href="/deleteAddress/{{this._id}}"><button type="button" class="btn btn-primary">confirm</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/each}}
+
+{{!-- Edit Address --}}
+{{#each addresses}}
+  <div class="modal fade" id="edit{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="p-4">
+            <form action="/editAddressPost/{{this._id}}" method="post">
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4">Name</label>
+                  <input type="name" class="form-control" name="name" id="inputEmail4" value="{{this.name}}" placeholder="Name">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="inputPassword4">Mobile Number</label>
+                  <input type="text" maxlength="10" class="form-control" name="mobile" value="{{this.mobile}}" id="inputPassword4" placeholder="Mobile Number">
+                </div>
+              </div>
+              <label for="">Address</label>
+              <div class="form-group">
+                  <input name="address" class="form-control" value="{{this.address}}" id="address" cols="50" placeholder="Address (Area and Street)" rows="5">
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputCity">City</label>
+                  <input type="text" name="city" class="form-control" value="{{this.city}}" placeholder="city" id="inputCity">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="inputState">State</label>
+                  <input type="text" class="form-control" value="{{this.state}}" placeholder="State" name="state">
+                  <!-- <select id="inputState" class="form-control">
+                    <option selected>Choose...</option>
+                    <option>...</option>
+                  </select> -->
+                </div>
+                <div class="form-group col-md-2">
+                  <label for="inputZip">Zip Code</label>
+                  <input type="text" class="form-control" value="{{this.zipcode}}" name="zipcode" placeholder="Zip Code" id="inputZip">
+                </div>
+              </div>
+              <label for="type">Address Type</label>
+              <div class="form-row text-dark">
+                  <input type="radio" class="mr-1" name="type" value="home">Home &nbsp;&nbsp;&nbsp;
+                  <input type="radio" class="mr-1" name="type" value="work">Work
+              </div>
+              <!-- <div class="form-group">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="gridCheck">
+                  <label class="form-check-label" for="gridCheck">
+                    Check me out
+                  </label>
+                </div>
+              </div> -->
+              <div class="text-center mt-2">
+                  <button type="submit" class="btn btn-primary">SUBMIT</button>
+              </div>
+
+            </form>
+          </div>
+      </div>
+    </div>
+  </div>
+{{/each}}
+
+
 
 {{!-- modal for success  --}}
 
@@ -318,7 +410,6 @@
 </script>
 
 {{!-- script for change active address --}}
-
 <script>
     const changeActive = async(addressId)=>{
         const res = await axios({
@@ -420,7 +511,6 @@
 </script>
 
 {{!-- send Form Axios --}}
-
 <script>
     const myForm = document.getElementById('myForm');   
     const totalCost = document.getElementsByName('totalCost')[0].value;
@@ -509,5 +599,9 @@
             console.log(err);
         })
     };
+
+</script>
+
+<script>
 
 </script>

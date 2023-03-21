@@ -19,7 +19,7 @@ db.connect((err)=>{
   }else{
     console.log("database connected");
   }
-})
+});
 
 const adminRouter = require('./routes/admin');
 const usersRouter = require('./routes/users');

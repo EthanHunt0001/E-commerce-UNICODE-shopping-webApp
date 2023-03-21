@@ -1,3 +1,4 @@
+const adminHelpers = require('../helpers/admin-helpers');
 const categoryHelpers = require('../helpers/category-helpers');
 const productHelpers = require('../helpers/product-helpers');
 const userHelpers = require('../helpers/user-helpers');
@@ -69,7 +70,6 @@ module.exports = {
     userLoginOtpVerify : (req, res)=>{
       let otp = req.body.otp;
       let userMobile = req.body.mobile;
-      console.log(userMobile);
       try{
         client.verify.v2.services('VA4cd0431637992931e1bf2592cdc45213')
         .verificationChecks
@@ -196,9 +196,7 @@ module.exports = {
     },
     addToCart : (req,res)=>{
       let quantity = 1;
-      // console.log(req.body);
       req.body.quantity = Number(req.body.quantity);
-      // console.log(req.body.quantity);
       if(req.body.quantity>1){
         quantity = req.body.quantity;
       }
@@ -291,7 +289,7 @@ module.exports = {
       const userDet = req.session.userDetails;
       let passErr = req.session.passwordChange;
       const userProf = await userHelpers.getUser(req.session.userDetails._id);
-      const address = await userHelpers.getActiveAddress(req.session.userDetails._id)
+      const address = await userHelpers.getActiveAddress(req.session.userDetails._id);
       res.render('user/userProfile', {admin:false, address, userProf, userDet, passErr, user:true, userName:userName});
     },
     updateUser : (req, res)=>{
@@ -358,6 +356,24 @@ module.exports = {
         });
       }
     },
+    editAddress : (req, res)=>{
+      const userId = req.session.userDetails._id;
+      const addressId = req.params.id;
+      userHelpers.editAddress(userId, addressId, req.body).then(()=>{
+        res.redirect('back');
+      }).catch(()=>{
+        res.redirect('back');
+      });
+    },
+    deleteAddress : (req, res)=>{
+      const userId = req.session.userDetails._id;
+      const addressId = req.params.id;
+      userHelpers.deleteAddress(userId, addressId).then(()=>{
+        res.redirect('back');
+      }).catch(()=>{
+        res.redirect('back');
+      })
+    },
     renderCheckout : async(req, res)=>{
       const userName = req.session.user;
       const userId = req.session.userDetails._id;
@@ -404,11 +420,16 @@ module.exports = {
       const userId = req.session.userDetails._id;
       const userDet = req.session.userDetails;
       const orders = await userHelpers.getOrders(userId);
-      // console.log(orders);
       orders.forEach(order => {
         order.isCancelled = order.status==="cancelled"||order.status==="delivered"?true:false;
+        // getting date format clear to render
+        const newDate = new Date(order.date);
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth() + 1;
+        const day = newDate.getDate();
+        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+        order.date = formattedDate;
       });
-      // console.log(orders[0].isCancelled);
       res.render('user/orders', {user:true, userDet, admin:false, orders, userName});
     },
     renderOrderedProducts : async(req, res)=>{
@@ -416,7 +437,14 @@ module.exports = {
       const orderId = req.params.id;
       const userDet = req.session.userDetails;
       const orders = await userHelpers.getOrderedProducts(orderId);
-      res.render('user/orderedProducts', {user:true, userDet, admin:false, orders, userName});
+      const orderDet = await adminHelpers.getOrderDetails(orderId);
+      const newDate = new Date(orderDet.date);
+      const year = newDate.getFullYear();
+      const month = newDate.getMonth() + 1;
+      const day = newDate.getDate();
+      const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+      orderDet.date = formattedDate;
+      res.render('user/orderedProducts', {user:true, userDet, orderDet, admin:false, orders, userName});
     },
     cancelOrder : (req, res)=>{
       const orderId = req.params.id;

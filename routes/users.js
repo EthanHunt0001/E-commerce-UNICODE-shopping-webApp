@@ -64,6 +64,10 @@ router.post('/addressPost', verifyLogin.userVerifyLogin, userControllers.addAddr
 
 router.get('/changeActiveAddress/:id', verifyLogin.userVerifyLogin, userControllers.changeActive);
 
+router.post('/editAddressPost/:id', verifyLogin.userVerifyLogin, userControllers.editAddress);
+
+router.get('/deleteAddress/:id', verifyLogin.userVerifyLogin, userControllers.deleteAddress);
+
 // order-management
 
 router.get('/checkout', verifyLogin.userVerifyLogin, userControllers.renderCheckout);

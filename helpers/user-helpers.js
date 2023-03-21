@@ -534,13 +534,16 @@ module.exports={
                     _id:userId,
                 }
             );
-            const addressList = userDetails.address
+            const addressList = userDetails.address;
             try{
                 for(let i=0;i<addressList.length;i++){
                     if(addressList[i].active===true){
                         resolve(addressList[i]);
+                    }else{
+                        continue;
                     }
                 }
+                resolve(null);
             }catch{
                 resolve(null);
             }
@@ -550,7 +553,8 @@ module.exports={
         return new Promise((resolve, reject)=>{
             let addressId = new ObjectId();
             address._id = addressId;
-            address.active = true;
+            address.active = false;
+            address.mobile = Number(address.mobile);
             userId = ObjectId(userId);
             db.get().collection(collection.USER_COLLECTION)
             .updateOne(
@@ -562,6 +566,57 @@ module.exports={
                 }
             ).then((response)=>{
                 resolve(response);
+            })
+        })
+    },
+    editAddress:(userId, addressId, address)=>{
+        return new Promise((resolve, reject)=>{
+            userId = ObjectId(userId);
+            addressId = ObjectId(addressId);
+            db.get().collection(collection.USER_COLLECTION)
+            .updateOne(
+                {
+                    _id: userId,
+                    address: {$elemMatch: {_id: addressId}}
+                },
+                {
+                    $set:{
+                       "address.$.state": address.state,
+                       "address.$.name": address.name,
+                       "address.$.mobile": Number(address.mobile),
+                       "address.$.address": address.address,
+                       "address.$.city": address.city,
+                       "address.$.zipcode": address.zipcode,
+                       "address.$.type": address.type
+                    }
+                }
+            )
+            .then((response)=>{
+                resolve(response);
+            }).catch(()=>{
+                reject();
+            })
+        })
+    },
+    deleteAddress:(userId, addressId)=>{
+        return new Promise((resolve, reject)=>{
+            userId = ObjectId(userId);
+            addressId = ObjectId(addressId);
+            db.get().collection(collection.USER_COLLECTION)
+            .updateOne(
+                {
+                    _id: userId,
+                },
+                {
+                    $pull: {
+                        address: {_id: addressId}
+                    }
+                }
+            )
+            .then(()=>{
+                resolve();
+            }).catch(()=>{
+                reject();
             })
         })
     },
@@ -603,9 +658,8 @@ module.exports={
     },
     addOrder:(order, address, cartList)=>{
         return new Promise((resolve, reject)=>{
-            console.log(order);
-            let newDate = new Date();
-            const date = newDate.toDateString();
+            const now = new Date();
+            const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
             let status = order.paymentMethod === 'COD' ? 'placed' : 'pending';
             orderObj = {
                 userId : ObjectId(order.userId),
@@ -617,6 +671,7 @@ module.exports={
                     pincode : Number(address.zipcode)
                 },
                 paymentMethod : order.paymentMethod,
+                totalCost : Number(order.totalCost),
                 products : cartList,
                 date : date,
                 status : status
@@ -625,7 +680,6 @@ module.exports={
             .then((response)=>{
                 db.get().collection(collection.CART_COLLECTION).deleteOne({user: ObjectId(order.userId)})
                 .then(()=>{
-                    console.log(response);
                     resolve(response.insertedId);
                 });
             });
