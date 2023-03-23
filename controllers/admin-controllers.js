@@ -107,9 +107,6 @@ module.exports = {
     },
     editProductPost : (req,res)=>{
       let proId = req.params.id;
-      console.log(req);
-      console.log(`paramaeter Id:  ${proId}`);
-      console.log(req.body);
       if(req.body.size && typeof(String)){
         let temp = new Array();
         temp = req.body.size.split(',');
@@ -122,7 +119,6 @@ module.exports = {
             const result = await cloudinary.uploader.upload(req.files[i].path);
             imgUrls.push(result.url);
           }
-          console.log(imgUrls);
           if(imgUrls.length!==0){
             productHelpers.addProductImages(proId, imgUrls);
           }

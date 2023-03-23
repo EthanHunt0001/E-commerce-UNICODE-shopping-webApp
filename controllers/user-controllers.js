@@ -389,15 +389,17 @@ module.exports = {
       req.body.userName = req.session.user;
       const address = await userHelpers.getActiveAddress(userId);
       const cartProducts = await userHelpers.getCartList(userId);
-      const cartList = cartProducts.products;
+      const cartList = cartProducts.products;     
       userHelpers.addOrder(req.body, address, cartList).then((orderId)=>{
         if(req.body.paymentMethod==="COD"){
+          productHelpers.reduceStock(cartList).then(()=>{}).catch((err)=>console.log(err));
           res.json({
             status: true,
             paymentMethod: req.body.paymentMethod
           });
         }else{
           userHelpers.generateRazorpay(orderId, req.body.totalCost).then((response)=>{
+            productHelpers.reduceStock(cartList).then(()=>{}).catch((err)=>console.log(err));
             res.json(response);
           })
           .catch((err)=>{

@@ -67,6 +67,7 @@ module.exports={
             proDetails.price = Number(proDetails.price);
             proDetails.discountPrice = Number(proDetails.discountPrice);
             proDetails.discountPerc = Number(proDetails.discountPerc);
+            proDetails.stocks = Number(proDetails.stocks);
             db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectId(proId)},
             {$set:{
                 brand: proDetails.brand,
@@ -77,10 +78,34 @@ module.exports={
                 discountPrice: proDetails.discountPrice,
                 discountPerc: proDetails.discountPerc,
                 size: proDetails.size,
+                stocks: proDetails.stocks,
                 category: objectId(proDetails.category)
             }}).then((response)=>{
                 resolve(response);
             })
-        })
+        });
     },
+    reduceStock:(proDet)=>{
+        return new Promise(async(resolve, reject)=>{
+            try{
+                for(let i=0;i<proDet.length;i++){
+                    await db.get().collection(collection.PRODUCT_COLLECTION)
+                    .updateOne(
+                        {
+                            _id : proDet[i].productId
+                        },
+                        {
+                            $inc:{
+                                "stocks" : -proDet[i].quantity
+                            }
+                        }
+                    )
+                }
+                resolve();
+            }
+            catch{
+                resolve();
+            }
+        });
+    }
 }

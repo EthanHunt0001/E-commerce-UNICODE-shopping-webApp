@@ -62,6 +62,10 @@
                   </select>
                 </div>
                 <div class="mb-3">
+                  <label for="stocks" class="form-label">stocks</label>
+                  <input type="text" class="form-control" id="stocks" required>
+                </div>
+                <div class="mb-3">
                   <label for="price" class="form-label">Price</label>
                   <input type="text" class="form-control" id="price" required>
                 </div>
@@ -196,6 +200,7 @@
           formData.append('category', `${document.getElementById('selectOption').value}`);
           formData.append('description', `${document.getElementById('description').value}`);
           formData.append('lgdescription', `${document.getElementById('lgdescription').value}`);
+          formData.append('stocks', `${document.getElementById('stocks').value}`);
           const selectedSizes = Array.from(document.getElementById('my-select').selectedOptions).map(option => option.value);
           formData.append('size', selectedSizes);
           formData.append('price', document.getElementById('price').value);

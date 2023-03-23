@@ -12,6 +12,7 @@
               <th scope="col">Brand</th>
               <th scope="col">Model</th>
               <th scope="col">Discount</th>
+              <th scope="col">Stocks</th>
               <th scope="col">Price</th>
               <th scope="col">Image</th>
               <th scope="col">Edit</th>
@@ -25,6 +26,7 @@
                   <td>{{this.name}}</td>
                   {{!-- <td>{{}}</td> --}}
                   <td>{{this.discountPerc}}%</td>
+                  <td>{{this.stocks}}</td>
                   <td>{{this.discountPrice}}</td>
                   <td><img style="width: 40px;height:40px" src="{{this.images.[0]}}"></td>
                   <td><a href="/admin/editProduct/{{this._id}}" class="btn btn-primary">Edit</a> &nbsp;</td>
