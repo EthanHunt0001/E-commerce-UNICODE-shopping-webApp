@@ -50,11 +50,14 @@
                     <th><a href="/view/products/{{this._id}}" class="btn btn-primary">view Details</a> &nbsp;</th>
                     {{#if this.isCancelled}}
                       <th><a href="" class="btn btn-danger disabled">cancel order</a> &nbsp;</th>
+                    {{else if this.isDelivered}}
+                      <th><a href="" class="btn btn-warning cancelOrder" style="color: black;" data-toggle="modal" data-target="#return{{this._id}}">return order</a> &nbsp;</th>
+                    {{else if this.isReturned}}
+                      <th><a href="" class="btn btn-warning disabled" style="font-weight: bold;">order returned</a> &nbsp;</th>
                     {{else}}
                       <th><a href="" class="btn btn-danger cancelOrder" style="color: black;" data-toggle="modal" data-target="#cancel{{this._id}}">cancel order</a> &nbsp;</th>
                     {{/if}}
                     {{!-- <td><a class="btn btn-danger" data-toggle="modal" data-target="#unlist{{this._id}}">Unlist product</a></td> --}}
-
                 </tr>
             {{/each}}
           </tbody>
@@ -65,7 +68,6 @@
 
 
 {{!-- modals for cancel-order confirmation --}}
-
 {{#each orders}}
   <div class="modal fade" id="cancel{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -88,11 +90,28 @@
   </div>
 {{/each}}
 
+{{!-- modals for return-order confirmation --}}
+{{#each orders}}
+  <div class="modal fade" id="return{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Do you want to return this order ? <br>
+          If the order successfully returned (<small>you can check the order status</small>) <br>
+          check your wallet for the returned money.
+        </div>
+        <div class="modal-footer">
+          <a href=""><button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button></a>
+          <a href="/returnOrder/{{this._id}}"><button type="button" class="btn btn-primary">confirm</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/each}}
 
-{{!-- <script>
-
-  //$(function () {
-  //  $('#productsTable').DataTable();
-  });
-
-</script> --}}

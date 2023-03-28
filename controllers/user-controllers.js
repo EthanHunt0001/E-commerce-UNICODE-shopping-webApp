@@ -21,9 +21,21 @@ module.exports = {
     renderShopProducts : (req,res)=>{
       let userName = req.session.user;
       const userDet = req.session.userDetails;
-      productHelpers.getAllProductsAdminSide().then((products)=>{                 
-        res.render('user/user-product-view', {admin:false, userDet, products, user:true, userName:userName});
-      });
+      const filteredProducts = req.session.filteredProducts;
+      const maxPrice = req.session.maxPrice;
+      const minPrice = req.session.minPrice;
+      const searchValue = req.session.searchValue;
+      if(filteredProducts){
+        res.render('user/user-product-view', {admin:false, userDet, searchValue, maxPrice, minPrice, filteredProducts, user:true, userName:userName});
+      }else{
+        productHelpers.getAllProductsAdminSide().then((products)=>{         
+          res.render('user/user-product-view', {admin:false, userDet, products, user:true, userName:userName});
+        });
+      }
+      req.session.filteredProducts = false;
+      req.body.maxPrice = false;
+      req.body.minPrice = false;
+      req.session.searchValue = null;
     },
     renderLogin : (req, res)=>{
         if(req.session.loggedIn){
@@ -184,6 +196,7 @@ module.exports = {
       const userDet = req.session.userDetails;
       let id = req.params.id;
       productHelpers.getProductDetails(id).then((product)=>{
+        console.log(product);
         res.render('user/product-single-view', {product, userDet, user:true, userName});
       })
     },
@@ -389,7 +402,7 @@ module.exports = {
       req.body.userName = req.session.user;
       const address = await userHelpers.getActiveAddress(userId);
       const cartProducts = await userHelpers.getCartList(userId);
-      const cartList = cartProducts.products;     
+      const cartList = cartProducts.products;
       userHelpers.addOrder(req.body, address, cartList).then((orderId)=>{
         if(req.body.paymentMethod==="COD"){
           productHelpers.reduceStock(cartList).then(()=>{}).catch((err)=>console.log(err));
@@ -423,7 +436,12 @@ module.exports = {
       const userDet = req.session.userDetails;
       const orders = await userHelpers.getOrders(userId);
       orders.forEach(order => {
-        order.isCancelled = order.status==="cancelled"||order.status==="delivered"?true:false;
+        order.isCancelled = order.status==="cancelled"?true:false;
+        order.isDelivered = order.status==="delivered"?true:false;
+        order.isReturned = order.status==="returned"?true:false;
+        // if(order.status==="pending"){
+        //   userHelpers.toWallet(userId, "online-payment-failed", order.totalCost).then(()=>{}).catch(()=>{});
+        // }
         // getting date format clear to render
         const newDate = new Date(order.date);
         const year = newDate.getFullYear();
@@ -454,8 +472,111 @@ module.exports = {
         res.redirect('/orders');
       });
     },
+    returnOrder : async(req, res)=>{
+      const orderId = req.params.id;
+      const userId = req.session.userDetails._id;
+      const totalAmount = await userHelpers.orderTotalCost(orderId);
+      userHelpers.returnOrder(orderId).then(()=>{
+        userHelpers.toWallet(userId, "returned", totalAmount[0].total).then(()=>{
+          res.redirect('/orders');
+        })
+      })
+      .catch(()=>{
+        res.redirect('/orders');
+      })
+    },
+    renderWallet : async(req, res)=>{
+      const userName = req.session.user;
+      const userId = req.session.userDetails._id;
+      const orders = await userHelpers.getOrders(userId);
+      orders.forEach(order => {
+        if(order.status==="pending"&&!order.refunded){
+          userHelpers.toWallet(userId, "online-payment-failed", order.totalCost).then(()=>{}).catch(()=>{});
+        }
+      });
+      const wallet = await userHelpers.getWallet(userId);
+      const totalAmount = await userHelpers.totalWalletAmount(userId);
+      wallet.forEach(walle => {
+        // getting date format clear to render
+        const newDate = new Date(walle.date);
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth() + 1;
+        const day = newDate.getDate();
+        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+        walle.date = formattedDate;
+      });
+      if(wallet){
+        res.render('user/wallet', {user:true, totalAmount, wallet, admin:false, userName});
+      }else{
+        res.render('user/wallet', {user:true, admin:false, userName});
+      }
+    },
+    renderWalletTable : async(req, res)=>{
+      const userId = req.session.userDetails._id;
+      const userName = req.session.user;
+      const wallet = await userHelpers.getAllWallet(userId);
+      wallet.forEach(walle => {
+        const newDate = new Date(walle.date);
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth() + 1;
+        const day = newDate.getDate();
+        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+        walle.date = formattedDate;
+      });
+      if(wallet){
+        res.render('user/walletTable', {user:true, wallet, admin:false, userName});
+      }else{
+        res.render('user/walletTable', {user:true, admin:false, userName});
+      }
+    },
+    filterPrice : (req, res)=>{
+      productHelpers.filterPrice(req.body.minPrice, req.body.maxPrice, req.body.search).then((products)=>{
+        req.session.filteredProducts = products;
+        req.session.minPrice = req.body.minPrice;
+        req.session.maxPrice = req.body.maxPrice;
+        req.session.searchValue = req.body.search;
+        res.json({
+          status: "success"
+        });
+      });
+    },
+    sortPrice : (req, res)=>{
+      productHelpers.sortPrice(req.body).then((products)=>{
+        req.session.filteredProducts = products;
+        req.session.minPrice = req.body.minPrice;
+        req.session.maxPrice = req.body.maxPrice;
+        req.session.searchValue = req.body.search;
+        res.json({
+          status: "success"
+        })
+      });
+    },
+    searchProducts : (req, res)=>{
+      productHelpers.searchProducts(req.body).then((products)=>{
+        req.session.filteredProducts = products;
+        req.session.minPrice = req.body.minPrice;
+        req.session.maxPrice = req.body.maxPrice;
+        req.session.searchValue = req.body.search;
+        res.json({
+          status: "success"
+        })
+      })
+    },
+    couponApply : (req, res)=>{
+      userHelpers.couponApply(req.body.couponCode).then((coupon)=>{
+        if(coupon){
+          res.json({
+            status: "success",
+            coupon: coupon
+          })
+        }else{
+          res.json({
+            status: "coupon is not valid !!"
+          })
+        }
+      });
+    },
     userLogout : (req ,res)=>{
-      // req.session.destroy();
       req.session.loggedIn = false;
       req.session.userDetails=false;
       req.session.user=false;

@@ -63,6 +63,8 @@
                       {{!-- <th><a href="" class="btn btn-success" hidden>ship order</a> &nbsp;</th> --}}
                     {{else if this.isDelivered}}
                       <th><a href="" class="btn btn-success disabled">order delivered</a> &nbsp;</th>
+                    {{else if this.isReturned}}
+                      <th><a href="" class="btn btn-success disabled">order returned</a> &nbsp;</th>
                     {{else if this.isCancelled}}
                       <th><a href="" class="btn btn-success disabled">ship order</a> &nbsp;</th>
                     {{/if}}

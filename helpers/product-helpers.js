@@ -107,5 +107,72 @@ module.exports={
                 resolve();
             }
         });
+    },
+    filterPrice:(minPrice, maxPrice, searchValue)=>{
+        return new Promise(async(resolve, reject)=>{
+            try{
+                const products = await db.get().collection(collection.PRODUCT_COLLECTION)
+                .find({
+                    $and: [
+                        { discountPrice: {$gte: parseInt(minPrice)}},
+                        { discountPrice: {$lte: parseInt(maxPrice)}}
+                    ],
+                    $or: [
+                        { brand: {$regex: searchValue, $options:"i" }},
+                        { name: {$regex: searchValue, $options: "i"}}
+                    ]
+                }).toArray();
+                resolve(products);
+            }catch{
+                resolve(null);
+            }
+        })
+    },
+    sortPrice:(details)=>{
+        return new Promise(async(resolve, reject)=>{
+            try{
+                const minPrice = Number(details.minPrice);
+                const maxPrice = Number(details.maxPrice);
+                const value = details.sort;
+                const searchValue = details.search;
+                const products = await db.get().collection(collection.PRODUCT_COLLECTION)
+                .find({
+                    $and: [
+                        { discountPrice: {$gte: minPrice}},
+                        { discountPrice: {$lte: maxPrice}}
+                    ],
+                    $or: [
+                        { brand: {$regex: searchValue, $options:"i" }},
+                        { name: {$regex: searchValue, $options: "i"}}
+                    ]
+                }).sort({discountPrice: value}).toArray();
+                resolve(products);
+            }catch{
+                resolve(null);
+            }
+        });
+    },
+    searchProducts:(details)=>{
+        return new Promise(async(resolve, reject)=>{
+            try{
+                const minPrice = Number(details.minPrice);
+                const maxPrice = Number(details.maxPrice);
+                const searchValue = details.search;
+                const products = await db.get().collection(collection.PRODUCT_COLLECTION)
+                .find({
+                    $and: [
+                        { discountPrice: {$gte: minPrice}},
+                        { discountPrice: {$lte: maxPrice}}
+                    ],
+                    $or: [
+                        { brand: {$regex: searchValue, $options:"i" }},
+                        { name: {$regex: searchValue, $options: "i"}}
+                    ]
+                }).toArray();
+                resolve(products);
+            }catch{
+                resolve(null);
+            }
+        });
     }
 }

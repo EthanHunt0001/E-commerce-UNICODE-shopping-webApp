@@ -43,10 +43,16 @@
 
     {{!-- user-head --}}
     {{#if user}}
+        {{!-- search --}}
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+        {{!-- notFoundSearch --}}
+        <link rel="stylesheet" href="/user-css/noResultsFound.css">
+
         {{!-- elevate zooming => Jquery evelate version -> 3.0.8 && Jquery -> 3.2.1 --}}
         <script src="/user-js/jquery.min.js"></script>
         <script src="/javascripts/jquery.elevateZoom-3.0.8.min.js"></script>
 
+        <link rel="stylesheet" href="/user-css/wallet.css">
         {{!-- cropperJS --}}
         {{!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"> --}}
 
@@ -64,7 +70,6 @@
 
         <link rel="stylesheet" href="/user-css/bootstrap-datepicker.css">
         <link rel="stylesheet" href="/user-css/jquery.timepicker.css">
-
 
         <link rel="stylesheet" href="/user-css/flaticon.css">
         <link rel="stylesheet" href="/user-css/icomoon.css">

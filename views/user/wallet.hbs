@@ -1,0 +1,29 @@
+<div class="container walletbody d-flex py-5 justify-content-center">
+  <div class="cardWallet p-3">
+    <div class="d-flex flex-row justify-content-between text-align-center">
+      <img src="https://imgur.com/vvK2ARv.png">
+      <i class="fas fa-ellipsis-v"></i>
+    </div>
+    <p class="text-dark">UNICLUB Wallet Account</p>
+    <div class="card-bottom pt-3 px-3 mb-2">
+      <div class="d-flex flex-row justify-content-between text-align-center">
+        <div class="d-flex flex-column py-3">
+            <span style="font-weight: bolder;">Balance amount</span>
+            <p>&#8377; <span class="text-white">&nbsp;{{totalAmount}}</span></p>
+            <br>
+            <p style="font-weight: bolder;">recent transaction Details</p>
+            {{#each wallet}}
+                <span style="color: rgb(181, 181, 181);">{{inc @index}}.</span>
+                <span style="color: rgb(225, 225, 225);">Transaction Id : {{this._id}}</span>
+                <span style="color: rgb(225, 225, 225);">Date : {{this.date}}</span>
+                <span style="color: rgb(225, 225, 225);">Transaction source : {{this.source}}</span>
+                <span style="color: rgb(225, 225, 225);">Transaction Amount : {{this.amount}}</span>
+            {{/each}}
+            <div class="ml-auto pt-3">
+              <a href="/walletTable" style="text-decoration: underline;">more transaction details</a>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

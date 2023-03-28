@@ -182,6 +182,7 @@ module.exports={
             const total = await db.get().collection(collections.ORDER_COLLECTION).aggregate([
                 {
                   '$match': {
+                    'status': "delivered",
                     'date': {
                       '$gte': new Date(`${year-month-day}`)
                     }
@@ -252,6 +253,119 @@ module.exports={
             }catch(err){
                 resolve(null);
             }
+        })
+    },
+    getCoupons:()=>{
+        return new Promise(async(resolve, reject)=>{
+            const coupons = await db.get().collection(collections.COUPON_COLLECTION).find().toArray();
+            const newDate = new Date();
+            coupons.forEach(coupon => {
+                if(coupon.date < newDate){
+                    coupon.status = "EXPIRED";
+                }
+                const date = coupon.date;
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1; // add 1 because months are zero-indexed
+                const day = date.getDate();
+                const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+                coupon.date = formattedDate;
+            });
+            resolve(coupons);
+        });
+    },
+    addCoupon:(coupon)=>{
+        return new Promise(async(resolve, reject)=>{
+            coupon.discount = Number(coupon.discount);
+            coupon.date = new Date(coupon.date);
+            coupon.status = true;
+            const newDate = new Date();
+            if(coupon.date < newDate){
+                coupon.status = "EXPIRED";
+            }
+            const couponExists = await db.get().collection(collections.COUPON_COLLECTION).findOne({code: coupon.code});
+            if(couponExists){
+                resolve(null);
+            }else{
+                db.get().collection(collections.COUPON_COLLECTION).insertOne(coupon).then((response)=>{
+                    resolve();
+                })
+                .catch(()=>{
+                    reject();
+                });
+            }
+        });
+    },
+    editCoupon:(couponId, coupon)=>{
+        return new Promise((resolve, reject)=>{
+            coupon.date = new Date(coupon.date);
+            coupon.status = true;
+            const newDate = new Date();
+            if(coupon.date < newDate){
+                coupon.status = "EXPIRED";
+            }
+            db.get().collection(collections.COUPON_COLLECTION)
+            .updateOne(
+                {
+                    _id: ObjectId(couponId)
+                },
+                {
+                    $set:{
+                        code: coupon.code,
+                        discount: Number(coupon.discount),
+                        desc: coupon.desc,
+                        date: coupon.date,
+                        status: coupon.status
+                    }
+                }
+            )
+            .then(()=>{
+                resolve();
+            })
+            .catch(()=>{
+                reject();
+            })
+        })
+    },
+    deactivateCoupon:(couponId)=>{
+        return new Promise((resolve, reject)=>{
+            db.get().collection(collections.COUPON_COLLECTION)
+            .updateOne(
+                {
+                    _id: ObjectId(couponId)
+                },
+                {
+                    $set:{
+                        status: "DEACTIVATED"
+                    }
+                }
+            )
+            .then(()=>{
+                resolve();
+            })
+            .catch(()=>{
+                reject();
+            })
+        })
+    },
+    activateCoupon:(couponId)=>{
+        return new Promise((resolve, reject)=>{
+            db.get().collection(collections.COUPON_COLLECTION)
+            .updateOne(
+                {
+                    _id: ObjectId(couponId)
+                },
+                {
+                    $set:{
+                        status: true
+                    }
+                }
+            )
+            .then(()=>{
+                resolve();
+            })
+            .catch(()=>{
+                reject();
+            })
         })
     }
 }

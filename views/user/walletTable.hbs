@@ -1,0 +1,32 @@
+<section class="container bg-white mt-3" style="overflow-x: hidden;">
+    
+    <div class="text-center py-5">
+    <div class="d-flex">
+        <span class="mx-auto text-dark pb-4" style="font-size: larger;text-decoration: underline;">Wallet Transaction Details</span>
+    </div>
+      <div class="row table-responsive col-lg-12">
+        <table class="table table-bordered" style="width:100%">
+          <thead class="text-dark">
+            <tr>
+              <th style="font-weight: bold;" scope="col">SI.No</th>
+              <th style="font-weight: bold;" scope="col">Date</th>
+              <th style="font-weight: bold;" scope="col">Transaction Id</th>
+              <th style="font-weight: bold;" scope="col">Transaction source</th>
+              <th style="font-weight: bold;" scope="col">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each wallet}}
+                <tr>
+                    <th class="text-dark">{{inc @index}}</th>
+                    <th class="text-dark">{{this.date}}</th>
+                    <th class="text-dark">{{this._id}}</th>
+                    <th class="text-dark">{{this.source}}</th>
+                    <th class="text-dark">{{this.amount}}</th>
+                </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+</section>

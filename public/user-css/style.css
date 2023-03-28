@@ -9199,7 +9199,7 @@ h1, h2, h3, h4, h5,
         display: none; } }
 
 .form-control {
-  height: 52px !important;
+  height: 45px !important;
   background: #fff !important;
   color: #000000 !important;
   font-size: 18px;
@@ -9208,7 +9208,7 @@ h1, h2, h3, h4, h5,
   box-shadow: none !important; }
   .form-control:focus, .form-control:active {
     border-color: #000000; }
-
+    
 textarea.form-control {
   height: inherit !important; }
 
@@ -9230,7 +9230,7 @@ textarea.form-control {
   font-size: 24px; }
 
 .ftco-section {
-  padding: 9em 0;
+  padding: 3em 0;
   position: relative; }
   @media (max-width: 767.98px) {
     .ftco-section {

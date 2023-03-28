@@ -67,7 +67,7 @@
                     <p>ACCOUNT &nbsp;SETTINGS</p>
                     <a href="">Profile Information</a><br>
                     <a href="/manageAddress">Manage Addresses</a><br>
-                    <a href="">Pan Card Information</a>
+                    <a href="/wallet">Wallet</a>
 
                     <p>MY&nbsp;STUFF</p>
                     <a href="/wishList">My Wishlist</a><br/>
@@ -112,7 +112,7 @@
                                 <label>Phone</label>
                             </div>
                             <div class="col-md-6">
-                                <input type="tel" class="edit-field" name="mobile" value="{{userProf.mobile}}" disabled>
+                                <input type="tel" class="edit-field" name="mobile" maxlength="10" value="{{userProf.mobile}}" disabled>
                             </div>
                         </div>
 

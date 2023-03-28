@@ -256,10 +256,11 @@ module.exports = {
     getOrders : async(req, res)=>{
       const orders = await adminHelpers.getAllOrders();
       orders.forEach(order => {
-        order.isCancelled = order.status === "cancelled"||order.status==="delivered"? true : false;
+        order.isCancelled = order.status === "cancelled"||order.status==="delivered"||order.status==="returned"? true : false;
         order.isShipped = order.status==="shipped"?true:false;
         order.isDelivered = order.status==="delivered"?true:false;
         order.isPlaced = order.status==="placed"||order.status==="pending"?true:false;
+        order.isReturned = order.status==="returned"?true:false;
         // date formatting
         const newDate = new Date(order.date);
         const year = newDate.getFullYear();
@@ -301,11 +302,6 @@ module.exports = {
         res.render('admin/order-viewdetails-admin', {admin:true, orderedProducts, order, adminName:req.session.adminName})
       })
     },
-    // orderedProducts : async(req, res)=>{
-    //   const orderId = req.params.id;
-    //   const orders = await userHelpers.getOrderedProducts(orderId);
-    //   res.render('admin/ordered-products', {admin:true, orders, adminName:req.session.adminName});
-    // },
     bannerView : (req, res)=>{     
       adminHelpers.getBanners().then((banners)=>{
         res.render('admin/banner-view', {admin:true, banners, adminName:req.session.adminName});
@@ -350,9 +346,55 @@ module.exports = {
         res.redirect('/admin/banner-view');
       });
     },
+    renderCoupons : async(req, res)=>{
+      const coupons = await adminHelpers.getCoupons();
+      coupons.forEach(coupon=>{
+        coupon.deactivated = coupon.status==="DEACTIVATED"?true:false;
+        coupon.expired = coupon.status==="EXPIRED"?true:false;
+      })
+      console.log(coupons);
+      res.render('admin/coupons', {admin:true, coupons, adminName:req.session.adminName});
+    },
+    renderAddCoupen : (req, res)=>{
+      res.render('admin/add-coupon', {admin:true, adminName:req.session.adminName});
+    },
+    addCouponPost : (req, res)=>{
+      adminHelpers.addCoupon(req.body).then(()=>{
+        res.redirect('/admin/coupons');
+      })
+      .catch(()=>{
+        res.redirect('/admin/coupons');
+      })
+    },
+    editCouponPost : (req, res)=>{
+      const couponId = req.params.id;
+      adminHelpers.editCoupon(couponId, req.body).then(()=>{
+        res.redirect('/admin/coupons');
+      })
+      .catch(()=>{
+        res.redirect('/admin/coupons');
+      })
+    },
+    deactivateCoupon : (req, res)=>{
+      const couponId = req.params.id;
+      adminHelpers.deactivateCoupon(couponId).then(()=>{
+        res.redirect('/admin/coupons');
+      })
+      .catch(()=>{
+        res.redirect('/admin/coupons');
+      })
+    },
+    activateCoupon : (req, res)=>{
+      const couponId = req.params.id;
+      adminHelpers.activateCoupon(couponId).then(()=>{
+        res.redirect('/admin/coupons');
+      })
+      .catch(()=>{
+        res.redirect('/admin/coupons');
+      })
+    },
     adminLogout : (req,res)=>{
-      // req.session.destroy();
       req.session.adminLoggedIn = false;
       res.redirect('/admin/login');
-    }
+    },
 }

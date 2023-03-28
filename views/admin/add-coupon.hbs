@@ -1,0 +1,65 @@
+<div class="container bg-white mt-3">
+    <div class="row">
+        <div class="col-lg-6 mt-3">
+            <h2 class="fw-bold">ADD COUPON</h2>
+            <form action="/admin/add-coupon" style="margin-top: 2em;" method="post" id="form">
+                <div class="mb-3">
+                  <label for="code" class="form-label">Code</label>
+                  <input type="text" class="form-control" name="code" aria-describedby="emailHelp" required>
+                </div>
+                <div class="mb-3">
+                  <label for="discount" class="form-label">Discount</label>
+                  <input type="text" class="form-control" name="discount" required>
+                </div>
+                <div class="mb-3">
+                  <label for="desc" class="form-label">Description</label>
+                  <input type="text" class="form-control" name="desc" required>
+                </div>
+                <div class="mb-3">
+                  <label for="date" class="form-label">Expiry Date</label>
+                  <input type="date" class="form-control" name="date" required>
+                </div>
+                {{!-- <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" class="form-control" name="password" required>
+                </div> --}}
+
+                <div class="text-center mt-4">
+                    <button onclick="validateForm()" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+  function validateForm() {
+    let form = document.getElementById("form");
+    let inputs = form.getElementsByTagName("input");
+    let isFormValid = true;
+    for(let i = 0; i < inputs.length; i++) {
+      if(inputs[i].value === "") {
+        isFormValid = false;
+        inputs[i].style.borderColor = "red";
+      }else {
+        inputs[i].style.borderColor = "";
+      }
+    }
+    if(isFormValid){
+      form.submit();
+    }else{
+      Toastify({
+	      	text: "fill all the field",
+	      	duration: 3000,
+	      	gravity: "top",
+	      	position: "center",
+	      	style: {
+	      		background: "linear-gradient(to right, #fe6d00, #ffb900)",
+	      	},
+	      }).showToast();
+        setTimeout(()=>{
+	      	location.reload();
+	      }, 650);
+    }
+  }
+</script>

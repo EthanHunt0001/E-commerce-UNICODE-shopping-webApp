@@ -68,6 +68,10 @@ router.post('/editAddressPost/:id', verifyLogin.userVerifyLogin, userControllers
 
 router.get('/deleteAddress/:id', verifyLogin.userVerifyLogin, userControllers.deleteAddress);
 
+router.get('/wallet', verifyLogin.userVerifyLogin, userControllers.renderWallet);
+
+router.get('/walletTable', verifyLogin.userVerifyLogin, userControllers.renderWalletTable);
+
 // order-management
 
 router.get('/checkout', verifyLogin.userVerifyLogin, userControllers.renderCheckout);
@@ -81,6 +85,8 @@ router.get('/orders', verifyLogin.userVerifyLogin, userControllers.renderOrders)
 router.get('/view/products/:id', verifyLogin.userVerifyLogin, userControllers.renderOrderedProducts);
 
 router.get('/cancelOrder/:id', verifyLogin.userVerifyLogin, userControllers.cancelOrder);
+
+router.get('/returnOrder/:id', verifyLogin.userVerifyLogin, userControllers.returnOrder);
 
 // Category_routes
 
@@ -99,6 +105,18 @@ router.get('/skirts/:id', verifyLogin.userVerifyLogin, userControllers.renderSel
 router.get('/jacket/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
 
 router.get('/winterCoats/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
+
+// Filter & sort & search
+
+router.post('/shopPriceFilter', verifyLogin.userVerifyLogin, userControllers.filterPrice);
+
+router.post('/shopPriceSort', verifyLogin.userVerifyLogin, userControllers.sortPrice);
+
+router.post('/searchProduct', verifyLogin.userVerifyLogin, userControllers.searchProducts);
+
+// coupon_routes
+
+router.post('/couponApply', verifyLogin.userVerifyLogin, userControllers.couponApply);
 
 // logout
 

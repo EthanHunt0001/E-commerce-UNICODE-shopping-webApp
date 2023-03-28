@@ -90,6 +90,20 @@ router.post('/edit-banner/:id', verifyLogin.adminAuthVerify, upload.single("imag
 
 router.get('/selectBanner/:id', verifyLogin.adminAuthVerify, adminControllers.selectBanner);
 
+// COUPEN-MANAGEMENT
+
+router.get('/coupons', verifyLogin.adminAuthVerify, adminControllers.renderCoupons);
+
+router.get('/add-coupon', verifyLogin.adminAuthVerify, adminControllers.renderAddCoupen);
+
+router.post('/add-coupon', verifyLogin.adminAuthVerify, adminControllers.addCouponPost);
+
+router.post('/editCouponPost/:id', verifyLogin.adminAuthVerify, adminControllers.editCouponPost);
+
+router.get('/deactivate/:id', verifyLogin.adminAuthVerify, adminControllers.deactivateCoupon);
+
+router.get('/activate/:id', verifyLogin.adminAuthVerify, adminControllers.activateCoupon);
+
 // LOGOUT
 
 router.get('/logout', adminControllers.adminLogout);

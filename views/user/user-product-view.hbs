@@ -1,3 +1,67 @@
+<style>
+  .disabled {
+    pointer-events: none;
+    opacity: 0.5; /* optional - to indicate the element is disabled */
+  }
+  .icon-heart {
+	pointer-events: visible;
+  }
+</style>
+
+<style>
+	
+    .search{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    }
+
+    .searchbar{
+    margin-bottom: auto;
+    margin-top: auto;
+    height: 60px;
+    background-color: #353b48;
+    border-radius: 30px;
+    padding: 10px;
+    }
+
+    .search_input{
+    color: white;
+    border: 0;
+    outline: 0;
+    background: none;
+    width: 0;
+    caret-color:transparent;
+    line-height: 40px;
+    transition: width 0.4s linear;
+    }
+
+    .searchbar:hover > .search_input{
+    padding: 0 10px;
+    width: 450px;
+    caret-color:red;
+    transition: width 0.4s linear;
+    }
+
+    .searchbar:hover > .search_icon{
+    background: white;
+    color: #e74c3c;
+    }
+
+    .search_icon{
+    height: 40px;
+    width: 40px;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color:white;
+    text-decoration:none;
+    }
+</style>
+
 <div class="hero-wrap hero-bread" style="background-image: url('/images/bg_6.jpg');">
   <div class="container">
     <div class="row no-gutters slider-text align-items-center justify-content-center">
@@ -9,48 +73,181 @@
   </div>
 </div>
 
+{{!-- search --}}
+<div class="search pt-5 bg-light d-none d-lg-block d-md-block">
+  <div class="d-flex justify-content-center h-100">
+    <div class="searchbar">
+      <input class="search_input" type="text" name="search" value="{{searchValue}}" id="search" placeholder="Type to search...">
+      <a onclick="searchProduct()" class="search_icon"><i class="fas fa-search"></i></a>
+    </div>
+  </div>
+</div>
+<div class="searchbar pt-5 d-lg-none d-md-none">
+    <input class="search_input" type="text" name="search" value="{{searchValue}}" id="search" placeholder="Type to search...">
+    <a onclick="searchProduct()" class="search_icon"><i class="fas fa-search"></i></a>
+</div>
+
 <section class="ftco-section bg-light">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8 col-lg-10 order-md-last">
 				<div class="row">
-					{{#each products}}
-	    			<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate card-deck">
-	    				<div class="product card mt-3">
-							<span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span>
-	    					<a href="/product-single-view/{{this._id}}" class="img-prod"><img class="img-fluid" src="{{this.images.[0]}}" alt="image of the dress">
-	    						<span class="status">{{this.discountPerc}}%</span>
-	    						{{!-- <span onclick="window.location='https://www.google.com/'" class="bottom-area status mt-5 bg-white icon-heart text-dark" style="font-size: xx-large;position: absolute;z-index: 3;"></span> --}}
-	    						<div class="overlay"></div>
-	    					</a>
-	    					<div class="text py-3 px-3">
-	    						<h3><a href="product-single-view/{{this._id}}">{{this.name}}</a></h3>
-	    						<div class="d-flex">
-	    							<div class="pricing">
-			    						<p class="price"><span class="mr-2 price-dc">Rs.{{this.price}}</span>
-										<span class="price-sale">Rs.{{this.discountPrice}}</span></p>
-			    					</div>
-			    					<div class="rating">
-		    							<p class="text-right">
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    								<a href="#"><span class="ion-ios-star-outline"></span></a>
-		    							</p>
-		    						</div>
-		    					</div>
-		    					<p class="bottom-area d-flex px-3">
-	    							<a href="#" class="add-to-cart text-center py-2 mr-1" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-	    							<a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
-	    						</p>
-	    					</div>
-	    				</div>
-	    			</div>
-					{{/each}}
+					{{#if products}}
+						{{#each products}}
+							{{#if this.stocks}}
+	    						<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate card-deck">
+	    							<div class="product card mt-3">
+										<span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span>
+	    								<a href="/product-single-view/{{this._id}}" class="img-prod"><img class="img-fluid" src="{{this.images.[0]}}" alt="image of the dress">
+	    									<span class="status">{{this.discountPerc}}%</span>
+	    									{{!-- <span onclick="window.location='https://www.google.com/'" class="bottom-area status mt-5 bg-white icon-heart text-dark" style="font-size: xx-large;position: absolute;z-index: 3;"></span> --}}
+	    									<div class="overlay"></div>
+	    								</a>
+	    								<div class="text py-3 px-3">
+	    									<h3><a href="product-single-view/{{this._id}}">{{this.name}}</a></h3>
+	    									<div class="d-flex">
+	    										<div class="pricing">
+			    									<p class="price"><span class="mr-2 price-dc">Rs.{{this.price}}</span>
+													<span class="price-sale">Rs.{{this.discountPrice}}</span></p>
+			    								</div>
+			    								<div class="rating">
+		    										<p class="text-right">
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    										</p>
+		    									</div>
+		    								</div>
+		    								<p class="bottom-area d-flex px-3">
+	    										<a href="#" class="add-to-cart text-center py-2 mr-1" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+	    										<a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
+	    									</p>
+	    								</div>
+	    							</div>
+	    						</div>
+							{{else}}
+	    						<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate card-deck disabled">
+	    							<div class="product card mt-3">
+										<span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span>
+	    								<span class="text-center text-danger" style="font-weight: bold;">OUT OF STOCK</span>
+										<a href="/product-single-view/{{this._id}}" class="img-prod"><img class="img-fluid" src="{{this.images.[0]}}" alt="image of the dress">
+	    									{{!-- <span class="status">{{this.discountPerc}}%</span> --}}
+	    									{{!-- <span onclick="window.location='https://www.google.com/'" class="bottom-area status mt-5 bg-white icon-heart text-dark" style="font-size: xx-large;position: absolute;z-index: 3;"></span> --}}
+	    									<div class="overlay"></div>
+	    								</a>
+	    								<div class="text py-3 px-3">
+	    									<h3><a href="product-single-view/{{this._id}}">{{this.name}}</a></h3>
+	    									<div class="d-flex">
+	    										<div class="pricing">
+			    									<p class="price"><span class="mr-2 price-dc">Rs.{{this.price}}</span>
+													<span class="price-sale">Rs.{{this.discountPrice}}</span></p>
+			    								</div>
+			    								<div class="rating">
+		    										<p class="text-right">
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    										</p>
+		    									</div>
+		    								</div>
+		    								{{!-- <p class="bottom-area d-flex px-3">
+	    										<a href="#" class="add-to-cart text-center py-2 mr-1" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+	    										<a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
+	    									</p> --}}
+	    								</div>
+	    							</div>
+	    						</div>
+							{{/if}}
+						{{/each}}
+					{{else if filteredProducts}}
+						{{#each filteredProducts}}
+							{{#if this.stocks}}
+	    						<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate card-deck">
+	    							<div class="product card mt-3">
+										<span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span>
+	    								<a href="/product-single-view/{{this._id}}" class="img-prod"><img class="img-fluid" src="{{this.images.[0]}}" alt="image of the dress">
+	    									<span class="status">{{this.discountPerc}}%</span>
+	    									{{!-- <span onclick="window.location='https://www.google.com/'" class="bottom-area status mt-5 bg-white icon-heart text-dark" style="font-size: xx-large;position: absolute;z-index: 3;"></span> --}}
+	    									<div class="overlay"></div>
+	    								</a>
+	    								<div class="text py-3 px-3">
+	    									<h3><a href="product-single-view/{{this._id}}">{{this.name}}</a></h3>
+	    									<div class="d-flex">
+	    										<div class="pricing">
+			    									<p class="price"><span class="mr-2 price-dc">Rs.{{this.price}}</span>
+													<span class="price-sale">Rs.{{this.discountPrice}}</span></p>
+			    								</div>
+			    								<div class="rating">
+		    										<p class="text-right">
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    										</p>
+		    									</div>
+		    								</div>
+		    								<p class="bottom-area d-flex px-3">
+	    										<a href="#" class="add-to-cart text-center py-2 mr-1" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+	    										<a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
+	    									</p>
+	    								</div>
+	    							</div>
+	    						</div>
+							{{else}}
+	    						<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate card-deck disabled">
+	    							<div class="product card mt-3">
+										<span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span>
+	    								<span class="text-center text-danger" style="font-weight: bold;">OUT OF STOCK</span>
+										<a href="/product-single-view/{{this._id}}" class="img-prod"><img class="img-fluid" src="{{this.images.[0]}}" alt="image of the dress">
+	    									{{!-- <span class="status">{{this.discountPerc}}%</span> --}}
+	    									{{!-- <span onclick="window.location='https://www.google.com/'" class="bottom-area status mt-5 bg-white icon-heart text-dark" style="font-size: xx-large;position: absolute;z-index: 3;"></span> --}}
+	    									<div class="overlay"></div>
+	    								</a>
+	    								<div class="text py-3 px-3">
+	    									<h3><a href="product-single-view/{{this._id}}">{{this.name}}</a></h3>
+	    									<div class="d-flex">
+	    										<div class="pricing">
+			    									<p class="price"><span class="mr-2 price-dc">Rs.{{this.price}}</span>
+													<span class="price-sale">Rs.{{this.discountPrice}}</span></p>
+			    								</div>
+			    								<div class="rating">
+		    										<p class="text-right">
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    											<a href="#"><span class="ion-ios-star-outline"></span></a>
+		    										</p>
+		    									</div>
+		    								</div>
+		    								{{!-- <p class="bottom-area d-flex px-3">
+	    										<a href="#" class="add-to-cart text-center py-2 mr-1" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+	    										<a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
+	    									</p> --}}
+	    								</div>
+	    							</div>
+	    						</div>
+							{{/if}}
+						{{/each}}
+					{{else}}
+						<div id="notfound">
+							<div class="notfound">
+								<div class="notfound-404">
+									<h1>Oops!</h1>
+									<h2>404 - No Results Found</h2>
+								</div>
+								<a href="/shop">Go TO Shop</a>
+							</div>
+						</div>
+					{{/if}}
 	    		</div>
 	    		<div class="row mt-5">
-	          <div class="col text-center">
+	          {{!-- <div class="col text-center">
 	            <div class="block-27">
 	              <ul>
 	                <li><a href="#">&lt;</a></li>
@@ -62,39 +259,66 @@
 	                <li><a href="#">&gt;</a></li>
 	              </ul>
 	            </div>
-	          </div>
+	          </div> --}}
 	        </div>
 	    	</div>
 	    	<div class="col-md-4 col-lg-2 sidebar">
 	    		<div class="sidebar-box-2">
-	    			<h2 class="heading mb-4"><a href="#">Clothing</a></h2>
+	    			<h2 class="heading mb-4"><a href="#">Category</a></h2>
 	    			<ul>
-	    				<li><a href="/shirts/shirt">Shirts</a></li>
-						<li><a href="/tshirts/t-shirt">T-shirts</a></li>
-						<li><a href="/tops/tops">Tops</a></li>
-						<li><a href="/jeans/jeans">Jeans</a></li>
-						<li><a href="/shorts/shorts">Shorts</a></li>
-						<li><a href="/skirts/skirts">Skirts</a></li>
-						<li><a href="/jacket/jacket">Jackets</a></li>
-						<li><a href="/winterCoats/wintercoats">Winter Coats</a></li>
+	    				<li style="font-size: small;"><a href="/shirts/shirt">Shirts</a></li>
+						<li style="font-size: small;"><a href="/tshirts/t-shirt">T-shirts</a></li>
+						<li style="font-size: small;"><a href="/tops/tops">Tops</a></li>
+						<li style="font-size: small;"><a href="/jeans/jeans">Jeans</a></li>
+						<li style="font-size: small;"><a href="/shorts/shorts">Shorts</a></li>
+						<li style="font-size: small;"><a href="/skirts/skirts">Skirts</a></li>
+						<li style="font-size: small;"><a href="/jacket/jacket">Jackets</a></li>
+						<li style="font-size: small;"><a href="/winterCoats/wintercoats">Winter Coats</a></li>
 						{{!-- <li><a href="#">Jumpsuits</a></li> --}}
 	    			</ul>
 	    		</div>
-	    		{{!-- <div class="sidebar-box-2">
-	    			<h2 class="heading mb-4"><a href="#">Jeans</a></h2>
-	    			<ul>
-	    				<li><a href="#">Shirts &amp; Tops</a></li>
-							<li><a href="#">Dresses</a></li>
-							<li><a href="#">Shorts &amp; Skirts</a></li>
-							<li><a href="#">Jackets</a></li>
-							<li><a href="#">Coats</a></li>
-							<li><a href="#">Jeans</a></li>
-							<li><a href="#">Sleeveless</a></li>
-							<li><a href="#">Trousers</a></li>
-							<li><a href="#">Winter Coats</a></li>
-							<li><a href="#">Jumpsuits</a></li>
-	    			</ul>
-	    		</div> --}}
+	    		<div class="sidebar-box-2">
+	    			<h2 class="heading mb-3"><a href="#">Filter</a></h2>
+					<label for="category" class="form-label text-dark" style="font-size: large;">Price</label>
+					<select class="form-control" id="selectMinPrice" name="minPrice">
+						{{#if minPrice}}
+							<option value="{{minPrice}}" hidden>{{minPrice}}</option>
+						{{/if}}
+						<option value="400" hidden>Min</option>
+						<option value="500">500</option>
+						<option value="1000">1000</option>
+						<option value="2000">2000</option>
+						<option value="3000">3000</option>
+					</select>
+					<p class="text-center pt-3">to</p>
+					<select class="form-control mb-4" id="selectMaxPrice" name="maxPrice">
+						{{#if maxPrice}}
+							<option value="{{maxPrice}}" hidden>{{maxPrice}}</option>
+						{{/if}}
+						<option value="6000">6000+</option>
+						<option value="1000">1000</option>
+						<option value="2000">2000</option>
+						<option value="3000">3000</option>
+					</select>
+
+						<label for="category" class="form-label text-dark" style="font-size: large;">Sort Price</label><br>
+						<div class="form-check form-check-inline">
+						   <input class="form-check-input" type="radio" name="exampleRadios" id="lowerTohigh" onclick="sortPrice(1)">
+						   <label class="form-check-label" style="color: black;" for="lowerTohigh">
+						   	&nbsp;Lower to Higher
+						   </label>
+						</div>
+						<div class="form-check form-check-inline pt-1">
+						   <input class="form-check-input" type="radio" name="exampleRadios" id="highToLower" onclick="sortPrice(-1)">
+						   <label class="form-check-label" style="color: black;" for="highToLower">
+						   	&nbsp;Higher to Lower
+						   </label>
+						</div>
+	    			{{!-- <ul>
+	    				<li><a href="#">Above Rs.500</a></li>
+						<li><a href="#">Above Rs.1000</a></li>
+	    			</ul> --}}
+	    		</div>
 	    		{{!-- <div class="sidebar-box-2">
 	    			<h2 class="heading mb-2"><a href="#">Bags</a></h2>
 	    			<h2 class="heading mb-2"><a href="#">Accessories</a></h2>
@@ -194,5 +418,77 @@
 			addToWishList(this.dataset.product);
 		});
 	});
+
+</script>
+
+{{!-- price-filter --}}
+<script>
+
+	const selectMinPrice = document.querySelector('#selectMinPrice');
+	const selectMaxPrice = document.querySelector('#selectMaxPrice');
+	const searchInput = document.querySelector('#search');
+	//const lowerTohigh = document.querySelector('#lowerTohigh');
+	//const highToLower = document.querySelector('#highToLower');
+
+	selectMinPrice.addEventListener('change', () => {
+	  const minPrice = parseInt(selectMinPrice.value);
+	
+	  for (let i = 0; i < selectMaxPrice.options.length; i++) {
+	    const option = selectMaxPrice.options[i];
+	    const maxPrice = parseInt(option.value);
+	
+	    // set the max attribute to the selected minimum price
+	    if (maxPrice <= minPrice) {
+	      option.disabled = true;
+	    } else {
+	      option.disabled = false;
+	      option.max = minPrice;
+	    }
+	  }
+	});
+
+	$('#selectMaxPrice').on('change', function() {
+		axios.post('/shopPriceFilter',{
+			minPrice :selectMinPrice.value,
+			maxPrice :selectMaxPrice.value,
+			search: searchInput.value
+		})
+		.then(()=>{
+		  location.href = '/shop';
+		})
+		.catch(()=>{
+		  location.href = '/shop';
+		});
+	});
+
+	function sortPrice(value){
+		axios.post('/shopPriceSort', {
+			minPrice :selectMinPrice.value,
+			maxPrice :selectMaxPrice.value,
+			search: searchInput.value,
+			sort :value
+		})
+		.then(()=>{
+			location.href = '/shop';
+		})
+		.catch(()=>{
+			location.href = '/shop';
+		});
+	}
+
+	function searchProduct(){
+		axios.post('/searchProduct', {
+			minPrice :selectMinPrice.value,
+			maxPrice :selectMaxPrice.value,
+			search: searchInput.value
+		})
+		.then((response)=>{
+			console.log(response);
+			location.href = '/shop';
+		})
+		.catch(()=>{
+			location.href = '/shop';
+		})
+	}
 
 </script>

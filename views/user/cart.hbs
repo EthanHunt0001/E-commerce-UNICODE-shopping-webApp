@@ -1,3 +1,13 @@
+<style>
+	.disabled {
+    	pointer-events: none;
+    	opacity: 0.5; /* optional - to indicate the element is disabled */
+  	}
+	.deleteProduct {
+		pointer-events: visible;
+	}
+</style>
+
 <div class="hero-wrap hero-bread" style="background-image: url('/images/bg_6.jpg');">
   <div class="container">
     <div class="row no-gutters slider-text align-items-center justify-content-center">
@@ -26,34 +36,71 @@
 					    </thead>
 					    <tbody>
 						{{#each products}}
-					    	<tr class="text-center">
-					    	    <td class="product-remove"><a class="deleteProduct" style="cursor: pointer;" data-product="{{this.product._id}}"><span class="ion-ios-close"></span></a></td>
+							{{#if this.product.stocks}}
+					    		<tr class="text-center">
+					    		    <td class="product-remove"><a class="deleteProduct" style="cursor: pointer;" data-product="{{this.product._id}}"><span class="ion-ios-close"></span></a></td>
 
-					    	    <td class="image-prod"><a href="/product-single-view/{{this.product._id}}"><div class="img" style="background-image:url({{this.product.images.[0]}});"></div></a></td>
+					    		    <td class="image-prod"><a href="/product-single-view/{{this.product._id}}"><div class="img" style="background-image:url({{this.product.images.[0]}});"></div></a></td>
 
-					    	    <td class="product-name">
-									<a href="/product-single-view/{{this.product._id}}">
-					    	    	<h3>{{this.product.name}}</h3>
-					    	    	<p style="color: rgb(137, 137, 137);">{{this.product.description}}</p>
-									</a>
-					    	    </td>
+					    		    <td class="product-name">
+										<a href="/product-single-view/{{this.product._id}}">
+					    		    	<h3>{{this.product.name}}</h3>
+					    		    	<p style="color: rgb(137, 137, 137);">{{this.product.description}}</p>
+										</a>
+					    		    </td>
 
-					    	    <td class="price" id="discountPrice">Rs.{{this.product.discountPrice}}</td>
+					    		    <td class="price" id="discountPrice">Rs.{{this.product.discountPrice}}</td>
 
-					    	    <td class="quantity">
-					    	    	<div class="input-group mb-3">
-										<div class="mb-0">
-											<span class="btn bg-transparent mr-2 text-center mt-2" id="minus" onclick="changeQuantity('{{this.product._id}}', -1)" style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span>
-										</div>
-				        	     		<input type="text" name="quantity" disabled id="{{this.product._id}}" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
-										<div class="mb-0">
-											<span class="btn btn-dark bg-transparent ml-2 text-center mt-2" onclick="changeQuantity('{{this.product._id}}', 1)" style="color: black;border-color: rgb(192, 192, 192);">&nbsp;+&nbsp;</span>
-										</div>
-				        	  		</div>
-				        	  </td>
+					    		    <td class="quantity">
+					    		    	<div class="input-group mb-3">
+											<div class="mb-0">
+												<span class="btn bg-transparent mr-2 text-center mt-2" id="minus" onclick="changeQuantity('{{this.product._id}}', -1)" style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span>
+											</div>
+				        		     		<input type="text" name="quantity" disabled id="{{this.product._id}}" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
+											<div class="mb-0">
+												<span class="btn btn-dark bg-transparent ml-2 text-center mt-2" onclick="changeQuantity('{{this.product._id}}', 1)" style="color: black;border-color: rgb(192, 192, 192);">&nbsp;+&nbsp;</span>
+											</div>
+				        		  		</div>
+										{{!-- <span id="{{this.product._id}}stockOut text-danger" hidden >stock is out</span> --}}
+										<span id="{{this.product._id}}stocks">{{subtract this.product.stocks this.quantity}}</span>
+										<span>stock left</span>
+				        		  </td>
 
-					    	    <td class="total" id="{{this.product._id}}total">{{mathMulti this.product.discountPrice this.quantity}}</td>
-					    	</tr>
+					    		    <td class="total" id="{{this.product._id}}total">{{mathMulti this.product.discountPrice this.quantity}}</td>
+					    		</tr>
+							{{else}}
+					    		<tr class="text-center disabled">
+					    		    <td class="product-remove"><a class="deleteProduct" style="cursor: pointer;" data-product="{{this.product._id}}"><span class="ion-ios-close"></span></a></td>
+
+					    		    <td class="image-prod"><a href="/product-single-view/{{this.product._id}}"><div class="img" style="background-image:url({{this.product.images.[0]}});"></div></a></td>
+
+					    		    <td class="product-name">
+										<a href="/product-single-view/{{this.product._id}}">
+					    		    	<h3>{{this.product.name}}</h3>
+					    		    	<p style="color: rgb(137, 137, 137);">{{this.product.description}}</p>
+										</a>
+					    		    </td>
+
+					    		    <td class="price" id="discountPrice">Rs.{{this.product.discountPrice}}</td>
+
+					    		    <td class="quantity">
+					    		    	<div class="input-group mb-3">
+											<div class="mb-0">
+												<span class="btn bg-transparent mr-2 text-center mt-2" id="minus" onclick="changeQuantity('{{this.product._id}}', -1)" style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span>
+											</div>
+				        		     		<input type="text" name="quantity" disabled id="{{this.product._id}}" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
+											<div class="mb-0">
+												<span class="btn btn-dark bg-transparent ml-2 text-center mt-2" onclick="changeQuantity('{{this.product._id}}', 1)" style="color: black;border-color: rgb(192, 192, 192);">&nbsp;+&nbsp;</span>
+											</div>
+				        		  		</div>
+										{{!-- <span id="{{this.product._id}}stockOut text-danger" hidden >stock is out</span> --}}
+										{{!-- <span id="{{this.product._id}}stocks">{{subtract this.product.stocks this.quantity}}</span> --}}
+										<span class="text-danger" style="font-weight: bold;">out of stock</span>
+				        		  </td>
+
+					    		    <td class="total" id="{{this.product._id}}total">{{mathMulti this.product.discountPrice this.quantity}}</td>
+					    		</tr>
+							{{/if}}
 						{{/each}}
 					    </tbody>
 					  </table>
@@ -90,7 +137,6 @@
 
 <script>
 	window.onload = function() {
-	  //const subTotal = parseFloat(document.getElementById('subTotal').innerText);
 	  const subTotal1 = document.getElementById('subTotal');
 	  const subTotal = subTotal1.dataset.price;
 	  if (subTotal == 0) {
@@ -101,25 +147,30 @@
 </script>
 
 <script>
-
 	const changeQuantity = (proId, count)=>{
-		const quantity = Number(document.getElementById(proId).value);
-		const res = axios({
-			method : 'POST',
-			url: '/cart/changeCartQuantity',
-			data : {
-				productId: proId,
-				count : count,
-				quantity : quantity,
-			}
-		}).then((response)=>{
-			if(response.data.status){
-				document.getElementById(proId).value = quantity+count;
-				document.getElementById(`${proId}total`).innerHTML = response.data.total.toFixed(2);
-				document.getElementById('subTotal').innerHTML = response.data.subTotal;
-				document.getElementById('cartTotal').innerHTML = response.data.cartTotal;
-			}
-		});
+		let stocks = document.getElementById(`${proId}stocks`);
+		let stocksValue = Number(stocks.innerHTML);
+		
+		if(stocksValue-(count)>=0){
+			const quantity = Number(document.getElementById(proId).value);
+			const res = axios({
+				method : 'POST',
+				url: '/cart/changeCartQuantity',
+				data : {
+					productId: proId,
+					count : count,
+					quantity : quantity,
+				}
+			}).then((response)=>{
+				if(response.data.status){
+					document.getElementById(proId).value = quantity+count;
+					document.getElementById(`${proId}total`).innerHTML = response.data.total.toFixed(2);
+					document.getElementById('subTotal').innerHTML = response.data.subTotal;
+					document.getElementById('cartTotal').innerHTML = response.data.cartTotal;
+					document.getElementById(`${proId}stocks`).innerHTML = stocksValue-(count);
+				}
+			});
+		}
 	}
 
 	const deleteProduct = async(productId)=>{

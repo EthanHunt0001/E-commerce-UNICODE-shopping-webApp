@@ -413,7 +413,7 @@ module.exports={
             let cart = await db.get().collection(collection.CART_COLLECTION).aggregate([
                 {
                   $match: {
-                    'user': userId
+                    'user': userId,
                   }
                 },
                 {
@@ -431,13 +431,19 @@ module.exports={
                   $project: {
                     _id: 0,
                     product: { $arrayElemAt: ["$product", 0] },
-                    quantity: "$products.quantity"
+                    quantity: "$products.quantity",
                   }
+                },
+                {
+                    $match: {
+                      "product.stocks": { $gt: 0 }
+                    }
                 },
                 {
                     $project: {
                         quantity: "$quantity",
-                        products: "$product.discountPrice"
+                        products: "$product.discountPrice",
+                        stocks: "$product.stocks"
                     }
                 },
                 {
@@ -451,7 +457,6 @@ module.exports={
                     }
                 }
             ]).toArray();
-            // console.log(cart[0].total);
             try{
                 resolve(cart[0].total);
             }catch{
@@ -652,9 +657,48 @@ module.exports={
     getCartList:(userId)=>{
         return new Promise(async(resolve, reject)=>{
             userId = ObjectId(userId);
-            const cartList = await db.get().collection(collection.CART_COLLECTION).findOne({user: userId});
+            let products = [];
+            const cartList = await db.get().collection(collection.CART_COLLECTION)
+            .aggregate([
+                {
+                  '$match': {
+                    'user': userId
+                  }
+                }, 
+                {
+                  '$unwind': {
+                    'path': '$products', 
+                    'preserveNullAndEmptyArrays': true
+                  }
+                }, 
+                {
+                  '$lookup': {
+                    'from': 'products', 
+                    'localField': 'products.productId', 
+                    'foreignField': '_id', 
+                    'as': 'result'
+                  }
+                },  
+                {
+                  '$match': {
+                    'result.stocks': {
+                      '$gt': 0
+                    }
+                  }
+                },
+                {
+                    '$project': { 
+                      'products': 1,
+                      '_id': 0
+                    }
+                }
+            ]).toArray();
+            cartList.forEach(item => {
+                products.push({productId:item.products.productId, quantity:item.products.quantity});
+            });
+            cartList.products = products;
             resolve(cartList);
-        })
+        });
     },
     addOrder:(order, address, cartList)=>{
         return new Promise((resolve, reject)=>{
@@ -744,11 +788,138 @@ module.exports={
             });
         });
     },
+    returnOrder:(orderId)=>{
+        return new Promise((resolve, reject)=>{
+            orderId = ObjectId(orderId);
+            db.get().collection(collection.ORDER_COLLECTION)
+            .updateOne(
+                {
+                    _id: orderId
+                },
+                {
+                    $set:{
+                        status: 'returned'
+                    }
+                }
+            )
+            .then((response)=>{
+                resolve(response);
+            })
+            .catch(()=>{
+                reject();
+            });
+        });
+    },
+    toWallet:(userId, source, amount)=>{
+        return new Promise((resolve, reject)=>{
+            userId = ObjectId(userId);
+            const now = new Date();
+            const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+            receipt = {
+                userId : userId,
+                source : source,
+                date : date,
+                amount : Number(amount)
+            }
+            db.get().collection(collection.WALLET_COLLECTION).insertOne(receipt)
+            .then(()=>{
+                db.get().collection(collection.ORDER_COLLECTION)
+                .updateOne(
+                    {
+                        userId: userId,
+                        status: "pending"
+                    },
+                    {
+                        $set:{
+                            refunded: true
+                        }
+                    },
+                    {
+                        upsert: true
+                    }
+                )
+                .then(()=>{
+                    resolve();
+                })
+            })
+            .catch(()=>{
+                reject();
+            });
+        });
+    },
+    orderTotalCost:(orderId)=>{
+        return new Promise(async(resolve, reject)=>{
+            orderId = ObjectId(orderId);
+            const total = await db.get().collection(collection.ORDER_COLLECTION).aggregate(
+                [
+                    {
+                        $match: {
+                            _id: orderId
+                        }
+                    },
+                    {
+                        $group:{
+                            _id: null,
+                            total: {
+                                $sum: "$totalCost"
+                            }
+                        }
+                    }
+                ]
+            ).toArray();
+            try{
+                resolve(total);
+            }catch{
+                resolve(null);
+            }
+        })
+    },
+    getWallet:(userId)=>{
+        return new Promise((resolve, reject)=>{
+            userId = ObjectId(userId);
+            const userWallet = db.get().collection(collection.WALLET_COLLECTION).find({userId: userId}).sort({ date: -1 }).limit(2).toArray();
+            resolve(userWallet);
+        });
+    },
+    getAllWallet:(userId)=>{
+        return new Promise((resolve, reject)=>{
+            userId = ObjectId(userId);
+            const userWallet = db.get().collection(collection.WALLET_COLLECTION).find({userId: userId}).toArray();
+            resolve(userWallet);
+        });
+    },
+    totalWalletAmount:(userId)=>{
+        return new Promise(async(resolve, reject)=>{
+            userId = ObjectId(userId);
+            const totalWallet = await db.get().collection(collection.WALLET_COLLECTION).aggregate(
+                [
+                    {
+                        $match: {
+                            userId: userId
+                        }
+                    },
+                    {
+                        $group: {
+                            _id:null,
+                            total: {
+                                $sum: "$amount"
+                            }
+                        }
+                    }
+                ]
+            ).toArray();
+            try{
+                resolve(totalWallet[0].total);
+            }catch{
+                resolve(0);
+            }
+        })
+    },
     getActiveBanner:()=>{
         return new Promise(async(resolve, reject)=>{
             const activeBanner = await db.get().collection(collection.BANNER_COLLECTION).findOne({active: true});
             resolve(activeBanner);
-        })
+        });
     },
     profilePicChange:(userId, imageUrl)=>{
         return new Promise((resolve, reject)=>{
@@ -765,7 +936,6 @@ module.exports={
                 }
             )
             .then((response)=>{
-                // console.log(response);
                 resolve(response);
             });
         });
@@ -820,5 +990,15 @@ module.exports={
                 console.log(err);
             })
         });
+    },
+    couponApply:(couponCode)=>{
+        return new Promise(async(resolve, reject)=>{
+            const coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({code: couponCode});
+            if(coupon){
+                resolve(coupon);
+            }else{
+                resolve(null);
+            }
+        })
     }
 }

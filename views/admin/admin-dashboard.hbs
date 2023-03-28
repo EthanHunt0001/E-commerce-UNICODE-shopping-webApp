@@ -174,7 +174,7 @@
         <div class="card ">
           <div class="card-header pb-0 p-3">
             <div class="d-flex justify-content-between">
-              <h6 class="mb-2">Sales by Country</h6>
+              <h6 class="mb-2">Sales by Location</h6>
             </div>
           </div>
           <div class="table-responsive">
@@ -187,8 +187,8 @@
                         <img src="./assets/img/icons/flags/US.png" alt="Country flag">
                       </div>
                       <div class="ms-4">
-                        <p class="text-xs font-weight-bold mb-0">Country:</p>
-                        <h6 class="text-sm mb-0">United States</h6>
+                        <p class="text-xs font-weight-bold mb-0">States:</p>
+                        <h6 class="text-sm mb-0">Kerala</h6>
                       </div>
                     </div>
                   </td>
@@ -201,7 +201,7 @@
                   <td>
                     <div class="text-center">
                       <p class="text-xs font-weight-bold mb-0">Value:</p>
-                      <h6 class="text-sm mb-0">$230,900</h6>
+                      <h6 class="text-sm mb-0">Rs.{{total}}</h6>
                     </div>
                   </td>
                   <td class="align-middle text-sm">
@@ -218,8 +218,8 @@
                         <img src="./assets/img/icons/flags/DE.png" alt="Country flag">
                       </div>
                       <div class="ms-4">
-                        <p class="text-xs font-weight-bold mb-0">Country:</p>
-                        <h6 class="text-sm mb-0">Germany</h6>
+                        <p class="text-xs font-weight-bold mb-0">Disrict:</p>
+                        <h6 class="text-sm mb-0">Ernakulam</h6>
                       </div>
                     </div>
                   </td>
@@ -232,7 +232,7 @@
                   <td>
                     <div class="text-center">
                       <p class="text-xs font-weight-bold mb-0">Value:</p>
-                      <h6 class="text-sm mb-0">$440,000</h6>
+                      <h6 class="text-sm mb-0">Rs.44,000</h6>
                     </div>
                   </td>
                   <td class="align-middle text-sm">
@@ -249,8 +249,8 @@
                         <img src="./assets/img/icons/flags/GB.png" alt="Country flag">
                       </div>
                       <div class="ms-4">
-                        <p class="text-xs font-weight-bold mb-0">Country:</p>
-                        <h6 class="text-sm mb-0">Great Britain</h6>
+                        <p class="text-xs font-weight-bold mb-0">District:</p>
+                        <h6 class="text-sm mb-0">Kollam</h6>
                       </div>
                     </div>
                   </td>
@@ -263,7 +263,7 @@
                   <td>
                     <div class="text-center">
                       <p class="text-xs font-weight-bold mb-0">Value:</p>
-                      <h6 class="text-sm mb-0">$190,700</h6>
+                      <h6 class="text-sm mb-0">Rs.19,700</h6>
                     </div>
                   </td>
                   <td class="align-middle text-sm">
@@ -280,8 +280,8 @@
                         <img src="./assets/img/icons/flags/BR.png" alt="Country flag">
                       </div>
                       <div class="ms-4">
-                        <p class="text-xs font-weight-bold mb-0">Country:</p>
-                        <h6 class="text-sm mb-0">Brasil</h6>
+                        <p class="text-xs font-weight-bold mb-0">District:</p>
+                        <h6 class="text-sm mb-0">Alappuzha</h6>
                       </div>
                     </div>
                   </td>
@@ -294,7 +294,7 @@
                   <td>
                     <div class="text-center">
                       <p class="text-xs font-weight-bold mb-0">Value:</p>
-                      <h6 class="text-sm mb-0">$143,960</h6>
+                      <h6 class="text-sm mb-0">Rs.43,960</h6>
                     </div>
                   </td>
                   <td class="align-middle text-sm">
@@ -324,12 +324,12 @@
                     <i class="ni ni-mobile-button text-white opacity-10"></i>
                   </div>
                   <div class="d-flex flex-column">
-                    <h6 class="mb-1 text-dark text-sm">Devices</h6>
-                    <span class="text-xs">250 in stock, <span class="font-weight-bold">346+ sold</span></span>
+                    <h6 class="mb-1 text-dark text-sm">products</h6>
+                    <span class="text-xs">250 in stock, <span class="font-weight-bold"> 346+ sold</span></span>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                  <a href="/admin/admin-view"><button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button></a>
                 </div>
               </li>
               <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
@@ -338,13 +338,13 @@
                     <i class="ni ni-tag text-white opacity-10"></i>
                   </div>
                   <div class="d-flex flex-column">
-                    <h6 class="mb-1 text-dark text-sm">Tickets</h6>
-                    <span class="text-xs">123 closed, <span class="font-weight-bold">15 open</span></span>
+                    <h6 class="mb-1 text-dark text-sm">Total Money</h6>
+                    <span class="text-xs">{{totalEarnings}},&nbsp; <span class="font-weight-bold">Rs.{{total}} since last month</span></span>
                   </div>
                 </div>
-                <div class="d-flex">
+                {{!-- <div class="d-flex">
                   <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                </div>
+                </div> --}}
               </li>
               <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                 <div class="d-flex align-items-center">
@@ -352,12 +352,12 @@
                     <i class="ni ni-box-2 text-white opacity-10"></i>
                   </div>
                   <div class="d-flex flex-column">
-                    <h6 class="mb-1 text-dark text-sm">Error logs</h6>
-                    <span class="text-xs">1 is active, <span class="font-weight-bold">40 closed</span></span>
+                    <h6 class="mb-1 text-dark text-sm">Total Users</h6>
+                    <span class="text-xs">{{usersCount}} users<span class="font-weight-bold"></span></span>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                  <a href="/admin/users"><button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button></a>
                 </div>
               </li>
               <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
@@ -366,12 +366,12 @@
                     <i class="ni ni-satisfied text-white opacity-10"></i>
                   </div>
                   <div class="d-flex flex-column">
-                    <h6 class="mb-1 text-dark text-sm">Happy users</h6>
-                    <span class="text-xs font-weight-bold">+ 430</span>
+                    <h6 class="mb-1 text-dark text-sm">Total sales</h6>
+                    <span class="text-xs font-weight-bold">Rs. {{totalEarnings}}</span>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                  <a href="/admin/sales-report"><button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button></a>
                 </div>
               </li>
             </ul>
