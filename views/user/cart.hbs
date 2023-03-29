@@ -7,6 +7,7 @@
 		pointer-events: visible;
 	}
 </style>
+<link rel="stylesheet" href="/user-css/cartEmpty.css">
 
 <div class="hero-wrap hero-bread" style="background-image: url('/images/bg_6.jpg');">
   <div class="container">
@@ -20,118 +21,138 @@
 </div>
 <section class="ftco-section ftco-cart">
 	<div class="container">
-		<div class="row">
-			<div class="col-md-12 ftco-animate">
-				<div class="cart-list">
-					<table class="table">
-					    <thead class="thead-primary">
-					      <tr class="text-center">
-					        <th>&nbsp;</th>
-					        <th>&nbsp;</th>
-					        <th>Product</th>
-					        <th>Price</th>
-					        <th>Quantity</th>
-					        <th>Total</th>
-					      </tr>
-					    </thead>
-					    <tbody>
-						{{#each products}}
-							{{#if this.product.stocks}}
-					    		<tr class="text-center">
-					    		    <td class="product-remove"><a class="deleteProduct" style="cursor: pointer;" data-product="{{this.product._id}}"><span class="ion-ios-close"></span></a></td>
+		{{#if products}}
+			<div class="row">
+				<div class="col-md-12 ftco-animate">
+					<div class="cart-list">
+						<table class="table">
+						    <thead class="thead-primary">
+						      <tr class="text-center">
+						        <th>&nbsp;</th>
+						        <th>&nbsp;</th>
+						        <th>Product</th>
+						        <th>Price</th>
+						        <th>Quantity</th>
+						        <th>Total</th>
+						      </tr>
+						    </thead>
+						    <tbody>
+							{{#each products}}
+								{{#if this.product.stocks}}
+						    		<tr class="text-center">
+						    		    <td class="product-remove"><a class="deleteProduct" style="cursor: pointer;" data-product="{{this.product._id}}"><span class="ion-ios-close"></span></a></td>
 
-					    		    <td class="image-prod"><a href="/product-single-view/{{this.product._id}}"><div class="img" style="background-image:url({{this.product.images.[0]}});"></div></a></td>
+						    		    <td class="image-prod"><a href="/product-single-view/{{this.product._id}}"><div class="img" style="background-image:url({{this.product.images.[0]}});"></div></a></td>
 
-					    		    <td class="product-name">
-										<a href="/product-single-view/{{this.product._id}}">
-					    		    	<h3>{{this.product.name}}</h3>
-					    		    	<p style="color: rgb(137, 137, 137);">{{this.product.description}}</p>
-										</a>
-					    		    </td>
+						    		    <td class="product-name">
+											<a href="/product-single-view/{{this.product._id}}">
+						    		    	<h3>{{this.product.name}}</h3>
+						    		    	<p style="color: rgb(137, 137, 137);">{{this.product.description}}</p>
+											</a>
+						    		    </td>
 
-					    		    <td class="price" id="discountPrice">Rs.{{this.product.discountPrice}}</td>
+						    		    <td class="price" id="discountPrice">Rs.{{this.product.discountPrice}}</td>
 
-					    		    <td class="quantity">
-					    		    	<div class="input-group mb-3">
-											<div class="mb-0">
-												<span class="btn bg-transparent mr-2 text-center mt-2" id="minus" onclick="changeQuantity('{{this.product._id}}', -1)" style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span>
-											</div>
-				        		     		<input type="text" name="quantity" disabled id="{{this.product._id}}" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
-											<div class="mb-0">
-												<span class="btn btn-dark bg-transparent ml-2 text-center mt-2" onclick="changeQuantity('{{this.product._id}}', 1)" style="color: black;border-color: rgb(192, 192, 192);">&nbsp;+&nbsp;</span>
-											</div>
-				        		  		</div>
-										{{!-- <span id="{{this.product._id}}stockOut text-danger" hidden >stock is out</span> --}}
-										<span id="{{this.product._id}}stocks">{{subtract this.product.stocks this.quantity}}</span>
-										<span>stock left</span>
-				        		  </td>
+						    		    <td class="quantity">
+						    		    	<div class="input-group mb-3">
+												<div class="mb-0">
+													<span class="btn bg-transparent mr-2 text-center mt-2" id="minus" onclick="changeQuantity('{{this.product._id}}', -1)" style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span>
+												</div>
+					        		     		<input type="text" name="quantity" disabled id="{{this.product._id}}" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
+												<div class="mb-0">
+													<span class="btn btn-dark bg-transparent ml-2 text-center mt-2" onclick="changeQuantity('{{this.product._id}}', 1)" style="color: black;border-color: rgb(192, 192, 192);">&nbsp;+&nbsp;</span>
+												</div>
+					        		  		</div>
+											{{!-- <span id="{{this.product._id}}stockOut text-danger" hidden >stock is out</span> --}}
+											<span id="{{this.product._id}}stocks">{{subtract this.product.stocks this.quantity}}</span>
+											<span>stock left</span>
+					        		  </td>
 
-					    		    <td class="total" id="{{this.product._id}}total">{{mathMulti this.product.discountPrice this.quantity}}</td>
-					    		</tr>
-							{{else}}
-					    		<tr class="text-center disabled">
-					    		    <td class="product-remove"><a class="deleteProduct" style="cursor: pointer;" data-product="{{this.product._id}}"><span class="ion-ios-close"></span></a></td>
+						    		    <td class="total" id="{{this.product._id}}total">{{mathMulti this.product.discountPrice this.quantity}}</td>
+						    		</tr>
+								{{else}}
+						    		<tr class="text-center disabled">
+						    		    <td class="product-remove"><a class="deleteProduct" style="cursor: pointer;" data-product="{{this.product._id}}"><span class="ion-ios-close"></span></a></td>
 
-					    		    <td class="image-prod"><a href="/product-single-view/{{this.product._id}}"><div class="img" style="background-image:url({{this.product.images.[0]}});"></div></a></td>
+						    		    <td class="image-prod"><a href="/product-single-view/{{this.product._id}}"><div class="img" style="background-image:url({{this.product.images.[0]}});"></div></a></td>
 
-					    		    <td class="product-name">
-										<a href="/product-single-view/{{this.product._id}}">
-					    		    	<h3>{{this.product.name}}</h3>
-					    		    	<p style="color: rgb(137, 137, 137);">{{this.product.description}}</p>
-										</a>
-					    		    </td>
+						    		    <td class="product-name">
+											<a href="/product-single-view/{{this.product._id}}">
+						    		    	<h3>{{this.product.name}}</h3>
+						    		    	<p style="color: rgb(137, 137, 137);">{{this.product.description}}</p>
+											</a>
+						    		    </td>
 
-					    		    <td class="price" id="discountPrice">Rs.{{this.product.discountPrice}}</td>
+						    		    <td class="price" id="discountPrice">Rs.{{this.product.discountPrice}}</td>
 
-					    		    <td class="quantity">
-					    		    	<div class="input-group mb-3">
-											<div class="mb-0">
-												<span class="btn bg-transparent mr-2 text-center mt-2" id="minus" onclick="changeQuantity('{{this.product._id}}', -1)" style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span>
-											</div>
-				        		     		<input type="text" name="quantity" disabled id="{{this.product._id}}" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
-											<div class="mb-0">
-												<span class="btn btn-dark bg-transparent ml-2 text-center mt-2" onclick="changeQuantity('{{this.product._id}}', 1)" style="color: black;border-color: rgb(192, 192, 192);">&nbsp;+&nbsp;</span>
-											</div>
-				        		  		</div>
-										{{!-- <span id="{{this.product._id}}stockOut text-danger" hidden >stock is out</span> --}}
-										{{!-- <span id="{{this.product._id}}stocks">{{subtract this.product.stocks this.quantity}}</span> --}}
-										<span class="text-danger" style="font-weight: bold;">out of stock</span>
-				        		  </td>
+						    		    <td class="quantity">
+						    		    	<div class="input-group mb-3">
+												<div class="mb-0">
+													<span class="btn bg-transparent mr-2 text-center mt-2" id="minus" onclick="changeQuantity('{{this.product._id}}', -1)" style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span>
+												</div>
+					        		     		<input type="text" name="quantity" disabled id="{{this.product._id}}" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
+												<div class="mb-0">
+													<span class="btn btn-dark bg-transparent ml-2 text-center mt-2" onclick="changeQuantity('{{this.product._id}}', 1)" style="color: black;border-color: rgb(192, 192, 192);">&nbsp;+&nbsp;</span>
+												</div>
+					        		  		</div>
+											{{!-- <span id="{{this.product._id}}stockOut text-danger" hidden >stock is out</span> --}}
+											{{!-- <span id="{{this.product._id}}stocks">{{subtract this.product.stocks this.quantity}}</span> --}}
+											<span class="text-danger" style="font-weight: bold;">out of stock</span>
+					        		  </td>
 
-					    		    <td class="total" id="{{this.product._id}}total">Rs.{{mathMulti this.product.discountPrice this.quantity}}</td>
-					    		</tr>
-							{{/if}}
-						{{/each}}
-					    </tbody>
-					  </table>
-				  </div>
-			</div>
-		</div>
-		<div class="row justify-content-center">
-			<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
-				<div class="cart-total mb-3">
-					<h3>Cart Totals</h3>
-					<p class="d-flex">
-						<span>Subtotal</span>
-						<span id="subTotal" data-price="{{total}}">Rs.{{total}}</span>
-					</p>
-					<p class="d-flex">
-						<span>Delivery</span>
-						<span id="delivery">Rs.0.00</span>
-					</p>
-					<p class="d-flex">
-						<span>Discount</span>
-						<span id="discount">Rs.100.00</span>
-					</p>
-					<hr>
-					<p class="d-flex total-price">
-						<span>Total</span>
-						<span id="cartTotal">Rs.&nbsp;{{subDiscount total}}</span>
-					</p>
+						    		    <td class="total" id="{{this.product._id}}total">Rs.{{mathMulti this.product.discountPrice this.quantity}}</td>
+						    		</tr>
+								{{/if}}
+							{{/each}}
+						    </tbody>
+						  </table>
+					  </div>
 				</div>
-				<p class="text-center"><a href="/checkout" id="forToast" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
 			</div>
-		</div>
+			<div class="row justify-content-center">
+				<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
+					<div class="cart-total mb-3">
+						<h3>Cart Totals</h3>
+						<p class="d-flex">
+							<span>Subtotal</span>
+							<span id="subTotal" data-price="{{total}}">Rs.{{total}}</span>
+						</p>
+						<p class="d-flex">
+							<span>Delivery</span>
+							<span id="delivery">Rs.0.00</span>
+						</p>
+						<p class="d-flex">
+							<span>Discount</span>
+							<span id="discount">Rs.100.00</span>
+						</p>
+						<hr>
+						<p class="d-flex total-price">
+							<span>Total</span>
+							<span id="cartTotal">Rs.&nbsp;{{subDiscount total}}</span>
+						</p>
+					</div>
+					<p class="text-center"><a href="/checkout" id="forToast" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+				</div>
+			</div>
+		{{else}}
+			<div class="row shawal">
+           		<div class="col-md-12">
+            	    <div class="caval">
+            	        {{!-- <div class="caval-header">
+            	            <h5>Cart</h5>
+            	        </div> --}}
+            	        <div class="caval-body cart mt-4">
+            	            <div class="col-sm-12 empty-cart-cls text-center">
+            	               <img src="/images/cartEmpty.png" width="130" height="130" class="img-fluid mb-4 mr-3">
+            	               <h3><strong>Your Cart is Empty</strong></h3>
+            	               <h4>Add something to Apply coupons</h4>
+            	               <a href="/shop" class="btn btn-primary cart-btn-transform m-3" data-abc="true">continue shopping</a>
+            	            </div>
+            	        </div>
+            	    </div>
+            	</div>
+        	</div>
+		{{/if}}
 	</div>
 </section>
 

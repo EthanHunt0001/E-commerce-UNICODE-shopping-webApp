@@ -10,45 +10,57 @@
 </div>
 <section class="ftco-section ftco-cart">
 	<div class="container">
-	    <div class="row">
-	    	<div class="col-md-12 ftco-animate">
-	    		<div class="cart-list">
-	    			<table class="table">
-	    			    <thead class="thead-primary">
-	    			      <tr class="text-center">
-	    			        <th>&nbsp;</th>
-	    			        <th>&nbsp;</th>
-	    			        <th>Product</th>
-	    			        <th>Price</th>
-	    			        {{!-- <th>Quantity</th> --}}
-	    			        {{!-- <th>Total</th> --}}
-	    			      </tr>
-	    			    </thead>
-	    			    <tbody>
-	    				    {{#each products}}
-	    			        	<tr class="text-center">
-	    			        	    <td class="product-remove"><a class="deleteProduct" data-product="{{this._id}}" style="cursor: pointer;"><span class="ion-ios-close"></span></a></td>
-	    			        	    <td class="image-prod"><a href="/product-single-view/{{this._id}}"><div class="img" style="background-image:url({{this.images.[0]}});"></div></a></td>
-	    			        	    <td class="product-name">
-	                                    <a href="/product-single-view/{{this._id}}">
-	    			        	    	<h3>{{this.name}}</h3>
-	    			        	    	<p style="color: rgb(137, 137, 137);">{{this.description}}</p>
-	                                    </a>
-	    			        	    </td>
-	    			        	    <td class="price" id="discountPrice">Rs.{{this.discountPrice}}</td>
-	    			        	    {{!-- <td class="quantity">
-	    			        	    	<div class="input-group mb-3">
-	    		            	     	    <input type="text" name="quantity" id="quantity" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
-	    		            	  	    </div>
-	    		            	    </td> --}}
-	    			        	    {{!-- <td class="total" id="result">{{mathMulti this.product.discountPrice this.quantity}}</td> --}}
-	    			        	</tr>
-	    				    {{/each}}
-	    			    </tbody>
-	    			</table>
+		{{#if products}}
+	    	<div class="row">
+	    		<div class="col-md-12 ftco-animate">
+	    			<div class="cart-list">
+	    				<table class="table">
+	    				    <thead class="thead-primary">
+	    				      <tr class="text-center">
+	    				        <th>&nbsp;</th>
+	    				        <th>&nbsp;</th>
+	    				        <th>Product</th>
+	    				        <th>Price</th>
+	    				      </tr>
+	    				    </thead>
+	    				    <tbody>
+	    					    {{#each products}}
+	    				        	<tr class="text-center">
+	    				        	    <td class="product-remove"><a class="deleteProduct" data-product="{{this._id}}" style="cursor: pointer;"><span class="ion-ios-close"></span></a></td>
+	    				        	    <td class="image-prod"><a href="/product-single-view/{{this._id}}"><div class="img" style="background-image:url({{this.images.[0]}});"></div></a></td>
+	    				        	    <td class="product-name">
+	    	                                <a href="/product-single-view/{{this._id}}">
+	    				        	    	<h3>{{this.name}}</h3>
+	    				        	    	<p style="color: rgb(137, 137, 137);">{{this.description}}</p>
+	    	                                </a>
+	    				        	    </td>
+	    				        	    <td class="price" id="discountPrice">Rs.{{this.discountPrice}}</td>
+	    				        	</tr>
+	    					    {{/each}}
+	    				    </tbody>
+	    				</table>
+	    			</div>
 	    		</div>
 	    	</div>
-	    </div>
+		{{else}}
+			<div class="row shawal">
+           		<div class="col-md-12">
+            	    <div class="caval">
+            	        {{!-- <div class="caval-header">
+            	            <h5>Cart</h5>
+            	        </div> --}}
+            	        <div class="caval-body cart mt-4">
+            	            <div class="col-sm-12 empty-cart-cls text-center">
+            	               <img src="/images/wishlist.png" width="130" height="130" class="img-fluid mb-4 mr-3">
+            	               <h3><strong>Your Wishlist is Empty</strong></h3>
+            	               <h4>Add something to wishlist to show</h4>
+            	               <a href="/shop" class="btn btn-primary cart-btn-transform m-3" data-abc="true">continue shopping</a>
+            	            </div>
+            	        </div>
+            	    </div>
+            	</div>
+        	</div>
+		{{/if}}
 	</div>
 </section>
 
