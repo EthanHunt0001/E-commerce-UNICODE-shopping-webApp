@@ -351,8 +351,7 @@ module.exports = {
       coupons.forEach(coupon=>{
         coupon.deactivated = coupon.status==="DEACTIVATED"?true:false;
         coupon.expired = coupon.status==="EXPIRED"?true:false;
-      })
-      console.log(coupons);
+      });
       res.render('admin/coupons', {admin:true, coupons, adminName:req.session.adminName});
     },
     renderAddCoupen : (req, res)=>{

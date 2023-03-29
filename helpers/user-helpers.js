@@ -701,32 +701,50 @@ module.exports={
         });
     },
     addOrder:(order, address, cartList)=>{
-        return new Promise((resolve, reject)=>{
+        return new Promise(async(resolve, reject)=>{
             const now = new Date();
             const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-            let status = order.paymentMethod === 'COD' ? 'placed' : 'pending';
-            orderObj = {
-                userId : ObjectId(order.userId),
-                userName : order.userName,
-                deliveryDetails:{
-                    name : address.name,
-                    address : address.address,
-                    mobile : Number(address.mobile),
-                    pincode : Number(address.zipcode)
-                },
-                paymentMethod : order.paymentMethod,
-                totalCost : Number(order.totalCost),
-                products : cartList,
-                date : date,
-                status : status
-            }
-            db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj)
-            .then((response)=>{
-                db.get().collection(collection.CART_COLLECTION).deleteOne({user: ObjectId(order.userId)})
-                .then(()=>{
-                    resolve(response.insertedId);
+            const coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({code: order.coupon});
+            const couponCode = order.coupon;
+            try{
+                db.get().collection(collection.USER_COLLECTION)
+                .updateOne(
+                    {
+                        _id: ObjectId(order.userId)
+                    },
+                    {
+                        $push: {usedCoupons: {couponCode}}
+                    }
+                )
+                .then(()=>{}).catch(()=>{});
+            }catch(err){
+               console.log(err);
+            }finally{
+                let status = order.paymentMethod === 'COD' ? 'placed' : 'pending';
+                orderObj = {
+                    userId : ObjectId(order.userId),
+                    userName : order.userName,
+                    deliveryDetails:{
+                        name : address.name,
+                        address : address.address,
+                        mobile : Number(address.mobile),
+                        pincode : Number(address.zipcode)
+                    },
+                    paymentMethod : order.paymentMethod,
+                    coupon : coupon,
+                    totalCost : Number(order.totalCost),
+                    products : cartList,
+                    date : date,
+                    status : status
+                }
+                db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj)
+                .then((response)=>{
+                    db.get().collection(collection.CART_COLLECTION).deleteOne({user: ObjectId(order.userId)})
+                    .then(()=>{
+                        resolve(response.insertedId);
+                    });
                 });
-            });
+            }
         });
     },
     getOrders:(userId)=>{
@@ -991,11 +1009,22 @@ module.exports={
             })
         });
     },
-    couponApply:(couponCode)=>{
+    couponApply:(couponCode, userId)=>{
         return new Promise(async(resolve, reject)=>{
+            const couponExists = await db.get().collection(collection.USER_COLLECTION)
+            .findOne(
+                {
+                    _id: ObjectId(userId),
+                    usedCoupons: { $elemMatch: { couponCode } }
+                }
+            )
             const coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({code: couponCode});
             if(coupon){
-                resolve(coupon);
+                if(couponExists){
+                    resolve("couponExists");
+                }else{
+                    resolve(coupon);
+                }
             }else{
                 resolve(null);
             }

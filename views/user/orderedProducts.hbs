@@ -169,10 +169,12 @@
                         <div class="flex-sm-col text-right col"><p class="mb-1"> <b>Discount</b></p> </div>
                         <div class="flex-sm-col col-auto"><p class="mb-1">&#8377;100</p></div>
                     </div>
-                    {{!-- <div class="row justify-content-between">
-                        <div class="flex-sm-col text-right col"><p class="mb-1"><b>GST 18%</b></p></div>
-                        <div class="flex-sm-col col-auto"><p class="mb-1">843</p></div>
-                    </div> --}}
+                    {{#if orderDet.coupon}}
+                    <div class="row justify-content-between">
+                        <div class="flex-sm-col text-right col"><p class="mb-1"><b>Coupon Applied</b></p></div>
+                        <div class="flex-sm-col col-auto"><p class="mb-1">&#8377;{{orderDet.coupon.discount}}</p></div>
+                    </div>
+                    {{/if}}
                     <div class="row justify-content-between">
                         <div class="flex-sm-col text-right col"><p class="mb-1"><b>Delivery Charges</b></p></div>
                         <div class="flex-sm-col col-auto"><p class="mb-1">Free</p></div>

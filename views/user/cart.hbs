@@ -98,7 +98,7 @@
 										<span class="text-danger" style="font-weight: bold;">out of stock</span>
 				        		  </td>
 
-					    		    <td class="total" id="{{this.product._id}}total">{{mathMulti this.product.discountPrice this.quantity}}</td>
+					    		    <td class="total" id="{{this.product._id}}total">Rs.{{mathMulti this.product.discountPrice this.quantity}}</td>
 					    		</tr>
 							{{/if}}
 						{{/each}}
@@ -165,8 +165,8 @@
 				if(response.data.status){
 					document.getElementById(proId).value = quantity+count;
 					document.getElementById(`${proId}total`).innerHTML = response.data.total.toFixed(2);
-					document.getElementById('subTotal').innerHTML = response.data.subTotal;
-					document.getElementById('cartTotal').innerHTML = response.data.cartTotal;
+					document.getElementById('subTotal').innerHTML = `Rs.${response.data.subTotal}`;
+					document.getElementById('cartTotal').innerHTML = `Rs.${response.data.cartTotal}`;
 					document.getElementById(`${proId}stocks`).innerHTML = stocksValue-(count);
 				}
 			});

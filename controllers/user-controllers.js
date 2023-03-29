@@ -439,10 +439,6 @@ module.exports = {
         order.isCancelled = order.status==="cancelled"?true:false;
         order.isDelivered = order.status==="delivered"?true:false;
         order.isReturned = order.status==="returned"?true:false;
-        // if(order.status==="pending"){
-        //   userHelpers.toWallet(userId, "online-payment-failed", order.totalCost).then(()=>{}).catch(()=>{});
-        // }
-        // getting date format clear to render
         const newDate = new Date(order.date);
         const year = newDate.getFullYear();
         const month = newDate.getMonth() + 1;
@@ -563,12 +559,19 @@ module.exports = {
       })
     },
     couponApply : (req, res)=>{
-      userHelpers.couponApply(req.body.couponCode).then((coupon)=>{
+      const userId = req.session.userDetails._id;
+      userHelpers.couponApply(req.body.couponCode, userId).then((coupon)=>{
         if(coupon){
-          res.json({
-            status: "success",
-            coupon: coupon
-          })
+          if(coupon==="couponExists"){
+            res.json({
+              status:"coupon is already used, try another coupon"
+            })
+          }else{
+            res.json({
+              status: "success",
+              coupon: coupon
+            })
+          }
         }else{
           res.json({
             status: "coupon is not valid !!"

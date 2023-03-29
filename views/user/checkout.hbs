@@ -324,9 +324,6 @@
 
 
 {{!-- modal for success  --}}
-
-{{!-- data-toggle="modal" data-target="#demoModal" --}}
-
 <div class="modal fade auto-off" id="demoModal" tabindex="-1" role="dialog" aria-labelledby="demoModal" aria-hidden="true">
     <div class="modal-dialog animated zoomInDown modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -346,11 +343,6 @@
                         <p class="text-muted"></p>
                         <a href="/orders"><button class="btn btn-primary w-50">Go to Orders</button></a>
 
-                        {{!-- timer --}}
-                        <div class="text-center mt-4 text-dark">
-                            <p id="timer">redirected to order in 10 seconds</p>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -359,9 +351,6 @@
 </div>
 
 {{!-- modal for success (online payment)  --}}
-
-{{!-- data-toggle="modal" data-target="#demoModal" --}}
-
 <div class="modal fade auto-off" id="demoModal2" tabindex="-1" role="dialog" aria-labelledby="demoModal" aria-hidden="true">
     <div class="modal-dialog animated zoomInDown modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -392,24 +381,6 @@
         </div>
     </div>
 </div>
-
-
-{{!-- timer script --}}
-<script>
-  // Set the timer to expire after 10 seconds
-  const expirationTime = 16; // seconds
-  let timer = expirationTime;
-  const timerElement = document.getElementById("timer");
-  const intervalId = setInterval(() => {
-    const minutes = Math.floor(timer / 60);
-    const seconds = timer % 60;
-    timerElement.textContent = `redirected to orders within ${minutes}:${seconds.toString().padStart(2, '0')} seconds`;
-    timer--;
-    if (timer < 0) {
-      clearInterval(intervalId);
-    }
-  }, 1000);
-</script>
 
 {{!-- script for change active address --}}
 <script>
@@ -512,10 +483,47 @@
 
 </script>
 
-{{!-- send Form Axios --}}
+{{!-- coupon redeem script && place-order --}}
+
 <script>
-    const myForm = document.getElementById('myForm');   
-    const totalCost = document.getElementsByName('totalCost')[0].value;
+  let totalCost = parseInt(document.getElementsByName('totalCost')[0].value);
+  let coupon;
+  
+  function submitCoupon(){
+    const code = document.getElementById('couponCode').value;
+    coupon = document.getElementById('couponCode').value;
+
+    axios.post('/couponApply', {'couponCode': code})
+    .then((response)=>{
+      if(response.data.status=="success"){
+        console.log(response);
+        const coupon = response.data.coupon;
+        if(coupon.status=="DEACTIVATED"||coupon.status=="EXPIRED"){
+          document.getElementById('invalidCoupon').innerHTML = "Coupon Deactivaed or Expired";
+        }else if(totalCost<=1000){
+          document.getElementById('invalidCoupon').innerHTML = "purchase for atleast Rs.1000 to apply coupon";
+        }else{
+          const couponAmt = parseInt(coupon.discount);
+          totalCost = totalCost-couponAmt;
+          document.getElementsByName('totalCost')[0].value = totalCost;
+          document.getElementById('strong').innerHTML = `Rs.${totalCost}`;
+          document.getElementById('invalidCoupon').innerHTML = "";
+          document.getElementById('couponName').innerHTML = coupon.code;
+          document.getElementById('couponPrice').innerHTML = `Rs.${couponAmt}`;
+          document.getElementById('couponCode').value = code;
+        }
+      }else{
+        document.getElementById('invalidCoupon').innerHTML = response.data.status;
+      }
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  }
+
+//{{!-- send Form Axios --}}
+
+    const myForm = document.getElementById('myForm');
 
     myForm.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -534,7 +542,8 @@
         url: '/placeOrder',
         data : {
             totalCost : totalCost,
-            paymentMethod : paymentMethod
+            paymentMethod : paymentMethod,
+            coupon : coupon
         }
       })
       .then((response) => {
@@ -543,7 +552,7 @@
             demoModal.show();
             setTimeout(()=>{
                 location.href = '/orders'
-            },9000)
+            },12000)
         }else{
             razorpayPayment(response.data);
         }
@@ -600,32 +609,5 @@
             console.log(err);
         })
     };
-
-</script>
-
-<script>
-
-  function submitCoupon(){
-    const code = document.getElementById('couponCode').value;
-
-    axios.post('/couponApply', {'couponCode': code})
-    .then((response)=>{
-      if(response.data.status=="success"){
-        const coupon = response.data.coupon;
-        const couponAmt = parseInt(coupon.discount);
-        let total = parseInt(document.getElementsByName('totalCost')[0].value);
-        total = total-couponAmt;
-        document.getElementById('strong').innerHTML = `Rs.${total}`;
-        document.getElementById('invalidCoupon').innerHTML = "";
-        document.getElementById('couponName').innerHTML = coupon.code;
-        document.getElementById('couponPrice').innerHTML = `Rs.${couponAmt}`;
-      }else{
-        document.getElementById('invalidCoupon').innerHTML = response.data.status;
-      }
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
-  }
 
 </script>
