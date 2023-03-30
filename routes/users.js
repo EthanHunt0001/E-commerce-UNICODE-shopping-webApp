@@ -88,6 +88,8 @@ router.get('/cancelOrder/:id', verifyLogin.userVerifyLogin, userControllers.canc
 
 router.get('/returnOrder/:id', verifyLogin.userVerifyLogin, userControllers.returnOrder);
 
+router.get('/success', verifyLogin.userVerifyLogin, userControllers.paypalSuccess);
+
 // Category_routes
 
 router.get('/shirts/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);

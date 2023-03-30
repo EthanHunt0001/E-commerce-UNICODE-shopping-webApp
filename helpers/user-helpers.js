@@ -263,7 +263,6 @@ module.exports={
                 user:userId,
                 products: {$elemMatch: {proId}}
             });
-            console.log(productExist);
             if(user){
                 if(productExist){
                     resolve("product exist");
@@ -539,7 +538,7 @@ module.exports={
                     _id:userId,
                 }
             );
-            const addressList = userDetails.address;
+            const addressList = await userDetails.address;
             try{
                 for(let i=0;i<addressList.length;i++){
                     if(addressList[i].active===true){

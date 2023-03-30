@@ -110,18 +110,18 @@
                         <h4 class="mb-3">Payment</h4>
                         <div class="d-block my-3">
                             <div class="custom-control custom-radio">
-                                <input id="COD" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="COD">
+                                <input id="COD" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="COD" required>
                                 <label class="custom-control-label" for="COD">Cash on Delivery</label>
                             </div>
                             <div class="custom-control custom-radio">
-                                <input id="credit" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="onlinePayment">
-                                <label class="custom-control-label" for="credit"><img src="/images/razorpay_logo.png" style="height: 26px;width: 116px;" alt=""></label>
-                            </div>
-                            {{!-- <div class="custom-control custom-radio">
-                                <input id="debit" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" required>
-                                <label class="custom-control-label" for="debit">Debit card</label>
+                                <input id="razorpay" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="onlineRazorpay" required>
+                                <label class="custom-control-label" for="razorpay"><img src="/images/razorpay_logo.png" style="height: 26px;width: 116px;" alt=""></label>
                             </div>
                             <div class="custom-control custom-radio">
+                                <input id="paypal" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="onlinePaypal" required>
+                                <label class="custom-control-label" for="paypal"><img src="/images/payPal.png" style="height: 26px;width: 116px;" alt=""></label>
+                            </div>
+                            {{!-- <div class="custom-control custom-radio">
                                 <input id="paypal" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" required>
                                 <label class="custom-control-label" for="paypal">Paypal</label>
                             </div> --}}
@@ -473,7 +473,7 @@
             for (var i = 0; i < isCOD.length; i++) {
               if (isCOD[i].checked) {
                 const value = isCOD[i].value;
-                if(value==="COD"||value==="onlinePayment"){
+                if(value==="COD"||value==="onlineRazorpay"||value==="onlinePaypal"){
                     document.getElementById('checkoutBtn').removeAttribute('disabled');
                 }
               }
@@ -553,8 +553,10 @@
             setTimeout(()=>{
                 location.href = '/orders'
             },12000)
-        }else{
-            razorpayPayment(response.data);
+        }else if(response.data.paymentMethod==="onlineRazorpay"){
+            razorpayPayment(response.data.response, response.data.userDetails);
+        }else if(response.data.status==="success"){
+            window.location.href = response.data.approval_link;
         }
       })
       .catch((err) => {
@@ -562,7 +564,7 @@
       });
     });
 
-    function razorpayPayment(order){
+    function razorpayPayment(order, userDetails){
         var options = {
             "key": "rzp_test_b5CLuktGWD5Zjb",       // Enter the Key ID generated from the Dashboard
             "amount": order.amount,                 // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -576,9 +578,9 @@
                 verifyPayment(response, order);
             },
             "prefill": {
-                "name": "Gaurav Kumar", //your customer's name
-                "email": "gaurav.kumar@example.com",
-                "contact": "9000090000"
+                "name": userDetails.name, //your customer's name
+                "email": userDetails.email,
+                "contact": userDetails.mobile
             },
             "notes": {
                 "address": "Razorpay Corporate Office"

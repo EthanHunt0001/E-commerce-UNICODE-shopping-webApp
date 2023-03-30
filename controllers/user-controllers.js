@@ -3,11 +3,23 @@ const categoryHelpers = require('../helpers/category-helpers');
 const productHelpers = require('../helpers/product-helpers');
 const userHelpers = require('../helpers/user-helpers');
 const cloudinary = require('../utils/cloudinary');
+const paypal = require("paypal-rest-sdk");
 
 // twilio-credentials
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
+
+
+// paypal_creds
+const paypal_client_id = process.env.PAYPAL_CLIENT_ID;
+const paypal_client_secret = process.env.PAYPAL_CLIENT_SECRET;
+
+paypal.configure({
+  'mode': 'sandbox', //sandbox or live
+  'client_id': paypal_client_id,
+  'client_secret': paypal_client_secret
+});
 
 module.exports = {
     renderAllProducts : async(req, res)=>{
@@ -398,6 +410,7 @@ module.exports = {
     },
     placeOrder : async(req, res)=>{
       const userId = req.session.userDetails._id;
+      const userDetails = req.session.userDetails;
       req.body.userId = userId;
       req.body.userName = req.session.user;
       const address = await userHelpers.getActiveAddress(userId);
@@ -405,21 +418,93 @@ module.exports = {
       const cartList = cartProducts.products;
       userHelpers.addOrder(req.body, address, cartList).then((orderId)=>{
         if(req.body.paymentMethod==="COD"){
-          productHelpers.reduceStock(cartList).then(()=>{}).catch((err)=>console.log(err));
+          productHelpers.reduceStock(cartList).then(()=>{}).catch(()=>{});
           res.json({
             status: true,
             paymentMethod: req.body.paymentMethod
           });
-        }else{
+        }else if(req.body.paymentMethod==="onlineRazorpay"){
           userHelpers.generateRazorpay(orderId, req.body.totalCost).then((response)=>{
             productHelpers.reduceStock(cartList).then(()=>{}).catch((err)=>console.log(err));
-            res.json(response);
+            res.json({
+              response: response,
+              paymentMethod: "onlineRazorpay",
+              userDetails: userDetails
+            });
           })
           .catch((err)=>{
             console.log(err);
           })
+        }else{
+          const exchangeRate = 0.013;
+          const totalCost = (Number(req.body.totalCost)*exchangeRate).toFixed(0);
+          const create_payment_json = {
+            intent: "sale",
+            payer: {
+              payment_method: "paypal",
+            },
+            redirect_urls: {
+              return_url: "http://localhost:3000/success",
+              cancel_url: "http://localhost:3000/cancel",
+            },
+            transactions: [
+              {
+                amount: {
+                  currency: "USD",
+                  total: `${totalCost}`,
+                },
+                description: "UNICLUB ONLINE SHOPPING PLATFORM PAYPAL PAYMENT",
+              },
+            ],
+          };
+          paypal.payment.create(create_payment_json, function (error, payment) {
+            if (error) {
+              res.render('user/failure', {user:true, admin:false, userName: req.session.user});
+            } else {
+              try{
+                userHelpers.changeOrderStatus(orderId).then(()=>{console.log("changed")}).catch(()=>{});
+                productHelpers.reduceStock(cartList).then(()=>{}).catch((err)=>console.log(err));
+              }catch(err){
+                console.log(err);
+              }finally{
+                for (let i = 0; i < payment.links.length; i++) {
+                  if (payment.links[i].rel === "approval_url") {
+                    res.json({
+                      approval_link: payment.links[i].href,
+                      status: "success"
+                    })
+                  }
+                }
+              }
+            }
+          });
         }
       });
+    },
+    paypalSuccess : (req, res)=>{
+      const payerId = req.query.PayerID;
+      const paymentId = req.query.paymentId;
+      const execute_payment_json = {
+        payer_id: payerId,
+        transactions: [
+          {
+            amount: {
+              currency: "USD",
+              total: "25.00",
+            },
+          },
+        ],
+      };
+      paypal.payment.execute(paymentId, execute_payment_json, (error, payment)=>{
+        const userName = req.session.user;
+          if (error){
+            res.render('user/failure', {user:true, admin:false, userName});
+          } else {
+            // console.log(JSON.stringify(payment));
+            res.render('user/success', {user:true, payerId, paymentId, admin:false, userName});
+          }
+        }
+      );
     },
     verifyPayment : (req, res)=>{
       userHelpers.verifyPayment(req.body).then(()=>{
