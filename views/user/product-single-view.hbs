@@ -121,10 +121,10 @@
 	          		<span style="color: #000;" id="stocks">{{product.stocks}}</span><span style="color: #000;"> &nbsp;piece available</span>
 	          	</div>
           	</div>
-          		<p class="pt-4 py-3"><a class="add-to-wishlist btn btn-black py-3 text-white px-5" data-product="{{product._id}}">Add to Wishlist <span class="icon-heart ml-2"></span></a></p>
+          		{{!-- <p class="pt-4 py-3"><a class="add-to-wishlist btn btn-black py-3 text-white px-5" data-product="{{product._id}}">Add to Wishlist <span class="icon-heart ml-2"></span></a></p> --}}
 			<div class="d-flex">
-          		<p><a class="add-to-cart btn btn-black py-3 text-white px-5" data-product="{{product._id}}">Add to Cart <span class="ion-ios-add ml-2"></span></a></p>
-				<p><a href="/addToWishList/{{product._id}}" class="btn btn-black py-3 text-white px-5 ml-3">Buy Now <span class="icon-shopping_cart ml-2"></span></a></p>
+          		<p class="pt-4 py-3"><a class="add-to-cart btn btn-black py-3 text-white px-5" data-product="{{product._id}}">Add to Cart <span class="ion-ios-add ml-2"></span></a></p>
+				<p class="pt-4 py-3"><a class="add-to-wishlist btn btn-black py-3 ml-3 text-white px-5" data-product="{{product._id}}">Add to Wishlist <span class="icon-heart ml-2"></span></a></p>
 			</div>
     			</div>
     		</div>

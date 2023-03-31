@@ -11,54 +11,56 @@
 <style>
 	
     .search{
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+    	height: 100%;
+    	width: 100%;
+    	margin: 0;
+    	padding: 0;
     }
 
     .searchbar{
-    margin-bottom: auto;
-    margin-top: auto;
-    height: 60px;
-    background-color: #353b48;
-    border-radius: 30px;
-    padding: 10px;
+    	margin-bottom: auto;
+    	margin-top: auto;
+    	height: 60px;
+    	background-color: #353b48;
+    	border-radius: 30px;
+    	padding: 10px;
     }
 
     .search_input{
-    color: white;
-    border: 0;
-    outline: 0;
-    background: none;
-    width: 0;
-    caret-color:transparent;
-    line-height: 40px;
-    transition: width 0.4s linear;
+    	color: white;
+    	border: 0;
+    	outline: 0;
+    	background: none;
+    	width: 0;
+    	caret-color:transparent;
+    	line-height: 40px;
+    	transition: width 0.4s linear;
     }
 
     .searchbar:hover > .search_input{
-    padding: 0 10px;
-    width: 450px;
-    caret-color:red;
-    transition: width 0.4s linear;
+    	padding: 0 10px;
+    	/* width: 450px; */
+		width: 25vw;
+		max-width: 100%;
+    	caret-color:red;
+    	transition: width 0.4s linear;
     }
 
     .searchbar:hover > .search_icon{
-    background: white;
-    color: #e74c3c;
+    	background: white;
+    	color: #e74c3c;
     }
 
     .search_icon{
-    height: 40px;
-    width: 40px;
-    float: right;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    color:white;
-    text-decoration:none;
+    	height: 40px;
+    	width: 40px;
+    	float: right;
+    	display: flex;
+    	justify-content: center;
+    	align-items: center;
+    	border-radius: 50%;
+    	color:white;
+    	text-decoration:none;
     }
 </style>
 
@@ -74,7 +76,7 @@
 </div>
 
 {{!-- search --}}
-<div class="search pt-5 bg-light d-none d-lg-block d-md-block">
+<div class="search pt-5 bg-light">
   <div class="d-flex justify-content-center h-100">
     <div class="searchbar">
       <input class="search_input" type="text" name="search" value="{{searchValue}}" id="search" placeholder="Type to search...">
@@ -82,10 +84,14 @@
     </div>
   </div>
 </div>
-<div class="searchbar pt-5 d-lg-none d-md-none">
-    <input class="search_input" type="text" name="search" value="{{searchValue}}" id="search" placeholder="Type to search...">
-    <a onclick="searchProduct()" class="search_icon"><i class="fas fa-search"></i></a>
-</div>
+{{!-- searchbar Mobile --}}
+{{!-- <div class="d-flex bg-light d-lg-none d-md-none d-block">
+	<div class="mx-auto">
+		<input class="form-input search" type="text" name="search" value="{{searchValue}}" id="search" placeholder="Type to search...">
+		<a onclick="searchProduct()" class="search_icon" style="float: left;"><i class="fas fa-search"></i></a>
+	</div>
+</div> --}}
+
 
 <section class="ftco-section bg-light">
 	<div class="container">
@@ -97,7 +103,7 @@
 							{{#if this.stocks}}
 	    						<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate card-deck">
 	    							<div class="product card mt-3">
-										<span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span>
+										{{!-- <span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span> --}}
 	    								<a href="/product-single-view/{{this._id}}" class="img-prod"><img class="img-fluid" src="{{this.images.[0]}}" alt="image of the dress">
 	    									<span class="status">{{this.discountPerc}}%</span>
 	    									{{!-- <span onclick="window.location='https://www.google.com/'" class="bottom-area status mt-5 bg-white icon-heart text-dark" style="font-size: xx-large;position: absolute;z-index: 3;"></span> --}}
@@ -121,8 +127,8 @@
 		    									</div>
 		    								</div>
 		    								<p class="bottom-area d-flex px-3">
-	    										<a href="#" class="add-to-cart text-center py-2 mr-1" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-	    										<a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
+	    										<a href="#" class="add-to-cart text-center py-2 mr-2" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+	    										<a href="#" class="add-to-wishlist buy-now text-center py-2" data-product="{{this._id}}"><span style="font-size: 15px;">wishlist </span><i class="icon-heart ml-1"></i></a>
 	    									</p>
 	    								</div>
 	    							</div>
@@ -168,7 +174,7 @@
 							{{#if this.stocks}}
 	    						<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate card-deck">
 	    							<div class="product card mt-3">
-										<span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span>
+										{{!-- <span class="add-to-wishlist bottom-area status mt-5 ml-1 icon-heart text-danger" data-product="{{this._id}}" style="font-size: xx-large;position: absolute;z-index: 3;cursor: pointer;"></span> --}}
 	    								<a href="/product-single-view/{{this._id}}" class="img-prod"><img class="img-fluid" src="{{this.images.[0]}}" alt="image of the dress">
 	    									<span class="status">{{this.discountPerc}}%</span>
 	    									{{!-- <span onclick="window.location='https://www.google.com/'" class="bottom-area status mt-5 bg-white icon-heart text-dark" style="font-size: xx-large;position: absolute;z-index: 3;"></span> --}}
@@ -193,7 +199,7 @@
 		    								</div>
 		    								<p class="bottom-area d-flex px-3">
 	    										<a href="#" class="add-to-cart text-center py-2 mr-1" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-	    										<a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
+	    										<a href="#" class="add-to-wishlist buy-now text-center py-2" data-product="{{this._id}}">wishlist<span><i class="icon-heart ml-2"></i></span></a>
 	    									</p>
 	    								</div>
 	    							</div>

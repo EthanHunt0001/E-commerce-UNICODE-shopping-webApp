@@ -850,9 +850,6 @@ module.exports={
                         $set:{
                             refunded: true
                         }
-                    },
-                    {
-                        upsert: true
                     }
                 )
                 .then(()=>{
