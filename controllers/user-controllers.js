@@ -45,8 +45,8 @@ module.exports = {
         });
       }
       req.session.filteredProducts = false;
-      req.body.maxPrice = false;
-      req.body.minPrice = false;
+      req.session.maxPrice = false;
+      req.session.minPrice = false;
       req.session.searchValue = null;
     },
     renderLogin : (req, res)=>{

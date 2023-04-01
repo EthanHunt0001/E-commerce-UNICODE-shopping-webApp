@@ -64,6 +64,14 @@
     }
 </style>
 
+<style>
+	.range-slider {
+	    position: relative;
+	    height: 80px;
+	}
+
+</style>
+
 <div class="hero-wrap hero-bread" style="background-image: url('/images/bg_6.jpg');">
   <div class="container">
     <div class="row no-gutters slider-text align-items-center justify-content-center">
@@ -84,14 +92,6 @@
     </div>
   </div>
 </div>
-{{!-- searchbar Mobile --}}
-{{!-- <div class="d-flex bg-light d-lg-none d-md-none d-block">
-	<div class="mx-auto">
-		<input class="form-input search" type="text" name="search" value="{{searchValue}}" id="search" placeholder="Type to search...">
-		<a onclick="searchProduct()" class="search_icon" style="float: left;"><i class="fas fa-search"></i></a>
-	</div>
-</div> --}}
-
 
 <section class="ftco-section bg-light">
 	<div class="container">
@@ -286,26 +286,19 @@
 	    		<div class="sidebar-box-2">
 	    			<h2 class="heading mb-3"><a href="#">Filter</a></h2>
 					<label for="category" class="form-label text-dark" style="font-size: large;">Price</label>
-					<select class="form-control" id="selectMinPrice" name="minPrice">
-						{{#if minPrice}}
-							<option value="{{minPrice}}" hidden>{{minPrice}}</option>
-						{{/if}}
-						<option value="400" hidden>Min</option>
-						<option value="500">500</option>
-						<option value="1000">1000</option>
-						<option value="2000">2000</option>
-						<option value="3000">3000</option>
-					</select>
-					<p class="text-center pt-3">to</p>
-					<select class="form-control mb-4" id="selectMaxPrice" name="maxPrice">
-						{{#if maxPrice}}
-							<option value="{{maxPrice}}" hidden>{{maxPrice}}</option>
-						{{/if}}
-						<option value="6000">6000+</option>
-						<option value="1000">1000</option>
-						<option value="2000">2000</option>
-						<option value="3000">3000</option>
-					</select>
+
+					{{!-- slider --}}
+					<div class="range-slider">
+					    <input type="text" class="js-range-slider" value="" />
+					</div>
+
+					<div class="extra-controls mb-4">
+					    <input type="text" class="js-input-from w-75" hidden id="selectMinPrice" name="minPrice" value="{{minPrice}}" />
+					    <input type="text" class="js-input-to w-75" hidden id="selectMaxPrice" name="maxPrice" value="{{maxPrice}}" />
+						<div class="text-center">
+							<span class="btn" style="background-color: blue;color: white;" onclick="priceFilter()"id="apply">apply</span>
+						</div>
+					</div>
 
 						<label for="category" class="form-label text-dark" style="font-size: large;">Sort Price</label><br>
 						<div class="form-check form-check-inline">
@@ -320,10 +313,6 @@
 						   	&nbsp;Higher to Lower
 						   </label>
 						</div>
-	    			{{!-- <ul>
-	    				<li><a href="#">Above Rs.500</a></li>
-						<li><a href="#">Above Rs.1000</a></li>
-	    			</ul> --}}
 	    		</div>
 	    		{{!-- <div class="sidebar-box-2">
 	    			<h2 class="heading mb-2"><a href="#">Bags</a></h2>
@@ -345,6 +334,7 @@
 	</div>
 </section>
 
+{{!-- add-to-cart && add-to-wishlist --}}
 <script>
 	
 	const addToCart = async(productId)=>{
@@ -427,33 +417,14 @@
 
 </script>
 
-{{!-- price-filter --}}
+{{!-- filters --}}
 <script>
 
 	const selectMinPrice = document.querySelector('#selectMinPrice');
 	const selectMaxPrice = document.querySelector('#selectMaxPrice');
 	const searchInput = document.querySelector('#search');
-	//const lowerTohigh = document.querySelector('#lowerTohigh');
-	//const highToLower = document.querySelector('#highToLower');
 
-	selectMinPrice.addEventListener('change', () => {
-	  const minPrice = parseInt(selectMinPrice.value);
-	
-	  for (let i = 0; i < selectMaxPrice.options.length; i++) {
-	    const option = selectMaxPrice.options[i];
-	    const maxPrice = parseInt(option.value);
-	
-	    // set the max attribute to the selected minimum price
-	    if (maxPrice <= minPrice) {
-	      option.disabled = true;
-	    } else {
-	      option.disabled = false;
-	      option.max = minPrice;
-	    }
-	  }
-	});
-
-	$('#selectMaxPrice').on('change', function() {
+	function priceFilter(){
 		axios.post('/shopPriceFilter',{
 			minPrice :selectMinPrice.value,
 			maxPrice :selectMaxPrice.value,
@@ -465,7 +436,7 @@
 		.catch(()=>{
 		  location.href = '/shop';
 		});
-	});
+	};
 
 	function sortPrice(value){
 		axios.post('/shopPriceSort', {

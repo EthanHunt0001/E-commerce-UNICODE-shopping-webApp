@@ -256,7 +256,6 @@ module.exports={
             userId = ObjectId(userId);
             proId = ObjectId(proId);
             let user = await db.get().collection(collection.WISHLIST_COLLECTION).findOne({user:userId});
-            console.log(user);
             let productExist = await db.get().collection(collection.WISHLIST_COLLECTION)
             .findOne(
             {
