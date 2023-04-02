@@ -25,9 +25,12 @@ module.exports={
             resolve(products);
         })
     },
-    getAllProductsAdminSide:()=>{
+    getAllProductsAdminSide:(currentPage)=>{
         return new Promise(async(resolve,reject)=>{
-            let products2 = await db.get().collection(collection.PRODUCT_COLLECTION).find().toArray();
+            currentPage = parseInt(currentPage);
+            const limit=10;
+            const skip = (currentPage-1)*limit;
+            let products2 = await db.get().collection(collection.PRODUCT_COLLECTION).find().skip(skip).limit(limit).toArray();
             let products = [];
             for(let i=0;i<products2.length;i++){
                 if(products2[i].listingStatus){
@@ -174,5 +177,11 @@ module.exports={
                 resolve(null);
             }
         });
+    },
+    totalPages:()=>{
+        return new Promise(async(resolve, reject)=>{
+            const totalCount = await db.get().collection(collection.PRODUCT_COLLECTION).countDocuments({});
+            resolve(totalCount);
+        })
     }
 }

@@ -30,18 +30,21 @@ module.exports = {
           res.render('user/user-index',{admin:false, banner, products,userDet, user:true, userName:userName});
         })
     },
-    renderShopProducts : (req,res)=>{
+    renderShopProducts : async(req,res)=>{
       let userName = req.session.user;
       const userDet = req.session.userDetails;
       const filteredProducts = req.session.filteredProducts;
       const maxPrice = req.session.maxPrice;
       const minPrice = req.session.minPrice;
       const searchValue = req.session.searchValue;
+      // pagination
+      const totalPages = await productHelpers.totalPages();
+      const currentPage = req.query.page || 1;
       if(filteredProducts){
         res.render('user/user-product-view', {admin:false, userDet, searchValue, maxPrice, minPrice, filteredProducts, user:true, userName:userName});
       }else{
-        productHelpers.getAllProductsAdminSide().then((products)=>{         
-          res.render('user/user-product-view', {admin:false, userDet, products, user:true, userName:userName});
+        productHelpers.getAllProductsAdminSide(currentPage).then((products)=>{         
+          res.render('user/user-product-view', {admin:false, currentPage, totalPages, userDet, products, user:true, userName:userName});
         });
       }
       req.session.filteredProducts = false;
@@ -208,7 +211,6 @@ module.exports = {
       const userDet = req.session.userDetails;
       let id = req.params.id;
       productHelpers.getProductDetails(id).then((product)=>{
-        console.log(product);
         res.render('user/product-single-view', {product, userDet, user:true, userName});
       })
     },
@@ -216,8 +218,11 @@ module.exports = {
       let userName = req.session.user;
       const userDet = req.session.userDetails;
       const catName = req.params.id;
-      const products = await categoryHelpers.categorySelect(catName);
-      res.render('user/user-product-view', {admin:false, userDet, products, catName, user:true, userName});
+      // pagination
+      const currentPage = req.query.page || 1;
+      const totalPages = await categoryHelpers.totalPages(catName);
+      const products = await categoryHelpers.categorySelect(catName, currentPage);
+      res.render('user/user-product-view', {admin:false, totalPages, currentPage, userDet, products, catName, user:true, userName});
     },
     addToCart : (req,res)=>{
       let quantity = 1;
@@ -340,9 +345,7 @@ module.exports = {
       const userId = req.session.userDetails._id;
       try{
         const result = await cloudinary.uploader.upload(req.file.path);
-        console.log(result.url);
-        userHelpers.profilePicChange(userId, result.url).then((response)=>{
-          console.log(response);
+        userHelpers.profilePicChange(userId, result.url).then(()=>{
           res.json({
             status:"success",
             message:`${result.url}`

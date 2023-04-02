@@ -69,8 +69,11 @@ module.exports = {
             }
         })
     },
-    categorySelect : (catName)=>{
+    categorySelect : (catName, currentPage)=>{
         return new Promise(async(resolve, reject)=>{
+            currentPage = parseInt(currentPage);
+            const limit=10;
+            const skip = (currentPage-1)*limit;
             const filteredProducts = await db.get().collection(collections.CATEGORY_COLLECTION).aggregate([
                 {
                   '$match': {
@@ -86,7 +89,7 @@ module.exports = {
                 },{
                     '$unwind' : '$productsDetails'
                 }
-            ]).toArray();
+            ]).skip(skip).limit(limit).toArray();
             // console.log(filteredProducts[0].productsDetails);
             let products = [];
             for(let i=0;i<filteredProducts.length;i++){
@@ -98,6 +101,33 @@ module.exports = {
                 }
             }
             resolve(products);
-        })
-    }
+        });
+    },
+    totalPages:((catName)=>{
+        return new Promise(async(resolve, reject)=>{
+            const count = await db.get().collection(collections.CATEGORY_COLLECTION).aggregate([
+                {
+                    '$match': {
+                        'name': `${catName}`
+                    }
+                }, 
+                {
+                    '$lookup': {
+                        'from': 'products', 
+                        'localField': '_id', 
+                        'foreignField': 'category', 
+                        'as': 'productsDetails'
+                    }
+                },
+                {
+                    '$unwind': '$productsDetails'
+                },
+                {
+                    '$count': 'totalProducts'
+                }
+            ]).toArray();
+            const totalCount = count[0].totalProducts;
+            resolve(totalCount);
+        });
+    })
 }
