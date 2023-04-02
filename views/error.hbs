@@ -1,3 +1,32 @@
-<h1>{{message}}</h1>
-<h2>{{error.status}}</h2>
-<pre>{{error.stack}}</pre>
+<div class="errorSection">
+<div>
+    <h1>{{message}}</h1>
+    <span class='error-num'>5</span>
+    <div class="eye left-eye"></div>
+    <div class="eye right-eye"></div>
+  <p class='sub-text paragra'>Oh eyeballs! Something went wrong. We're <i>looking</i> to see what happened.</p>
+  <a class="anc" href='/shop'>Go back</a>
+</div>
+</div>
+
+<script>
+    var errorSection = document.querySelector('.errorSection');
+    var leftEye = document.querySelector('.left-eye');
+    var rightEye = document.querySelector('.right-eye');
+    errorSection.addEventListener('mousemove', function(event) {
+      var leftX = (leftEye.offsetLeft) + (leftEye.offsetWidth / 2);
+      var leftY = (leftEye.offsetTop) + (leftEye.offsetHeight / 2);
+      var leftRad = Math.atan2(event.pageX - leftX, event.pageY - leftY);
+      var leftRot = (leftRad * (180 / Math.PI) * -1) + 180;
+      leftEye.style.webkitTransform = 'rotate(' + leftRot + 'deg)';
+      leftEye.style.transform = 'rotate(' + leftRot + 'deg)';
+      
+      var rightX = (rightEye.offsetLeft) + (rightEye.offsetWidth / 2);
+      var rightY = (rightEye.offsetTop) + (rightEye.offsetHeight / 2);
+      var rightRad = Math.atan2(event.pageX - rightX, event.pageY - rightY);
+      var rightRot = (rightRad * (180 / Math.PI) * -1) + 180;
+      rightEye.style.webkitTransform = 'rotate(' + rightRot + 'deg)';
+      rightEye.style.transform = 'rotate(' + rightRot + 'deg)';
+    });
+  
+</script>
