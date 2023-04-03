@@ -745,11 +745,21 @@ module.exports={
             }
         });
     },
-    getOrders:(userId)=>{
+    getOrders:(userId, currentPage)=>{
         return new Promise(async(resolve, reject)=>{
             userId = ObjectId(userId);
-            const orders = await db.get().collection(collection.ORDER_COLLECTION).find({userId: userId}).toArray();
+            currentPage = parseInt(currentPage);
+            const limit=8;
+            const skip = (currentPage-1)*limit;
+            const orders = await db.get().collection(collection.ORDER_COLLECTION).find({userId: userId}).skip(skip).limit(limit).sort({date: -1}).toArray();
             resolve(orders);
+        })
+    },
+    getTotalCount:(userId)=>{
+        return new Promise(async(resolve, reject)=>{
+            userId = ObjectId(userId);
+            const totalCount = await db.get().collection(collection.ORDER_COLLECTION).countDocuments({userId: userId});
+            resolve(totalCount);
         })
     },
     getOrderedProducts:(ordersId)=>{

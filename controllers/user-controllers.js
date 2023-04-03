@@ -522,7 +522,10 @@ module.exports = {
       const userName = req.session.user;
       const userId = req.session.userDetails._id;
       const userDet = req.session.userDetails;
-      const orders = await userHelpers.getOrders(userId);
+      // pagination
+      const totalPages = await userHelpers.getTotalCount(userId);
+      const currentPage = req.query.page || 1;
+      const orders = await userHelpers.getOrders(userId, currentPage);
       orders.forEach(order => {
         order.isCancelled = order.status==="cancelled"?true:false;
         order.isDelivered = order.status==="delivered"?true:false;
@@ -534,7 +537,7 @@ module.exports = {
         const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
         order.date = formattedDate;
       });
-      res.render('user/orders', {user:true, userDet, admin:false, orders, userName});
+      res.render('user/orders', {user:true, totalPages, currentPage, userDet, admin:false, orders, userName});
     },
     renderOrderedProducts : async(req, res)=>{
       const userName = req.session.user;
