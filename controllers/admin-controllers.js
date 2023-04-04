@@ -318,7 +318,7 @@ module.exports = {
         console.log(err);
       }
       adminHelpers.addBanner(req.body).then(()=>{
-        res.redirect('/admin/add-banner');
+        res.redirect('/admin/banner-view');
       });
     },
     renderEditBanner : (req, res)=>{

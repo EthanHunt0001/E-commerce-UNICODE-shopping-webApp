@@ -206,12 +206,13 @@ module.exports = {
           }
         })
     },
-    userProductDetails : (req, res)=>{
+    userProductDetails : async(req, res)=>{
       let userName = req.session.user;
       const userDet = req.session.userDetails;
       let id = req.params.id;
+      const relatedProducts = await productHelpers.getRelatedProducts();
       productHelpers.getProductDetails(id).then((product)=>{
-        res.render('user/product-single-view', {product, userDet, user:true, userName});
+        res.render('user/product-single-view', {product, relatedProducts, userDet, user:true, userName});
       })
     },
     renderSelectedProducts : async(req, res)=>{

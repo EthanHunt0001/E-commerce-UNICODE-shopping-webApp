@@ -183,5 +183,16 @@ module.exports={
             const totalCount = await db.get().collection(collection.PRODUCT_COLLECTION).countDocuments({});
             resolve(totalCount);
         })
+    },
+    getRelatedProducts:()=>{
+        return new Promise(async(resolve, reject)=>{
+            try{
+                const relatedProducts = await db.get().collection(collection.PRODUCT_COLLECTION).find().limit(3).toArray();
+                console.log(relatedProducts);
+                resolve(relatedProducts);
+            }catch{
+                resolve(null);
+            }
+        })
     }
 }
