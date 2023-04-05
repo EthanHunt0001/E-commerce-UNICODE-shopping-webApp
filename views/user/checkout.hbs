@@ -453,7 +453,6 @@
     axios.post('/couponApply', {'couponCode': code})
     .then((response)=>{
       if(response.data.status=="success"){
-        console.log(response);
         const coupon = response.data.coupon;
         if(coupon.status=="DEACTIVATED"||coupon.status=="EXPIRED"){
           document.getElementById('invalidCoupon').innerHTML = "Coupon Deactivaed or Expired";

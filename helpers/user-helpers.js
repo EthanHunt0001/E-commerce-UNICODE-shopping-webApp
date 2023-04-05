@@ -702,22 +702,49 @@ module.exports={
         return new Promise(async(resolve, reject)=>{
             const now = new Date();
             const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-            const coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({code: order.coupon});
-            const couponCode = order.coupon;
-            try{
-                db.get().collection(collection.USER_COLLECTION)
-                .updateOne(
-                    {
-                        _id: ObjectId(order.userId)
-                    },
-                    {
-                        $push: {usedCoupons: {couponCode}}
+            if(order.coupon){
+                const coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({code: order.coupon});
+                const couponCode = order.coupon;
+                try{
+                    db.get().collection(collection.USER_COLLECTION)
+                    .updateOne(
+                        {
+                            _id: ObjectId(order.userId)
+                        },
+                        {
+                            $push: {usedCoupons: {couponCode}}
+                        }
+                    )
+                    .then(()=>{}).catch(()=>{});
+                }catch(err){
+                   console.log(err);
+                }finally{
+                    let status = order.paymentMethod === 'COD' ? 'placed' : 'pending';
+                    orderObj = {
+                        userId : ObjectId(order.userId),
+                        userName : order.userName,
+                        deliveryDetails:{
+                            name : address.name,
+                            address : address.address,
+                            mobile : Number(address.mobile),
+                            pincode : Number(address.zipcode)
+                        },
+                        paymentMethod : order.paymentMethod,
+                        coupon : coupon,
+                        totalCost : Number(order.totalCost),
+                        products : cartList,
+                        date : date,
+                        status : status
                     }
-                )
-                .then(()=>{}).catch(()=>{});
-            }catch(err){
-               console.log(err);
-            }finally{
+                    db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj)
+                    .then((response)=>{
+                        db.get().collection(collection.CART_COLLECTION).deleteOne({user: ObjectId(order.userId)})
+                        .then(()=>{
+                            resolve(response.insertedId);
+                        });
+                    });
+                }
+            }else{
                 let status = order.paymentMethod === 'COD' ? 'placed' : 'pending';
                 orderObj = {
                     userId : ObjectId(order.userId),
@@ -729,7 +756,6 @@ module.exports={
                         pincode : Number(address.zipcode)
                     },
                     paymentMethod : order.paymentMethod,
-                    coupon : coupon,
                     totalCost : Number(order.totalCost),
                     products : cartList,
                     date : date,
