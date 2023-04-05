@@ -90,23 +90,9 @@ router.get('/returnOrder/:id', verifyLogin.userVerifyLogin, userControllers.retu
 
 router.get('/success', verifyLogin.userVerifyLogin, userControllers.paypalSuccess);
 
-// Category_routes
+// Category
 
-router.get('/shirts/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
-
-router.get('/tshirts/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
-
-router.get('/tops/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
-
-router.get('/jeans/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
-
-router.get('/shorts/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
-
-router.get('/skirts/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
-
-router.get('/jacket/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
-
-router.get('/winterCoats/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
+router.get('/category/:id', verifyLogin.userVerifyLogin, userControllers.renderSelectedProducts);
 
 // Filter & sort & search
 

@@ -69,7 +69,7 @@ module.exports = {
             }
         })
     },
-    categorySelect : (catName, currentPage)=>{
+    categorySelect : (catId, currentPage)=>{
         return new Promise(async(resolve, reject)=>{
             currentPage = parseInt(currentPage);
             const limit=10;
@@ -77,7 +77,7 @@ module.exports = {
             const filteredProducts = await db.get().collection(collections.CATEGORY_COLLECTION).aggregate([
                 {
                   '$match': {
-                    'name': `${catName}`
+                    '_id': objectId(catId)
                   }
                 }, {
                   '$lookup': {
@@ -103,12 +103,12 @@ module.exports = {
             resolve(products);
         });
     },
-    totalPages:((catName)=>{
+    totalPages:(catId)=>{
         return new Promise(async(resolve, reject)=>{
             const count = await db.get().collection(collections.CATEGORY_COLLECTION).aggregate([
                 {
                     '$match': {
-                        'name': `${catName}`
+                        '_id': objectId(catId)
                     }
                 }, 
                 {
@@ -129,5 +129,11 @@ module.exports = {
             const totalCount = count[0].totalProducts;
             resolve(totalCount);
         });
-    })
+    },
+    getAllCategory:()=>{
+        return new Promise(async(resolve, reject)=>{
+            const categories = await db.get().collection(collections.CATEGORY_COLLECTION).find({"listingStatus": true}).toArray();
+            resolve(categories);
+        });
+    }
 }

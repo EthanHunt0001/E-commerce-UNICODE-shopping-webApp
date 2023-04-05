@@ -1,12 +1,6 @@
 <main id="main" role="main">
     <section id="checkout-container">
         <div class="container">
-            {{!-- <div class="py-5 text-center">
-                <i class="fa fa-credit-card fa-3x text-primary"></i>
-                <h2 class="my-3">Checkout form</h2>
-                <p class="lead">Below is an example form built entirely with Bootstrap's form controls. Each required form group has
-                    a validation state that can be triggered by attempting to submit the form without completing it.</p>
-            </div> --}}
             <form class="needs-validation" id="myForm" method="post">
 
             <div class="row py-5">
@@ -121,44 +115,7 @@
                                 <input id="paypal" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" value="onlinePaypal" required>
                                 <label class="custom-control-label" for="paypal"><img src="/images/payPal.png" style="height: 26px;width: 116px;" alt=""></label>
                             </div>
-                            {{!-- <div class="custom-control custom-radio">
-                                <input id="paypal" name="paymentMethod" onclick="validateSubmit()" type="radio" class="custom-control-input" required>
-                                <label class="custom-control-label" for="paypal">Paypal</label>
-                            </div> --}}
                         </div>
-                        {{!-- <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="cc-name">Name on card</label>
-                                <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                                <small class="text-muted">Full name as displayed on card</small>
-                                <div class="invalid-feedback">
-                                    Name on card is required
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="cc-number">Credit card number</label>
-                                <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Credit card number is required
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label for="cc-expiration">Expiration</label>
-                                <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Expiration date required
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="cc-expiration">CVV</label>
-                                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Security code required
-                                </div>
-                            </div>
-                        </div> --}}
                         <hr class="mb-4">
                         <button id="checkoutBtn" class="btn btn-primary btn-lg btn-block" disabled type="submit">Continue to checkout</button>
                     </form>

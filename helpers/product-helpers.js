@@ -194,5 +194,15 @@ module.exports={
                 resolve(null);
             }
         })
+    },
+    totalOrdersPlaced:()=>{
+        return new Promise(async(resolve, reject)=>{
+            try{
+                const ordersPlacedCount = await db.get().collection(collection.ORDER_COLLECTION).countDocuments();
+                resolve(ordersPlacedCount);
+            }catch{
+                resolve(0);
+            }
+        })
     }
 }

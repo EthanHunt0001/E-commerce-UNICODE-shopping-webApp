@@ -26,7 +26,7 @@ function validateMobile(){
   if(mobile.length === 0){
     mobileError.innerHTML = 'Mobile number is required';
     return false;
-  }else if(!mobile.match(/^[7-9]\d{9}$/)){
+  }else if(!mobile.match(/^[6-9]\d{9}$/)){
     mobileError.innerHTML = 'invalid mobile number';
     return false;
   }else {

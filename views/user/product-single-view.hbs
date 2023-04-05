@@ -170,8 +170,8 @@
 		    						</div>
 		    					</div>
 		    					<p class="bottom-area d-flex px-3">
-	    							<a href="#" class="add-to-cart text-center py-2 mr-2" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-	    							<a href="#" class="add-to-wishlist buy-now text-center py-2" data-product="{{this._id}}"><span style="font-size: 15px;">wishlist </span><i class="icon-heart ml-1"></i></a>
+	    							<a href="" class="relatedadd-to-cart buy-now add text-center py-2 mr-2" data-product="{{this._id}}"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+	    							<a href="" class="relatedadd-to-wishlist buy-now text-center py-2" data-product="{{this._id}}"><span style="font-size: 15px;">wishlist </span><i class="icon-heart ml-1"></i></a>
 	    						</p>
 	    					</div>
 	    				</div>
@@ -200,6 +200,7 @@
 	
 </script>
 
+{{!-- addToCart && addToWishlist --}}
 <script>
 
 	//plus and minus quantity
@@ -307,6 +308,89 @@
 	document.querySelector('.add-to-wishlist').addEventListener('click', (e)=>{
 		e.preventDefault();
 		addToWishList(e.target.dataset.product);
+	});
+
+</script>
+
+{{!-- related add-to-cart && add-to-wishlist --}}
+<script>
+	
+	const relatedaddToCart = async(productId)=>{
+		try{
+			const res = await axios({
+				method: 'GET', url: `/addToCart/${productId}`
+			})
+			if(res.data.status === "success"){
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "bottom",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+			}else{
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+				location.assign('/login')
+			}
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	const relatedaddToWishList = async(productId)=>{
+		try{
+			const res = await axios({
+				method: 'GET', url: `/addToWishList/${productId}`
+			})
+			if(res.data.status === "success"){
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "bottom",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+			}else{
+				Toastify({
+					text: res.data.message,
+					duration: 3000,
+					gravity: "top",
+					position: "center",
+					style: {
+						background: "linear-gradient(to right, #fe6d00, #ffb900)",
+					},
+				}).showToast();
+				location.assign('/login')
+			}
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	document.querySelectorAll('.relatedadd-to-cart').forEach(item => {
+	  item.addEventListener('click', function(e) {
+	    e.preventDefault();
+	    relatedaddToCart(this.dataset.product);
+	  });
+	});
+
+	document.querySelectorAll('.relatedadd-to-wishlist').forEach(item => {
+		item.addEventListener('click', function(e){
+			e.preventDefault();
+			relatedaddToWishList(this.dataset.product);
+		});
 	});
 
 </script>

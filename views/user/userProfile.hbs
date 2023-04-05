@@ -32,13 +32,15 @@
                 </div>
                 
                 <div class="profile-head">
-                            <h5>
-                                <input type="text" id="userNameMain" value="{{userProf.name}}" style="border: none; background-color: white;font-weight: bolder;font-size: larger;" disabled> 
-                            </h5>
-                            <h6>
-                                Our Most Valuable Customer
-                            </h6>
-                            <p class="proile-rating">RANKINGS : <span>8/10</span></p>
+                    <div class="mb-4">
+                        <h5>
+                            <input type="text" id="userNameMain" value="{{userProf.name}}" style="border: none; background-color: white;font-weight: bolder;font-size: larger;" disabled> 
+                        </h5>
+                        <h6>
+                            Our Most Valuable Customer
+                        </h6>
+                    </div>
+                            {{!-- <p class="proile-rating">RANKINGS : <span>8/10</span></p> --}}
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Profile</a>
@@ -72,10 +74,6 @@
                     <p>MY&nbsp;STUFF</p>
                     <a href="/wishList">My Wishlist</a><br/>
                     <a href="/cart">My Cart</a><br/>
-                    {{!-- <a href="">My Coupens</a><br/>
-                    <a href="">WooCommerce</a><br/>
-                    <a href="">PHP, .Net</a><br/> --}}
-
                 </div>
             </div>
 
@@ -141,15 +139,6 @@
                             <label class="text-danger mt-3" id="submitError"></label>
                             {{!-- <span class="btn btn-primary mx-auto mt-3">change password</span> --}}
                         </div>
-
-                        {{!-- <div class="row">
-                            <div class="col-md-6">
-                                <label>Profession</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>Web Developer and Designer</p>
-                            </div>
-                        </div> --}}
                     </div>
 
                     {{!-- 2nd page on the section --}}
@@ -173,38 +162,7 @@
                                     </div>
                                     {{/if}}
                                 </div>
-                                {{!-- <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Hourly Rate</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p>10$/hr</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Total Projects</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p>230</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>English Level</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p>Expert</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Availability</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p>6 months</p>
-                                    </div>
-                                </div> --}}
+                                
                         <div class="row pt-4">
                             <div class="col-md-12">
                                 {{!-- <label>Your Bio</label><br/> --}}

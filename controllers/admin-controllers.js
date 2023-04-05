@@ -167,9 +167,10 @@ module.exports = {
     renderDashboard : (req,res)=>{
       adminHelpers.getUsersCount().then(async(usersCount)=>{
         const total = await adminHelpers.getLastMonthTotal();
+        const totalOrdersPlaced = await productHelpers.totalOrdersPlaced();
         let totalEarnings = 0;
         totalEarnings = await adminHelpers.getOrderTotalPrice();
-        res.render('admin/admin-dashboard',{admin:true, total, totalEarnings, usersCount, adminName:req.session.adminName});
+        res.render('admin/admin-dashboard',{admin:true, totalOrdersPlaced, total, totalEarnings, usersCount, adminName:req.session.adminName});
       }).catch(()=>{
         res.render('admin/admin-dashboard',{admin:true, adminName:req.session.adminName});
       })

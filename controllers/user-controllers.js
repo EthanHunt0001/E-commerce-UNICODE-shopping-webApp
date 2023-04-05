@@ -26,9 +26,7 @@ module.exports = {
         const userName = req.session.user;
         const userDet = req.session.userDetails;
         const banner = await userHelpers.getActiveBanner();
-        productHelpers.getAllProductsAdminSide().then((products)=>{
-          res.render('user/user-index',{admin:false, banner, products,userDet, user:true, userName:userName});
-        })
+        res.render('user/user-index',{admin:false, banner,userDet, user:true, userName:userName});
     },
     renderShopProducts : async(req,res)=>{
       let userName = req.session.user;
@@ -37,14 +35,15 @@ module.exports = {
       const maxPrice = req.session.maxPrice;
       const minPrice = req.session.minPrice;
       const searchValue = req.session.searchValue;
+      const categories = await categoryHelpers.getAllCategory();
       // pagination
       const totalPages = await productHelpers.totalPages();
       const currentPage = req.query.page || 1;
       if(filteredProducts){
-        res.render('user/user-product-view', {admin:false, userDet, searchValue, maxPrice, minPrice, filteredProducts, user:true, userName:userName});
+        res.render('user/user-product-view', {admin:false, categories, userDet, searchValue, maxPrice, minPrice, filteredProducts, user:true, userName:userName});
       }else{
-        productHelpers.getAllProductsAdminSide(currentPage).then((products)=>{         
-          res.render('user/user-product-view', {admin:false, currentPage, totalPages, userDet, products, user:true, userName:userName});
+        productHelpers.getAllProductsAdminSide(currentPage).then((products)=>{
+          res.render('user/user-product-view', {admin:false, categories, currentPage, totalPages, userDet, products, user:true, userName:userName});
         });
       }
       req.session.filteredProducts = false;
@@ -218,12 +217,13 @@ module.exports = {
     renderSelectedProducts : async(req, res)=>{
       let userName = req.session.user;
       const userDet = req.session.userDetails;
-      const catName = req.params.id;
+      const catId = req.params.id;
       // pagination
       const currentPage = req.query.page || 1;
-      const totalPages = await categoryHelpers.totalPages(catName);
-      const products = await categoryHelpers.categorySelect(catName, currentPage);
-      res.render('user/user-product-view', {admin:false, totalPages, currentPage, userDet, products, catName, user:true, userName});
+      const categories = await categoryHelpers.getAllCategory();
+      const totalPages = await categoryHelpers.totalPages(catId);
+      const products = await categoryHelpers.categorySelect(catId, currentPage);
+      res.render('user/user-product-view', {admin:false, totalPages, categories, currentPage, userDet, products, user:true, userName});
     },
     addToCart : (req,res)=>{
       let quantity = 1;
