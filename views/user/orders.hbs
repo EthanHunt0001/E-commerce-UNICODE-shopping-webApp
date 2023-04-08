@@ -46,7 +46,6 @@
                     <th class="text-dark">{{this.deliveryDetails.mobile}}</th>
                     <th class="text-dark">{{this.paymentMethod}}</th>
                     <th class="text-dark">{{this.status}}</th>
-                    {{!-- <td><img style="width: 40px;height:40px" src="{{this.images.[0]}}"></td> --}}
                     <th><a href="/view/products/{{this._id}}" class="btn btn-primary">view Details</a> &nbsp;</th>
                     {{#if this.isCancelled}}
                       <th><a href="" class="btn btn-danger disabled">cancel order</a> &nbsp;</th>
@@ -57,7 +56,6 @@
                     {{else}}
                       <th><a href="" class="btn btn-danger cancelOrder" style="color: black;" data-toggle="modal" data-target="#cancel{{this._id}}">cancel order</a> &nbsp;</th>
                     {{/if}}
-                    {{!-- <td><a class="btn btn-danger" data-toggle="modal" data-target="#unlist{{this._id}}">Unlist product</a></td> --}}
                 </tr>
             {{/each}}
           </tbody>

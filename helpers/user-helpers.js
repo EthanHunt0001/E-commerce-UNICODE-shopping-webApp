@@ -706,16 +706,25 @@ module.exports={
                 const coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({code: order.coupon});
                 const couponCode = order.coupon;
                 try{
-                    db.get().collection(collection.USER_COLLECTION)
-                    .updateOne(
+                    const couponExists = await db.get().collection(collection.USER_COLLECTION)
+                    .findOne(
                         {
-                            _id: ObjectId(order.userId)
-                        },
-                        {
-                            $push: {usedCoupons: {couponCode}}
+                            _id: ObjectId(order.userId),
+                            usedCoupons: { $elemMatch: { couponCode } }
                         }
                     )
-                    .then(()=>{}).catch(()=>{});
+                    if(!couponExists){
+                        db.get().collection(collection.USER_COLLECTION)
+                        .updateOne(
+                            {
+                                _id: ObjectId(order.userId)
+                            },
+                            {
+                                $push: {usedCoupons: {couponCode}}
+                            }
+                        )
+                        .then(()=>{}).catch(()=>{});
+                    }
                 }catch(err){
                    console.log(err);
                 }finally{

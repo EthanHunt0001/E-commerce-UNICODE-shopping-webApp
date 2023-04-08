@@ -187,8 +187,6 @@
             const blob = await new Promise(resolve => 
               croppers[i].getCroppedCanvas().toBlob(resolve, 'image/jpeg', 0.3)
             );
-            console.log(blob);
-
             formData.append('images', blob, `image-${index}.jpg`);
             index++;
           }

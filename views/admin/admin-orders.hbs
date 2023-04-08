@@ -43,14 +43,11 @@
                 <tr>
                     <th class="text-dark">{{this.date}}</th>
                     <th class="text-dark">{{this._id}}</th>
-                    {{!-- <th class="text-dark">{{this.userId}}</th> --}}
                     <th class="text-dark">{{this.userName}}</th>
-                    {{!-- <th class="text-dark">{{this.deliveryDetails.address}}, <br> Pincode : {{this.deliveryDetails.pincode}}</th> --}}
                     <th class="text-dark">{{this.totalCost}}</th>
                     <th class="text-dark">{{this.paymentMethod}}</th>
                     <th class="text-dark">{{this.status}}</th>
                     <th><a href="/admin/viewOrderDetails/{{this._id}}" class="btn btn-primary">view Details</a> &nbsp;</th>
-                    {{!-- <td><img style="width: 40px;height:40px" src="{{this.images.[0]}}"></td> --}}
                     {{#if this.isCancelled}}
                       <th><a href="" class="btn btn-danger disabled">cancel order</a> &nbsp;</th>
                     {{else}}
@@ -60,7 +57,6 @@
                       <th><a href="/admin/shipOrder/{{this._id}}" class="btn btn-success shipOrder" data-toggle="modal" data-target="#ship{{this._id}}">ship order</a> &nbsp;</th>
                     {{else if this.isShipped}}
                       <th><a class="btn btn-success deliverOrder" style="font-weight: bold;" data-toggle="modal" data-target="#delivery{{this._id}}">deliver order</a> &nbsp;</th>
-                      {{!-- <th><a href="" class="btn btn-success" hidden>ship order</a> &nbsp;</th> --}}
                     {{else if this.isDelivered}}
                       <th><a href="" class="btn btn-success disabled">order delivered</a> &nbsp;</th>
                     {{else if this.isReturned}}

@@ -27,17 +27,17 @@ module.exports = {
           }
         })
     },
-    renderAllProducts : (req, res)=>{
-        if(req.session.adminLoggedIn){
-          productHelpers.getAllProducts().then((products)=>{
-            res.render('admin/admin-view',{admin:true,products,adminName:req.session.adminName});
-          })
-        }else{
-          res.redirect('/admin/login');
-        }
-    },
     renderAllProductsAdminSide : (req, res)=>{
         productHelpers.getAllProducts().then((products)=>{
+          products.forEach(product => {
+            // date formatting
+            const newDate = new Date(product.date);
+            const year = newDate.getFullYear();
+            const month = newDate.getMonth() + 1;
+            const day = newDate.getDate();
+            const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+            product.date = formattedDate;
+          });
           res.render('admin/admin-view',{admin:true,products,adminName:req.session.adminName});
         })
     },
@@ -53,6 +53,7 @@ module.exports = {
           temp = req.body.size.split(',');
           req.body.size = temp;
         }
+        req.body.date = new Date();
         productHelpers.addProduct(req.body,async (id)=>{
           let imgUrls = [];
           for(let i=0;i<req.files.length;i++){
