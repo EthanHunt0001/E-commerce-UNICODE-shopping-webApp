@@ -60,9 +60,5 @@ ADMIN SIDE :
 HOSTING 
 * Hosted the e-commerce website on an AWS instance using Nginx with PM2 to ensure optimal performance and reliability.
 
-Designed and developed a fully functional e-commerce website featuring multiple pages and functionalities,  Successfully integrated multiple payment options including Razorpay, PayPal, and cash on delivery, to ensure a smooth checkout process for users.
-Utilized Node.js, Express.js, MongoDB, and HBS for efficient and seamless website functionality. Improved website loading times and overall performance, resulting in a better user experience. Collaborated with a team to gather requirements and implement feedback for the project, resulting in a successful end product.
-Hosted the e-commerce website on an AWS instance using Nginx with PM2 to ensure optimal performance and reliability.
-
 A live video of the UNICLUB web Application working  <small>-visit my LinkedIn </small> : https://www.linkedin.com/in/nijas-khan-073712230/
 <h1> The live version of the project can be accessed at https://uniclubonline.store . </h1>
