@@ -17,8 +17,8 @@ Uniclub is a fully functional e-commerce website,
 <h3> Designed and developed a fully functional e-commerce website featuring multiple pages and functionality including, </h3>
 
 USER SIDE :
-* signup with validation
-* login with validation
+* signup and login with validation
+* login and forgot password with OTP
 * profile management
 * Address Management (CRUD)
 * profile Picture change with image cropping
