@@ -63,7 +63,7 @@
                                 <div class="col-md-12">
                                     {{#each addresses}}
                                         <div class="d-flex mb-3">
-                                            <input type="radio" id="{{this._id}}" class="activeAddress mr-3" name="address" data-address="{{this._id}}">
+                                            <input type="radio" id="{{this._id}}" class="activeAddress mr-3" value="{{this._id}}" name="address" data-address="{{this._id}}">
                                             <div class="border p-2" style="color: rgb(80, 80, 80);">
                                                 <b>{{this.name}}</b>, <br> 
                                                 {{this.address}}, <br>
@@ -340,7 +340,7 @@
 </div>
 
 {{!-- script for change active address --}}
-<script>
+{{!-- <script>
     const changeActive = async(addressId)=>{
         const res = await axios({
             method: "GET",
@@ -382,10 +382,10 @@
 	    changeActive(this.dataset.address);
 	  });
 	});
-</script>
+</script> --}}
 
 
-{{!-- script for checkout --}}
+{{!-- validation-script for checkout --}}
 <script>
     function validateRadioAddr() {
         var radioButtons = document.getElementsByName('address');
@@ -484,11 +484,18 @@
     myForm.addEventListener('submit', (event) => {
       event.preventDefault();
       const payii = document.getElementsByName('paymentMethod');
-
       let paymentMethod;
       for(let i=0;i<payii.length;i++){
           if(payii[i].checked){
               paymentMethod=payii[i].value;
+              break;
+          }
+      }
+      const addr = document.getElementsByName('address');
+      let address;
+      for(let i=0;i<addr.length;i++){
+          if(addr[i].checked){
+              address=addr[i].value;
               break;
           }
       }
@@ -498,6 +505,7 @@
         url: '/placeOrder',
         data : {
             totalCost : totalCost,
+            addressId : address,
             paymentMethod : paymentMethod,
             coupon : coupon
         }

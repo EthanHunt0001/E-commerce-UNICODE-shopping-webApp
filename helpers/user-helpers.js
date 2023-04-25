@@ -652,6 +652,38 @@ module.exports={
             });
         });
     },
+    getAddressForCheckout:(userId, addressId)=>{
+        return new Promise(async(resolve, reject)=>{
+            userId = ObjectId(userId);
+            addressId = ObjectId(addressId);
+            const address = await db.get().collection(collection.USER_COLLECTION)
+            .aggregate([
+                {
+                  '$match': {
+                    '_id': userId
+                  }
+                },
+                {
+                  '$unwind': {
+                    'path': '$address', 
+                    'preserveNullAndEmptyArrays': true
+                  }
+                }, 
+                {
+                  '$match': {
+                    'address._id': addressId
+                  }
+                }, 
+                {
+                  '$project': {
+                    '_id': 0, 
+                    'address': 1
+                  }
+                }
+            ]).toArray();
+            resolve(address[0].address);
+        })
+    },
     getCartList:(userId)=>{
         return new Promise(async(resolve, reject)=>{
             userId = ObjectId(userId);
